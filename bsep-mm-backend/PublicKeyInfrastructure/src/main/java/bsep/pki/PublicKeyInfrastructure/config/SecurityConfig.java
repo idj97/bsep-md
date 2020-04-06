@@ -1,4 +1,4 @@
-package com.bsep.mm.MilitaryMonitoring.config;
+package bsep.pki.PublicKeyInfrastructure.config;
 
 import org.keycloak.adapters.KeycloakConfigResolver;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
