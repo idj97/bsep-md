@@ -1,4 +1,4 @@
-package com.bsep.mm.MilitaryMonitoring.controller;
+package bsep.pki.PublicKeyInfrastructure.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,10 +1,10 @@
-package com.bsep.mm.MilitaryMonitoring;
+package bsep.pki.PublicKeyInfrastructure;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class MilitaryMonitoringApplicationTests {
+class PublicKeyInfrastructureApplicationTests {
 
 	@Test
 	void contextLoads() {

@@ -8,11 +8,11 @@
 		<version>2.2.6.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.bsep.mm</groupId>
-	<artifactId>MilitaryMonitoring</artifactId>
+	<groupId>bsep.pki</groupId>
+	<artifactId>PublicKeyInfrastructure</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
-	<name>MilitaryMonitoring</name>
+	<name>PublicKeyInfrastructure</name>
 	<description>University project</description>
 
 	<properties>
@@ -114,7 +114,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-jetty</artifactId>
 		</dependency>
-
 	</dependencies>
 
 	<build>
