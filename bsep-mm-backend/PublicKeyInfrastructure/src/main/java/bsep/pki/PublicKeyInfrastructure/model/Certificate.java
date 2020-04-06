@@ -1,4 +1,4 @@
-package com.bsep.mm.MilitaryMonitoring.model;
+package bsep.pki.PublicKeyInfrastructure.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -36,6 +36,39 @@ public class Certificate {
     @Column(unique = true, nullable = false)
     private String keyStoreAlias;
 
+    @Column(nullable = false)
+    private Long userId;
+
+    @Column(nullable = false)
+    private String userEmail;
+
+    @Column(nullable = false)
+    private String O;
+
+    @Column(nullable = false)
+    private String C;
+
+    @Column(nullable = false)
+    private String OU;
+
+    @Column(nullable = false)
+    private String GivenName;
+
+    @Column(nullable = false)
+    private String Surname;
+
+    @Column(nullable = false)
+    private String CN;
+
     @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = false)
+    private Date validFrom;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = false)
+    private Date validUntil;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = false)
     private Date dateCreated = new Date();
 }

@@ -1,4 +1,4 @@
-package com.bsep.mm.MilitaryMonitoring.model;
+package bsep.pki.PublicKeyInfrastructure.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
