@@ -1,5 +1,5 @@
 package bsep.pki.PublicKeyInfrastructure.model;
 
-public enum CertificateAuthorityType {
+public enum CAType {
     ROOT
 }

@@ -21,23 +21,29 @@ public class Certificate {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    private CA issuedForCA;
+
     @ManyToOne(cascade = CascadeType.ALL)
-    private CertificateAuthority certificateAuthority;
+    private CA issuedByCA;
+
+    @OneToMany(mappedBy = "issuedByCertificate", cascade = CascadeType.ALL)
+    private Set<Certificate> issuerForCertificates = new HashSet<>();
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    private Certificate issuedByCertificate;
 
     @OneToOne(cascade = CascadeType.ALL)
     private CertificateRevocation revocation;
 
-    @OneToMany(mappedBy = "issuedBy", cascade = CascadeType.ALL)
-    private Set<Certificate> issuerFor = new HashSet<>();
-
-    @ManyToOne(cascade = CascadeType.ALL)
-    private Certificate issuedBy;
+    @Column(nullable = false, unique = true)
+    private String serialNumber;
 
     @Column(unique = true, nullable = false)
     private String keyStoreAlias;
 
     @Column(nullable = false)
-    private Long userId;
+    private String userId;
 
     @Column(nullable = false)
     private String userEmail;

@@ -14,21 +14,24 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CertificateAuthority {
+public class CA {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "certificateAuthority", cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
+    private Certificate certificate;
+
+    @OneToMany(mappedBy = "issuedByCA", cascade = CascadeType.ALL)
     private Set<Certificate> issuedCertificates = new HashSet<>();
 
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
-    private Set<CertificateAuthority> childs = new HashSet<>();
+    private Set<CA> childs = new HashSet<>();
 
     @ManyToOne(cascade = CascadeType.ALL)
-    private CertificateAuthority parent;
+    private CA parent;
 
     @Enumerated(value = EnumType.STRING)
-    private CertificateAuthorityType certificateAuthorityType;
+    private CAType type;
 }
