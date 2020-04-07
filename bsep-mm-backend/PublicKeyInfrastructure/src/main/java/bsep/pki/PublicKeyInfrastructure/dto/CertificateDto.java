@@ -28,7 +28,7 @@ public class CertificateDto {
     private String organisation;
 
     @NotBlank
-    private String orgnisationUnit;
+    private String organisationUnit;
 
     @NotBlank
     private String country;

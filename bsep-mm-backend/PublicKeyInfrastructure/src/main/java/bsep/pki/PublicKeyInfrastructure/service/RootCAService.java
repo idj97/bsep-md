@@ -118,7 +118,7 @@ public class RootCAService {
         certificate.setGivenName(certificateDto.getGivenName());
         certificate.setC(certificateDto.getCountry());
         certificate.setO(certificateDto.getOrganisation());
-        certificate.setOU(certificateDto.getOrgnisationUnit());
+        certificate.setOU(certificateDto.getOrganisationUnit());
         certificate.setUserId("system");
         certificate.setValidFrom(certificateDto.getValidFrom());
         certificate.setValidUntil(certificateDto.getValidUntil());
