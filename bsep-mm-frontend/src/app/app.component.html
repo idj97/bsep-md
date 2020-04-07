@@ -1,4 +1,44 @@
+<div class="main-holder row">
+    <div class="col-12 navigation-bar-top">
+        <div class="row">
+            <div class="logo col-6 d-flex align-items-center">
+                <div><fa-icon [icon]="faKey" class="navigation-bar-icon"></fa-icon>Public Key Infrastructure</div>
+            </div>
+            <div class="col-6 d-flex align-items-center justify-content-end" style="padding-right: 0px !important;" (click)="logout()">
+                <div class="logout navigation-bar-top-button"><fa-icon [icon]="faDoorOpen" class="navigation-bar-icon"></fa-icon> Logout</div>
+            </div>
+        </div>
+    </div>
+    <div class="navigation-bar col-md-3">
+        <div class="navigation-info">
+            Information
+        </div>
+        <div class="navigation-item" [ngClass]="{'selected' : getUrl() == '' || getUrl() == 'home'}" 
+        routerLink="/home">
+            <fa-icon [icon]="faHome" class="navigation-icon"></fa-icon> Home
+        </div>
 
+        <div class="delimiter"></div>
+    
+        <div class="navigation-info">
+            Manage
+        </div>
+        <div class="navigation-item" [ngClass]="{'selected' : getUrl() == 'new-certificate'}" routerLink="/new-certificate">
+            <fa-icon [icon]="faPlus" class="navigation-icon"></fa-icon> New Certificate
+        </div>
 
+        <div class="navigation-item" [ngClass]="{'selected' : getUrl() == 'issued-certificates'}" routerLink="/issued-certificates">
+            <fa-icon [icon]="faFile" class="navigation-icon"></fa-icon> Issued Certificates
+        </div>
 
-<router-outlet></router-outlet>
+        <div class="navigation-item" [ngClass]="{'selected' : getUrl() == 'certificate-requests'}" routerLink="/certificate-requests">
+            <fa-icon [icon]="faMailBulk" class="navigation-icon"></fa-icon> Certificate Requests
+        </div>
+        
+    </div>
+
+    <div class="main-content col-md-9">
+        <router-outlet></router-outlet>
+    </div>
+
+</div>
