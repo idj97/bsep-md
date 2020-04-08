@@ -2,6 +2,10 @@ package bsep.pki.PublicKeyInfrastructure.utility;
 
 import bsep.pki.PublicKeyInfrastructure.data.IssuerData;
 import bsep.pki.PublicKeyInfrastructure.data.SubjectData;
+import bsep.pki.PublicKeyInfrastructure.model.CertificateType;
+import org.bouncycastle.asn1.x509.BasicConstraints;
+import org.bouncycastle.asn1.x509.Extension;
+import org.bouncycastle.cert.CertIOException;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
@@ -19,7 +23,11 @@ import java.security.cert.X509Certificate;
 @Service
 public class CertificateGenerationService {
 
-    public X509Certificate generateCertificate(SubjectData subjectData, IssuerData issuerData) {
+    public X509Certificate generate(
+            SubjectData subjectData,
+            IssuerData issuerData,
+            CertificateType certificateType)
+    {
         try {
             //Posto klasa za generisanje sertifiakta ne moze da primi direktno privatni kljuc pravi se builder za objekat
             //Ovaj objekat sadrzi privatni kljuc izdavaoca sertifikata i koristiti se za potpisivanje sertifikata
@@ -39,6 +47,13 @@ public class CertificateGenerationService {
                     subjectData.getEndDate(),
                     subjectData.getX500name(),
                     subjectData.getPublicKey());
+
+            //Postavljaju se ekstenzije u zavisnosti od tipa/namene sertifikata
+            if (certificateType.equals(CertificateType.ROOT)) {
+                setRootExtensions(certGen);
+            } else {
+
+            }
 
             //Generise se sertifikat
             X509CertificateHolder certHolder = certGen.build(contentSigner);
@@ -62,6 +77,14 @@ public class CertificateGenerationService {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public void setRootExtensions(X509v3CertificateBuilder certGen) {
+        try {
+            certGen.addExtension(Extension.basicConstraints, false, new BasicConstraints(true));
+        } catch (CertIOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

@@ -1,15 +1,14 @@
 package bsep.pki.PublicKeyInfrastructure.utility;
 
+import bsep.pki.PublicKeyInfrastructure.data.X509CertificateData;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
+import java.security.*;
+import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
@@ -51,6 +50,37 @@ public class KeyStoreService {
         }
         return null;
     }
+
+    public X509CertificateData getCaCertificate(String alias) {
+        try {
+            KeyStore keyStore = KeyStore.getInstance(new File(keyStoreName), keyStorePassword.toCharArray());
+            PrivateKey privateKey = (PrivateKey) keyStore.getKey(alias, keyStorePassword.toCharArray());
+
+            Certificate[] originalChain = keyStore.getCertificateChain(alias);
+            X509Certificate[] chain = new X509Certificate[originalChain.length];
+            for(int i = 0; i < originalChain.length; i++)
+                chain[i] = (X509Certificate) originalChain[i];
+
+            return new X509CertificateData(
+                    chain,
+                    privateKey,
+                    alias);
+
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (CertificateException e) {
+            e.printStackTrace();
+        } catch (UnrecoverableKeyException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
 
     public void saveEntry(X509Certificate[] chain, PrivateKey privateKey, String alias) {
         try {
