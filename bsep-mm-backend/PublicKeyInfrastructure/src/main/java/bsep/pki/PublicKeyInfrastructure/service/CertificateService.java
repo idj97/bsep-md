@@ -20,4 +20,5 @@ public class CertificateService {
     // TODO: create subordinate certificate (set validity period)
 
     // TODO: create end user certificate (set validity period)
+
 }

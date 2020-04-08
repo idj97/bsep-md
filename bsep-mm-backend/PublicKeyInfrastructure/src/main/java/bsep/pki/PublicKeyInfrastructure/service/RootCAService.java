@@ -17,7 +17,9 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
-import java.security.SecureRandom;
+import javax.ws.rs.BadRequestException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Optional;
 
@@ -46,6 +48,12 @@ public class RootCAService {
     @Value("${root.email}")
     private String email;
 
+    @Value("${root.validFrom}")
+    private String validFromStr;
+
+    @Value("${root.validUntil}")
+    private String validUntilStr;
+
     @Value("${root.create}")
     private Boolean createRoot;
 
@@ -66,22 +74,27 @@ public class RootCAService {
 
     public void tryCreateRootCA() {
         if (createRoot) {
-
-
-            CertificateDto certificateDto = new CertificateDto(
-                    commonName,
-                    givenName,
-                    surname,
-                    organisation,
-                    orgnisationUnit,
-                    country,
-                    email,
-                    new Date(),
-                    new Date(),
-                    getRandomSerialNumber(),
-                    null);
-            CADto caDto = new CADto(certificateDto, CAType.ROOT, null);
-            createRootCA(caDto);
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+            try {
+                Date validUntil = sdf.parse(validUntilStr);
+                Date validFrom = sdf.parse(validFromStr);
+                CertificateDto certificateDto = new CertificateDto(
+                        commonName,
+                        givenName,
+                        surname,
+                        organisation,
+                        orgnisationUnit,
+                        country,
+                        email,
+                        validFrom,
+                        validUntil,
+                        null,
+                        null);
+                CADto caDto = new CADto(certificateDto, CAType.ROOT, null, null);
+                createRootCA(caDto);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -90,27 +103,31 @@ public class RootCAService {
         if (!optionalCA.isPresent()) {
             CertificateDto certificateDto = caDto.getCertificateDto();
 
-            // kreiranje x509 sertifikata sa snimanjem keystore
-            X509CertificateData x509CertificateData = x500Service.createX509RootCertificateFromCertificateDto(certificateDto);
+            // kreiranje x509 sertifikata
+            X509CertificateData x509CertificateData = x500Service
+                    .createRootCertificate(certificateDto);
 
-            // kreiranje entiteta sertifikat koji odgovara kreiranom x509 sertifikatu
-            Certificate certificate = createSelfSignedSertificateEntity(certificateDto, x509CertificateData.getSerialNumber());
+            // kreiranje entiteta Certificate koji odgovara kreiranom x509 sertifikatu
+            Certificate certificate = createRootCertificateEntity(
+                    certificateDto,
+                    x509CertificateData.getSerialNumber());
 
-            // kreiranje entiteta CA i uvezivanje sa entitetom sertifikat
+            // kreiranje entiteta CA i uvezivanje sa entitetom Certificate
             CA ca = new CA();
             ca.setCertificate(certificate);
             certificate.setIssuedForCA(ca);
-            ca.setType(caDto.getCAType());
+            ca.setType(CAType.ROOT);
 
-            // usnimi u bazu
-            return caRepository.save(ca);
+            // usnimi entitet i sertifikat
+            ca = caRepository.save(ca);
+            x500Service.saveX509Certificate(x509CertificateData);
+            return ca;
         } else {
-            System.out.println("ROOT CA ALREADY EXISTS");
+            throw new BadRequestException("Root CA already exists.");
         }
-        return null;
     }
 
-    public Certificate createSelfSignedSertificateEntity(CertificateDto certificateDto, String serialNumber) {
+    public Certificate createRootCertificateEntity(CertificateDto certificateDto, String serialNumber) {
         Certificate certificate = new Certificate();
         certificate.setCN(certificateDto.getCommonName());
         certificate.setSurname(certificateDto.getSurname());
@@ -127,15 +144,6 @@ public class RootCAService {
         return certificate;
     }
 
-    public Integer getRandomSerialNumber() {
-        SecureRandom secureRandom = new SecureRandom();
-        while (true) {
-            Integer serialNumber = secureRandom.nextInt();
-            Optional<Certificate> cert = certificateRepository.findBySerialNumber(serialNumber.toString());
-            if (!cert.isPresent()) {
-                return serialNumber;
-            }
-        }
-    }
+
 
 }

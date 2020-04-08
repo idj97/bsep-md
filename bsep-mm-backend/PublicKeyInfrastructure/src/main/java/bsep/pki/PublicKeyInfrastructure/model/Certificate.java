@@ -24,9 +24,6 @@ public class Certificate {
     @OneToOne(cascade = CascadeType.ALL)
     private CA issuedForCA;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    private CA issuedByCA;
-
     @OneToMany(mappedBy = "issuedByCertificate", cascade = CascadeType.ALL)
     private Set<Certificate> issuerForCertificates = new HashSet<>();
 
