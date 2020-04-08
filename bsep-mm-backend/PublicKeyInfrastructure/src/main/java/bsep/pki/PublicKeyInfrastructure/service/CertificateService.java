@@ -7,8 +7,4 @@ import org.springframework.stereotype.Service;
 @Service
 public class CertificateService {
 
-    public Certificate createSelfSignedSertificate(CertificateDto certificateDto) {
-        return null;
-    }
-
 }
