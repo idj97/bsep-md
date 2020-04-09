@@ -38,9 +38,9 @@ public class CertificateRequestDto {
 
     private CertificateRequestStatus status;
 
-    // TODO: add digital signature
 
     public CertificateRequestDto(CertificateRequest certRequest) {
+        this.id = certRequest.getId();
         this.commonName = certRequest.getCommonName();
         this.organisation = certRequest.getOrganisation();
         this.organisationUnit = certRequest.getOrganisationUnit();

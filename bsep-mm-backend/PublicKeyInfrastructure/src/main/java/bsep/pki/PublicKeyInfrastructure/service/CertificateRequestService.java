@@ -54,6 +54,11 @@ public class CertificateRequestService {
             throw new ApiBadRequestException("The submitted data format is invalid");
         }
 
+        // check if the company name already exists
+        if(certReqRepo.findOneByCommonName(request.getCommonName()).isPresent()) {
+            throw new ApiBadRequestException("The submitted common name already exists");
+        }
+
         // decode public key string and parse it
         PublicKey key = signatureSvc.decodePublicKey(request.getPublicKey());
         if(key == null) {
@@ -84,6 +89,10 @@ public class CertificateRequestService {
                 .findById(id)
                 .orElseThrow(() -> new ApiNotFoundException("Certificate not found"));
 
+        if(request.getStatus().equals(CertificateRequestStatus.APPROVED)) {
+            throw new ApiBadRequestException("The certificate has already been approved");
+        }
+
         request.setStatus(CertificateRequestStatus.APPROVED);
         certReqRepo.save(request);
 
@@ -97,6 +106,10 @@ public class CertificateRequestService {
         CertificateRequest request = certReqRepo
                 .findById(id)
                 .orElseThrow(() -> new ApiNotFoundException("Certificate not found"));
+
+        if(request.getStatus().equals(CertificateRequestStatus.DENIED)) {
+            throw new ApiBadRequestException("The certificate has already been denied");
+        }
 
         request.setStatus(CertificateRequestStatus.DENIED);
         return new CertificateRequestDto(certReqRepo.save(request));

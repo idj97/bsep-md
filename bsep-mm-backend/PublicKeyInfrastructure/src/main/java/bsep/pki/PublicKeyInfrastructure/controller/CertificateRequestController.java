@@ -31,7 +31,7 @@ public class CertificateRequestController {
 
     @PutMapping("/approve/{id}")
     @PreAuthorize("hasRole('admin')")
-    public ResponseEntity<CertificateRequestDto> approveCertificateRequest(@PathVariable Long id) {
+    public ResponseEntity<CertificateRequestDto> approveCertificateRequest(@PathVariable("id") Long id) {
 
         return new ResponseEntity<>(
                 certificateReqSvc.approveCertificateSignRequest(id),
@@ -42,7 +42,7 @@ public class CertificateRequestController {
 
     @PutMapping("/decline/{id}")
     @PreAuthorize("hasRole('admin')")
-    public ResponseEntity<CertificateRequestDto> declineCertificateRequest(@PathVariable Long id) {
+    public ResponseEntity<CertificateRequestDto> declineCertificateRequest(@PathVariable("id") Long id) {
 
         return new ResponseEntity<>(
                 certificateReqSvc.declineCertificateSignRequest(id),
