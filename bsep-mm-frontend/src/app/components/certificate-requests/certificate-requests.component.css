@@ -1,0 +1,17 @@
+.header {
+    padding: 1ex;
+}
+
+.col-lg-6 {
+    padding-bottom: 5ex;
+}
+
+
+td.attribute {
+    text-decoration: underline;
+}
+
+table {
+    border-collapse: separate;
+    border-spacing: 10px;
+}
