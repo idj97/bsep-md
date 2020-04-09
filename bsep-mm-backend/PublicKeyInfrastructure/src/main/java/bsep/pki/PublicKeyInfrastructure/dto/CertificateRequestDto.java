@@ -1,7 +1,7 @@
 package bsep.pki.PublicKeyInfrastructure.dto;
 
 import bsep.pki.PublicKeyInfrastructure.model.CertificateRequestStatus;
-import bsep.pki.PublicKeyInfrastructure.model.CertificateSignRequest;
+import bsep.pki.PublicKeyInfrastructure.model.CertificateRequest;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,7 +11,7 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 @Getter
 @Setter
-public class CertificateSignRequestDto {
+public class CertificateRequestDto {
 
     Long id;
 
@@ -40,7 +40,7 @@ public class CertificateSignRequestDto {
 
     // TODO: add digital signature
 
-    public CertificateSignRequestDto(CertificateSignRequest certRequest) {
+    public CertificateRequestDto(CertificateRequest certRequest) {
         this.commonName = certRequest.getCommonName();
         this.organisation = certRequest.getOrganisation();
         this.organisationUnit = certRequest.getOrganisationUnit();

@@ -12,11 +12,14 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Getter
 @Setter
-public class CertificateSignRequest {
+public class CertificateRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
+    private Integer serialNumber;
 
     @Column(nullable=false)
     private String commonName;
@@ -36,7 +39,7 @@ public class CertificateSignRequest {
     @Column(nullable=false)
     private String email;
 
-    @Column(nullable=false)
+    @Column(nullable=false, length = 500)
     private String publicKey;
 
     @Column(nullable=false)

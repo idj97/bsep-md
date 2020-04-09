@@ -55,7 +55,7 @@ public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
         http.csrf().disable();
         http
                 .authorizeRequests()
-                //.antMatchers("/api/*").hasRole("admin") // default for now
+                //.antMatchers("/api/*").hasRole("admin"); // default for now
                 .anyRequest().permitAll();
     }
 }
