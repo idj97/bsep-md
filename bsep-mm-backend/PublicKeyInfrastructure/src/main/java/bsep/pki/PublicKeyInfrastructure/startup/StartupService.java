@@ -1,10 +1,12 @@
 package bsep.pki.PublicKeyInfrastructure.startup;
 
+import bsep.pki.PublicKeyInfrastructure.dto.RevocationDto;
+import bsep.pki.PublicKeyInfrastructure.model.RevokeReason;
 import bsep.pki.PublicKeyInfrastructure.service.CAService;
-import bsep.pki.PublicKeyInfrastructure.utility.KeyStoreService;
+import bsep.pki.PublicKeyInfrastructure.service.CRLService;
 import bsep.pki.PublicKeyInfrastructure.service.RootCAService;
+import bsep.pki.PublicKeyInfrastructure.utility.KeyStoreService;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.hibernate.procedure.spi.ParameterRegistrationImplementor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
@@ -24,6 +26,9 @@ public class StartupService {
     @Autowired
     private CAService caService;
 
+    @Autowired
+    private CRLService crlService;
+
     @EventListener
     public void onStartup(ContextRefreshedEvent contextRefreshedEvent) {
         configure();
@@ -35,9 +40,14 @@ public class StartupService {
     }
 
     public void initialize() {
-        keystoreService.tryCreateKeyStore();
-        rootCAService.tryCreateRootCA();
-        caService.tryCreateCA(1L);
-        //caService.tryCreateCA(2L);
+//        keystoreService.tryCreateKeyStore();
+//        rootCAService.tryCreateRootCA();
+//        caService.tryCreateCA(1L);
+//        caService.tryCreateCA(2L);
+//
+//
+//        crlService.createCRL();
+//        crlService.revokeCertificate(new RevocationDto(null, 1L, RevokeReason.KEY_COMPROMISE, null));
+//        crlService.revokeCertificate(new RevocationDto(null, 2L, RevokeReason.PRIVILEGE_WITHDRAWN, null));
     }
 }

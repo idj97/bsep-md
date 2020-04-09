@@ -131,8 +131,10 @@ public class CAService {
                     validFrom,
                     validUntil,
                     null,
-                    CertificateType.UNDEFINED);
-            CADto caDto = new CADto(certificateDto, CAType.UNDEFINED, id, null);
+                    CertificateType.UNDEFINED,
+                    null);
+            // CADto caDto = new CADto(nucertificateDto, CAType.UNDEFINED, id, null);
+            CADto caDto = new CADto(null, id, CAType.UNDEFINED, certificateDto);
             createCA(caDto);
         } catch (ParseException e) {
             e.printStackTrace();
