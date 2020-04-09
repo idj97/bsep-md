@@ -84,7 +84,8 @@
 
 .main-content {
     background-color: white;
-    min-height: calc(100vh - 60px);
+    height: calc(100vh - 60px);
+    overflow-y: auto;
     color: black;
     font-weight: 600;
 }

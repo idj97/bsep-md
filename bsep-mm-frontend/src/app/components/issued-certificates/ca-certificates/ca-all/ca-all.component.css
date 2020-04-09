@@ -1,0 +1,105 @@
+.certificates-table {
+    width: 100%;
+    font-size: 14px;
+    table-layout: fixed;
+}
+
+.certificates-table .certificate-row  {
+    letter-spacing: 1px;
+    border-bottom: 2px solid white;
+}
+
+.certificates-table .certificate-row td {
+    padding: 20px;
+    text-align: center;
+}
+
+.certificates-table .certificate-row.header {
+    font-weight: 600;
+    background: #363c42;
+    color: white;
+    
+}
+
+.certificate-row-data > td {
+    padding: 0px !important;
+}
+
+.certificates-table-inner {
+    width: 100%;
+    font-size: 14px;
+    table-layout: fixed;
+}
+
+.certificates-table-inner .certificate-row-inner td {
+    padding: 20px;
+    text-align: center;
+}
+
+.certificate-row-data .data-division {
+    background: white;
+    color: black;
+    padding: 0px !important;
+    margin: 0px !important;
+    font-weight: normal;
+    letter-spacing: 1px;
+    transition: .3s;
+}
+
+.certificate-row-data .data-division.hovered {
+    background: #3e4349;
+    color: white;
+}
+
+.more-info-division {
+    overflow: hidden;
+}
+
+.more-information-indicator {
+    height: 0px;
+    overflow: hidden;
+    text-align: center;
+    background: #33383d;
+    transition: height .3s;
+    width: 100%;
+    margin: 0 !important;
+}
+
+.more-information-indicator.hovered {
+    height: 45px;
+    cursor: pointer;
+}
+
+.more-information-indicator.hovered:hover {
+    background: #2e3338;
+}
+
+.more-information-indicator.issuer-information {
+    color: white;
+    border-bottom: 1px solid gray;
+}
+
+.main-data {
+    max-height: 0px;
+    overflow: hidden;
+    background: rgb(240, 240, 240);
+    color: black;
+    transition: max-height .5s;
+    margin: 0 !important;
+}
+
+.main-data.selected {
+    max-height: 600px;
+}
+
+.main-data.selected.scroll {
+    overflow-y: auto;
+}
+
+.main-data-table {
+    width: 360px;
+}
+
+.main-data-table td {
+    padding: 3px 10px;
+}
