@@ -37,7 +37,7 @@ public class StartupService {
     public void initialize() {
         keystoreService.tryCreateKeyStore();
         rootCAService.tryCreateRootCA();
-        caService.tryCreateCA(1L);
-        caService.tryCreateCA(2L);
+        //caService.tryCreateCA(1L); // null pointer exception
+        //caService.tryCreateCA(2L);
     }
 }

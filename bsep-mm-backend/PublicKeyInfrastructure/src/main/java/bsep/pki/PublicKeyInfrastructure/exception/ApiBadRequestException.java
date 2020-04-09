@@ -6,10 +6,10 @@ public class ApiBadRequestException extends ApiException {
     private static final long serialVersionUID = 1L;
 
     public ApiBadRequestException(String message) {
-        super(message, HttpStatus.NOT_FOUND);
+        super(message, HttpStatus.BAD_REQUEST);
     }
 
     public ApiBadRequestException() {
-        super("", HttpStatus.NOT_FOUND);
+        super("", HttpStatus.BAD_REQUEST);
     }
 }
