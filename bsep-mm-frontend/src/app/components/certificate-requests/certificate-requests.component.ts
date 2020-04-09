@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CertificateSignRequest } from 'src/app/dtos/CertificateSignRequest.dto';
+import { CertificateRequestService } from 'src/app/services/certificate-request.service';
 
 @Component({
   selector: 'app-certificate-requests',
@@ -10,37 +11,59 @@ export class CertificateRequestsComponent implements OnInit {
 
   certificateSignRequests: Array<CertificateSignRequest>;
 
-  constructor() {
+  constructor(private certificateReqSvc: CertificateRequestService) {
     this.certificateSignRequests = [];
-    
-    /*
-    let csr = new CertificateSignRequest();
-    csr.city = 'Lawrenceville';
-    csr.commonName = 'Some common name';
-    csr.country = 'USA, Georgia';
-    csr.email = 'somecsr@someemail.com';
-    csr.organisation = 'Some organisation';
-    csr.organisationUnit = 'Some organisation unit ';
-
-    this.certificateSignRequests.push(csr);
-    this.certificateSignRequests.push(csr);
-    this.certificateSignRequests.push(csr);*/
-
   }
 
   ngOnInit() {
+    this.certificateReqSvc.getPendingSignedRequests().subscribe(
+      data => {
+        this.certificateSignRequests = data;
+      },
+      err => {
+        console.log(err.error);
+      }
+    );
   }
 
   getCertificateRequests() {
 
   }
 
-  approveCertificateRequest() {
+  approveCertificateRequest(id: number, index: number) {
 
+    if(!window.confirm('Are you sure you want to approve this request?')) {
+      return;
+    }
+
+    this.certificateReqSvc.approveCertificateRequest(id).subscribe(
+      data => {
+        this.removeCertificateRequest(index);
+      },
+      err => {
+        console.log(err.error);
+      }
+    );
   }
 
-  declineCertificateRequest() {
+  declineCertificateRequest(id: number, index: number) {
 
+    if(!window.confirm('Are you sure you want to decline this request?')) {
+      return;
+    }
+
+    this.certificateReqSvc.declineCertificateRequest(id).subscribe(
+      data => {
+        this.removeCertificateRequest(index);
+      },
+      err => {
+        console.log(err.error);
+      }
+    );
+  }
+
+  removeCertificateRequest(index: number) {
+    this.certificateSignRequests.splice(index, 1);
   }
 
 }

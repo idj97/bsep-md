@@ -1,6 +1,7 @@
 
 export class CertificateSignRequest {
 
+    id: number;
     commonName: string;
     organisation: string;
     organisationUnit: string;

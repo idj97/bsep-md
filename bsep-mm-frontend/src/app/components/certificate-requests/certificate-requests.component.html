@@ -7,7 +7,7 @@
     </div>
     
     <div class="row">
-      <div class="col-lg-6" *ngFor="let req of certificateSignRequests">
+      <div class="col-lg-6" *ngFor="let req of certificateSignRequests; index as i">
         <table>
             <tr>
                 <td class="attribute"> Common name: </td>
@@ -43,12 +43,12 @@
             </tr>
             <tr>
                 <td>
-                    <button class="btn btn-dark btn-sm" (click)="approveCertificateRequest()"> 
+                    <button class="btn btn-dark btn-sm" (click)="approveCertificateRequest(req.id, i)"> 
                         Approve
                     </button>
                 </td>
                 <td>
-                    <button class="btn btn-danger btn-sm" (click)="declineCertificateRequest()">
+                    <button class="btn btn-danger btn-sm" (click)="declineCertificateRequest(req.id, i)">
                         Decline
                     </button>
                 </td>
