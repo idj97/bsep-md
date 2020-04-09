@@ -19,20 +19,6 @@ export class HomeComponent implements OnInit {
     this.username = this.keyCloakSvc.getUsername();
   }
 
-  logout() {
-    this.keyCloakSvc.logout();
-  }
-
-  getHello() {
-    this.numOfRequests += 1;
-    this.ds.getHello().subscribe(
-      data => {
-        this.serverResp = data;
-      },
-      err => {
-        this.serverResp = err.error;
-      }
-    );
-  }
+  
 
 }

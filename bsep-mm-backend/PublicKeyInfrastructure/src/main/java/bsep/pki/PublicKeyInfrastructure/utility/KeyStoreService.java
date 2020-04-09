@@ -56,6 +56,7 @@ public class KeyStoreService {
             KeyStore keyStore = KeyStore.getInstance(new File(keyStoreName), keyStorePassword.toCharArray());
             PrivateKey privateKey = (PrivateKey) keyStore.getKey(alias, keyStorePassword.toCharArray());
 
+            //TODO: null pointer exception (originalChain is null)
             Certificate[] originalChain = keyStore.getCertificateChain(alias);
             X509Certificate[] chain = new X509Certificate[originalChain.length];
             for(int i = 0; i < originalChain.length; i++)
