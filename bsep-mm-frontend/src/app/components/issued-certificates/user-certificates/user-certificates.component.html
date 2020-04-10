@@ -1,0 +1,10 @@
+<div class="row certificates-navigation-bar">
+    <div class="col-6 tab d-flex justify-content-center align-items-center" [ngClass]="{'selected' : getUrl() == 'all'}" routerLink="/issued-certificates/user-certificates/all">
+        <div>All</div>
+    </div>
+    <div class="col-6 tab d-flex justify-content-center align-items-center" [ngClass]="{'selected' : getUrl() == 'revoked'}" routerLink="/issued-certificates/user-certificates/revoked">
+        <div>Revoked</div>
+    </div>
+</div>
+
+<router-outlet></router-outlet>

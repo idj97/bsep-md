@@ -1,1 +1,13 @@
-<p>Issued certificates</p>
+
+<div class="row certificates-navigation-bar">
+    <div class="col-6 tab d-flex justify-content-center align-items-center" [ngClass]="{'selected' : getUrl() == 'user-certificates'}" routerLink="/issued-certificates/user-certificates">
+        <div>User Certificates</div>
+    </div>
+    <div class="col-6 tab d-flex justify-content-center align-items-center" [ngClass]="{'selected' : getUrl() == 'CA-certificates'}" routerLink="/issued-certificates/CA-certificates">
+        <div>CA Certificates</div>
+    </div>
+    
+</div>
+
+<router-outlet></router-outlet>
+

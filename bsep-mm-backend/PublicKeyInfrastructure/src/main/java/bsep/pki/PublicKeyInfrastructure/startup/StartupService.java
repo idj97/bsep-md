@@ -40,14 +40,14 @@ public class StartupService {
     }
 
     public void initialize() {
-//        keystoreService.tryCreateKeyStore();
-//        rootCAService.tryCreateRootCA();
-//        caService.tryCreateCA(1L);
-//        caService.tryCreateCA(2L);
-//
-//
-//        crlService.createCRL();
-//        crlService.revokeCertificate(new RevocationDto(null, 1L, RevokeReason.KEY_COMPROMISE, null));
-//        crlService.revokeCertificate(new RevocationDto(null, 2L, RevokeReason.PRIVILEGE_WITHDRAWN, null));
+        keystoreService.tryCreateKeyStore();
+        rootCAService.tryCreateRootCA();
+        caService.tryCreateCA(1L);
+        caService.tryCreateCA(2L);
+
+
+        crlService.createCRL();
+        crlService.revokeCertificate(new RevocationDto(null, 1L, RevokeReason.KEY_COMPROMISE, null));
+        //crlService.revokeCertificate(new RevocationDto(null, 2L, RevokeReason.PRIVILEGE_WITHDRAWN, null));
     }
 }

@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
+import { RevokeDialogService } from 'src/app/services/revoke-dialog.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-issued-certificates',
@@ -7,9 +10,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class IssuedCertificatesComponent implements OnInit {
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit() {
+  }
+
+  getUrl(): string {
+    return this.router.url.split('/')[2];
   }
 
 }
