@@ -133,10 +133,36 @@
     background: #d3d7db;
     color: black;
     font-weight: 600;
+    cursor: pointer;
+}
+
+.main-data .extensions-header:hover {
+    background: #c3c8cc;
 }
 
 .main-data .issuer {
     padding: 20px 40px;
     background: #353b42;
     color: white;
+}
+
+.extension-information {
+    padding: 0px;
+    background: #e7eaee;
+    overflow: hidden;
+    height: 0;
+    transition: padding .3s;
+}
+
+.extension-information.selected {
+    height: auto;
+    padding: 20px;
+}
+
+.extension-information .extension-table td {
+    padding: 5px 20px;
+}
+
+.extension-information .extension-name {
+    font-weight: 600;
 }
