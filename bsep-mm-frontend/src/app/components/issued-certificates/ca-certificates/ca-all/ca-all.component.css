@@ -126,3 +126,16 @@
     height: 60px;
     background: rgb(240, 240, 240);
 }
+
+.main-data .extensions-header {
+    padding: 20px 40px;
+    background: #d3d7db;
+    color: black;
+    font-weight: 600;
+}
+
+.main-data .issuer {
+    padding: 20px 40px;
+    background: #353b42;
+    color: white;
+}

@@ -22,8 +22,6 @@ export class CaRevokedComponent implements OnInit {
   constructor(private certificateService: CertificateService) { }
 
   ngOnInit() {
-
-
     this.certificateService.postSearch(this.params).subscribe(
       data => {
         console.log(data);
