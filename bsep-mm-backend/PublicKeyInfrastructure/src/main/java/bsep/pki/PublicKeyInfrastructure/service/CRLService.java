@@ -16,12 +16,15 @@ import bsep.pki.PublicKeyInfrastructure.utility.X500CrlService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.Optional;
 
 @Service
+@Transactional(propagation = Propagation.REQUIRED)
 public class CRLService {
 
     @Autowired

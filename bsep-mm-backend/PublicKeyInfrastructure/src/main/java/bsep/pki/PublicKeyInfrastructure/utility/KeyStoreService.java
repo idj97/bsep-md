@@ -36,7 +36,9 @@ public class KeyStoreService {
         try {
             KeyStore keyStore = KeyStore.getInstance("JKS");
             keyStore.load(null, keyStorePassword.toCharArray());
-            keyStore.store(new FileOutputStream(keyStoreName), keyStorePassword.toCharArray());
+            try (FileOutputStream fos = new FileOutputStream(keyStoreName)) {
+                keyStore.store(fos, keyStorePassword.toCharArray());
+            }
             System.out.printf("New keystore saved at %s\n", keyStoreName);
             return keyStore;
         } catch (KeyStoreException e) {
@@ -86,7 +88,10 @@ public class KeyStoreService {
         try {
             KeyStore keyStore = KeyStore.getInstance(new File(keyStoreName), keyStorePassword.toCharArray());
             keyStore.setKeyEntry(alias, privateKey, keyStorePassword.toCharArray(), chain);
-            keyStore.store(new FileOutputStream(keyStoreName), keyStorePassword.toCharArray());
+
+            try (FileOutputStream fos = new FileOutputStream(keyStoreName)) {
+                keyStore.store(fos, keyStorePassword.toCharArray());
+            }
         } catch (KeyStoreException e) {
             e.printStackTrace();
         } catch (IOException e) {

@@ -10,11 +10,15 @@ import bsep.pki.PublicKeyInfrastructure.repository.CertificateRepository;
 import bsep.pki.PublicKeyInfrastructure.utility.DateService;
 import bsep.pki.PublicKeyInfrastructure.utility.X500Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
 @Service
+@Transactional(propagation = Propagation.REQUIRED)
 public class CertificateService {
 
     @Autowired
@@ -29,6 +33,8 @@ public class CertificateService {
     @Autowired
     private CertificateRepository certificateRepository;
 
+    @Value("${crl.public.path}")
+    private String crlPublicPath;
 
     public CertificateDto createCertificate(CertificateRequest certificateRequest) {
         if (certificateRequest.getCertificateType().equals(CertificateType.SIEM_AGENT)) {
@@ -100,10 +106,39 @@ public class CertificateService {
         certificate.setValidUntil(subjectCertificateDto.getValidUntil());
         certificate.setSerialNumber(serialNumber);
         certificate.setKeyStoreAlias(serialNumber);
+        certificate.setCertificateType(subjectCertificateDto.getCertificateType());
 
         // uvezivanje subject sertifikata sa issuer sertifikatom
         certificate.setIssuedByCertificate(issuerCertificate);
         issuerCertificate.getIssuerForCertificates().add(certificate);
+
+        Extension bcExtension = new Extension();
+        bcExtension.setName("Basic Constraint");
+        bcExtension.setCertificate(certificate);
+        bcExtension.getAttributes().add(
+                new ExtensionAttribute(null, "Not Certificate Authority.", bcExtension));
+
+        Extension keyUsageExtension = new Extension();
+        keyUsageExtension.setName("Key Usage");
+        keyUsageExtension.setCertificate(certificate);
+
+        if (certificate.getCertificateType().equals(CertificateType.SIEM_AGENT)) {
+            keyUsageExtension.getAttributes().add(
+                    new ExtensionAttribute(null, "DataSign", keyUsageExtension));
+        }
+
+        keyUsageExtension.getAttributes().add(
+                new ExtensionAttribute(null, "KeyEncipherment", keyUsageExtension));
+
+        Extension crlDistPointExtension = new Extension();
+        crlDistPointExtension.setName("CRL Distribution point");
+        crlDistPointExtension.setCertificate(certificate);
+        crlDistPointExtension.getAttributes().add(
+                new ExtensionAttribute(null, crlPublicPath, crlDistPointExtension));
+
+        certificate.getExtensions().add(bcExtension);
+        certificate.getExtensions().add(keyUsageExtension);
+        certificate.getExtensions().add(crlDistPointExtension);
 
         return certificate;
     }
