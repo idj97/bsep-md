@@ -9,7 +9,8 @@ import { CertificateService } from 'src/app/services/certificate.service';
 export class CaRevokedComponent implements OnInit {
 
   private data: any[] = [];
-
+  private elStatus: any[] = [];
+  
   private params = {
     revoked: true,
     commonName: '',
