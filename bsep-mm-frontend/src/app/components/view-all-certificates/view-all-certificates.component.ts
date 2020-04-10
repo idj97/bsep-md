@@ -27,12 +27,13 @@ export class ViewAllCertificatesComponent implements OnInit {
     let elStatus = []
     for (let i = 0; i < items.length; i++) {
       let root = items[i];
-      if (!this.isRevoked && root.certificateDto.revocation) continue;
       let rootStatus = {
         isHovered: false,
         isSelected: false,
+        extensionsSelected: false,
       }
-
+      if (!this.isRevoked && root.certificateDto.revocation) continue;
+      
       if (root.caIssuerId) {
         this.formCertificateData(root, rootStatus, items);
       }
@@ -42,6 +43,7 @@ export class ViewAllCertificatesComponent implements OnInit {
 
     this.data = finalData;
     this.elStatus = elStatus;
+    console.log(this.elStatus);
   }
   get parentData() { return this.data; }
 
@@ -73,18 +75,25 @@ export class ViewAllCertificatesComponent implements OnInit {
   formCertificateData(root: any, rootStatus: any, data: any[]): any {
     let issuer = root;
     let issuerStatus = rootStatus;
+
+    
     if (issuer.caIssuerId) {
       issuer.issuer = this.findIssuerById(issuer.caIssuerId, data);
       issuerStatus.issuerStatus = {
         isHovered: false,
         isSelected: false,
-      }
+        extensionsSelected: false,
+      };
       if (issuer.issuer.caIssuerId) {
         this.formCertificateData(issuer.issuer, issuerStatus.issuerStatus, data);
       }
     }
 
     return issuer;
+  }
+
+  toggleExtensions(status) {
+    status.extensionsSelected = !status.extensionsSelected;
   }
 
   findIssuerById(id: number, data: any[]): any {
