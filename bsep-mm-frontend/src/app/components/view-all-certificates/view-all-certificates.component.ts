@@ -1,61 +1,46 @@
-import { Component, OnInit } from '@angular/core';
-import { CertificateService } from 'src/app/services/certificate.service';
-import { faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons';
+import { Component, OnInit, Input } from '@angular/core';
 import { RevokeDialogService } from 'src/app/services/revoke-dialog.service';
-import { CertificateAuthorityService } from 'src/app/services/certificate-authority.service';
 
 @Component({
-  selector: 'app-ca-revoked',
-  templateUrl: './ca-revoked.component.html',
-  styleUrls: ['./ca-revoked.component.css']
+  selector: 'app-view-all-certificates',
+  templateUrl: './view-all-certificates.component.html',
+  styleUrls: ['./view-all-certificates.component.css']
 })
-export class CaRevokedComponent implements OnInit {
-
-  faArrowDown = faArrowDown;
-  faArrowUp = faArrowUp;
+export class ViewAllCertificatesComponent implements OnInit {
 
   private data: any[] = [];
   private elStatus: any[] = [];
-  
-  private params = {
-    revoked: true,
-    commonName: '',
-    page: 0,
-    pageSize: 20,
+
+  @Input() isRevoked: boolean;
+
+  @Input() set parentData(parentData) {
+    let items = parentData.items;
+    let finalData = []
+    let elStatus = []
+    for (let i = 0; i < items.length; i++) {
+      let root = items[i];
+      if (!this.isRevoked && root.certificateDto.revocation) continue;
+      let rootStatus = {
+        isHovered: false,
+        isSelected: false,
+      }
+
+      if (root.caIssuerId) {
+        this.formCertificateData(root, rootStatus, items);
+      }
+      finalData.push(root);
+      elStatus.push(rootStatus);
+    }
+
+    this.data = finalData;
+    this.elStatus = elStatus;
   }
 
-  constructor(private certificateService: CertificateService,
-              private revokeDialogService: RevokeDialogService) { }
+  
+
+  constructor(private revokeDialogService: RevokeDialogService) { }
 
   ngOnInit() {
-    this.certificateService.postSearch(this.params).subscribe(
-      data => {
-        
-        let items = data.items;
-        let finalData = []
-        let elStatus = []
-        for (let i = 0; i < items.length; i++) {
-          let root = items[i];
-          let rootStatus = {
-            isHovered: false,
-            isSelected: false,
-          }
-
-          if (root.caIssuerId) {
-            this.formCertificateData(root, rootStatus, items);
-          }
-          finalData.push(root);
-          elStatus.push(rootStatus);
-        }
-
-        this.data = finalData;
-        this.elStatus = elStatus;
-      },
-
-      error => {
-        console.log(error);
-      }
-    );
   }
 
   initRevokeDialog(item: any): void {

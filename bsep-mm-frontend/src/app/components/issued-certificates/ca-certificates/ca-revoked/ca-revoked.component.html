@@ -5,7 +5,10 @@
             <td>Type</td>
             <td>Valid From</td>
             <td>Valid Until</td>
-            <td>Action</td>
+            <td>Revoke Reason</td>
+        </tr>
+        <tr *ngIf="data.length == 0">
+            <td colspan="5" class="nothing-to-display">Currently nothing to display</td>
         </tr>
         <tr *ngFor="let item of data; let i = index" class="certificate-row-data">
             <td colspan="5">
@@ -17,7 +20,7 @@
                                 <td>{{item.caType}}</td>
                                 <td>{{item.certificateDto.validFrom}}</td>
                                 <td>{{item.certificateDto.validUntil}}</td>
-                                <td (click)="initRevokeDialog(item)" class="revoke-action">Revoke</td>
+                                <td>{{item.certificateDto.revocation.revokeReason}}</td>
                             </tr>
                         </table>
                     </div>
@@ -38,7 +41,7 @@
 
 
 <ng-template #recursiveListTmpl let-item let-elStatus="elStatus">
-    <div class="col-6 d-flex justify-content-center align-items-center p-4">
+    <div class="main-data-table-holder col-6 d-flex justify-content-center align-items-center">
         <table class="main-data-table">
             <tr>
                 <td>ID: </td>
@@ -70,7 +73,7 @@
             </tr>
         </table>
     </div>
-    <div class="col-6 d-flex justify-content-center align-items-center p-4">
+    <div class="main-data-table-holder col-6 d-flex justify-content-center align-items-center">
         <table class="main-data-table">
             <tr>
                 <td>Certificate Type: </td>
@@ -96,9 +99,30 @@
                 <td>Valid Until: </td>
                 <td>{{item.certificateDto.validUntil}}</td>
             </tr>
+            <tr *ngIf="item.certificateDto.revocation">
+                <td>Status: </td>
+                <td>REVOKED</td>
+            </tr>
+            <tr *ngIf="item.certificateDto.revocation">
+                <td>Revocation Reason: </td>
+                <td>{{item.certificateDto.revocation.revokeReason}}</td>
+            </tr>
+            <tr *ngIf="item.certificateDto.revocation">
+                <td>Revocation Date: </td>
+                <td>{{item.certificateDto.revocation.revocationDate}}</td>
+            </tr>
         </table>
     </div>
+    <div class="col-12 p-0">
+        <div class="extensions-header">
+            Extensions:
+        </div>
+        <div class="extension-information">
+
+        </div>
+    </div>
     <div *ngIf="item.issuer" class="row col-12 main-data" style="padding: 0px !important;" [ngClass]="{'selected' : elStatus.isSelected}">
+        <div class="col-12 issuer">Issuer: {{item.issuer.certificateDto.serialNumber}} ({{item.issuer.id}}) for {{item.certificateDto.serialNumber}} ({{item.id}})</div>
         <ng-container *ngTemplateOutlet="recursiveListTmpl; context:{ $implicit: item.issuer,  elStatus: elStatus.issuerStatus }"></ng-container>
     </div>
     <div *ngIf="item.issuer" (click)="moreOrLessIssuerInformation($event, elStatus)" class="row more-information-indicator issuer-information d-flex align-items-center justify-content-center hovered">

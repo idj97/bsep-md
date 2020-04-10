@@ -21,6 +21,7 @@ import { UserAllComponent } from './components/issued-certificates/user-certific
 import { RevokeDialogComponent } from './components/revoke-dialog/revoke-dialog.component';
 import { FormsModule } from '@angular/forms';
 import { DlDateTimeDateModule, DlDateTimePickerModule } from 'angular-bootstrap-datetimepicker';
+import { ViewAllCertificatesComponent } from './components/view-all-certificates/view-all-certificates.component';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { DlDateTimeDateModule, DlDateTimePickerModule } from 'angular-bootstrap-
     UserRevokedComponent,
     UserAllComponent,
     RevokeDialogComponent,
+    ViewAllCertificatesComponent,
   ],
   imports: [
     BrowserModule,
