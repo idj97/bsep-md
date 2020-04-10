@@ -2,6 +2,8 @@ package bsep.pki.PublicKeyInfrastructure.utility;
 
 import bsep.pki.PublicKeyInfrastructure.data.IssuerData;
 import bsep.pki.PublicKeyInfrastructure.data.SubjectData;
+import bsep.pki.PublicKeyInfrastructure.exception.ApiBadRequestException;
+import bsep.pki.PublicKeyInfrastructure.model.Certificate;
 import bsep.pki.PublicKeyInfrastructure.model.CertificateType;
 import org.bouncycastle.asn1.x509.*;
 import org.bouncycastle.cert.AttributeCertificateIssuer;
@@ -63,8 +65,12 @@ public class CertificateGenerationService {
                 setCertIssuerExtensions(certGen);
             } else if (certificateType.equals(CertificateType.SIEM_CENTER_ISSUER)) {
                 setCertIssuerExtensions(certGen);
+            } else if (certificateType.equals(CertificateType.SIEM_AGENT)){
+                setSiemAgentCertExtensions(certGen);
+            } else if (certificateType.equals(CertificateType.SIEM_CENTER)) {
+                setSiemCenterCertExtensions(certGen);
             } else {
-
+                throw new ApiBadRequestException("Bad certificate type.");
             }
 
             //Generise se sertifikat
@@ -116,6 +122,50 @@ public class CertificateGenerationService {
                     new BasicConstraints(true));
 
             int keyUsageBits = KeyUsage.keyCertSign;
+            certGen.addExtension(
+                    Extension.keyUsage,
+                    CRITICAL,
+                    new KeyUsage(keyUsageBits));
+
+            certGen.addExtension(
+                    Extension.cRLDistributionPoints,
+                    NOT_CRITICAL,
+                    x500CrlService.getCRLDistPoint());
+        } catch (CertIOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setSiemAgentCertExtensions(X509v3CertificateBuilder certGen) {
+        try {
+            certGen.addExtension(
+                    Extension.basicConstraints,
+                    CRITICAL,
+                    new BasicConstraints(false));
+
+            int keyUsageBits = KeyUsage.keyEncipherment | KeyUsage.digitalSignature;
+            certGen.addExtension(
+                    Extension.keyUsage,
+                    CRITICAL,
+                    new KeyUsage(keyUsageBits));
+
+            certGen.addExtension(
+                    Extension.cRLDistributionPoints,
+                    NOT_CRITICAL,
+                    x500CrlService.getCRLDistPoint());
+        } catch (CertIOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setSiemCenterCertExtensions(X509v3CertificateBuilder certGen) {
+        try {
+            certGen.addExtension(
+                    Extension.basicConstraints,
+                    CRITICAL,
+                    new BasicConstraints(false));
+
+            int keyUsageBits = KeyUsage.keyEncipherment;
             certGen.addExtension(
                     Extension.keyUsage,
                     CRITICAL,
