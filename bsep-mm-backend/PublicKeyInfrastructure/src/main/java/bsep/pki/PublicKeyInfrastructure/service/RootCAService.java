@@ -89,8 +89,10 @@ public class RootCAService {
                         validFrom,
                         validUntil,
                         null,
+                        null,
                         null);
-                CADto caDto = new CADto(certificateDto, CAType.ROOT, null, null);
+                CADto caDto = new CADto(null, null, CAType.ROOT, certificateDto);
+                //CADto caDto = new CADto(certificateDto, CAType.ROOT, null, null);
                 createRootCA(caDto);
             } catch (ParseException e) {
                 e.printStackTrace();
@@ -143,7 +145,4 @@ public class RootCAService {
         certificate.setKeyStoreAlias(serialNumber);
         return certificate;
     }
-
-
-
 }

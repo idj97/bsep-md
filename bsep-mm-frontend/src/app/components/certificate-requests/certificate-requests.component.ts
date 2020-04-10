@@ -10,9 +10,11 @@ import { CertificateRequestService } from 'src/app/services/certificate-request.
 export class CertificateRequestsComponent implements OnInit {
 
   certificateSignRequests: Array<CertificateSignRequest>;
+  showSpinner: boolean;
 
   constructor(private certificateReqSvc: CertificateRequestService) {
     this.certificateSignRequests = [];
+    this.showSpinner = true;
   }
 
   ngOnInit() {
@@ -23,7 +25,9 @@ export class CertificateRequestsComponent implements OnInit {
       err => {
         console.log(err.error);
       }
-    );
+    ).add(() => {
+      this.showSpinner = false;
+    });
   }
 
   getCertificateRequests() {

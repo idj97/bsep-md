@@ -24,4 +24,7 @@ public class CertificateRevocation {
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt = new Date();
+
+    @Enumerated(value = EnumType.STRING)
+    private RevokeReason revokeReason;
 }

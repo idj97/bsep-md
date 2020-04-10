@@ -7,12 +7,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import java.util.Date;
 
 @Getter
@@ -54,6 +52,8 @@ public class CertificateDto {
 
     private CertificateType certificateType = CertificateType.UNDEFINED;
 
+    private RevocationDto revocation;
+
     public CertificateDto(Certificate certificate) {
         super();
         commonName = certificate.getCN();
@@ -66,5 +66,7 @@ public class CertificateDto {
         validFrom = certificate.getValidFrom();
         validUntil = certificate.getValidUntil();
         serialNumber = Integer.parseInt(certificate.getSerialNumber());
+        if (certificate.getRevocation() != null)
+            this.revocation = new RevocationDto(certificate.getRevocation());
     }
 }

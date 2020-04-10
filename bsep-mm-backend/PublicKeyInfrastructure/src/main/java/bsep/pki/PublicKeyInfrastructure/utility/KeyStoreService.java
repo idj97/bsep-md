@@ -82,7 +82,6 @@ public class KeyStoreService {
         return null;
     }
 
-
     public void saveEntry(X509Certificate[] chain, PrivateKey privateKey, String alias) {
         try {
             KeyStore keyStore = KeyStore.getInstance(new File(keyStoreName), keyStorePassword.toCharArray());
@@ -98,5 +97,4 @@ public class KeyStoreService {
             e.printStackTrace();
         }
     }
-
 }
