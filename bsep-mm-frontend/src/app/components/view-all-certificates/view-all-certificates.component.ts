@@ -34,6 +34,7 @@ export class ViewAllCertificatesComponent implements OnInit {
         extensionsSelected: false,
       }
       if (!this.isRevoked && root.certificateDto.revocation) continue;
+      if (this.isRevoked && !root.certificateDto.revocation) continue;
       if (!this.isCA && root.caType) continue
       
       if (root.caIssuerId) {
@@ -46,6 +47,7 @@ export class ViewAllCertificatesComponent implements OnInit {
     this.data = finalData;
     this.elStatus = elStatus;
     console.log(this.elStatus);
+    console.log(this.data);
   }
   get parentData() { return this.data; }
 

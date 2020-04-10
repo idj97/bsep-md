@@ -12,7 +12,7 @@ export class CaRevokedComponent implements OnInit {
   private elStatus: any[] = [];
   
   private params = {
-    revoked: true,
+    revoked: false,
     commonName: '',
     page: 0,
     pageSize: 20,
