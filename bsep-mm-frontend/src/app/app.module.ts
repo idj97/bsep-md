@@ -19,6 +19,7 @@ import { CaRevokedComponent } from './components/issued-certificates/ca-certific
 import { UserRevokedComponent } from './components/issued-certificates/user-certificates/user-revoked/user-revoked.component';
 import { UserAllComponent } from './components/issued-certificates/user-certificates/user-all/user-all.component';
 import { RevokeDialogComponent } from './components/revoke-dialog/revoke-dialog.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -42,6 +43,7 @@ import { RevokeDialogComponent } from './components/revoke-dialog/revoke-dialog.
     FontAwesomeModule,
     HttpClientModule,
     NgbModule,
+    FormsModule,
   ],
   providers: [
     {
