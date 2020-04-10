@@ -3,6 +3,8 @@ package model;
 public class CertificateRequest {
 
     private String commonName;
+    private String givenName;
+    private String surname;
     private String organisation;
     private String organisationUnit;
     private String city;
@@ -13,6 +15,21 @@ public class CertificateRequest {
     public CertificateRequest() {
     }
 
+    public String getGivenName() {
+        return givenName;
+    }
+
+    public void setGivenName(String givenName) {
+        this.givenName = givenName;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
 
     public String getCommonName() {
         return commonName;
@@ -75,6 +92,8 @@ public class CertificateRequest {
     public String toString() {
         return "{" +
                 "\"commonName\":\"" + commonName + '\"' +
+                ",\"givenName\":\"" + givenName + '\"' +
+                ",\"surname\":\"" + surname + '\"' +
                 ",\"organisation\":\"" + organisation + '\"' +
                 ",\"organisationUnit\":\"" + organisationUnit + '\"' +
                 ",\"city\":\"" + city + '\"' +

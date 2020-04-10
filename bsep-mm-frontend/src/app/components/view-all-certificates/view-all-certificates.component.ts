@@ -1,5 +1,7 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { RevokeDialogService } from 'src/app/services/revoke-dialog.service';
+import { Subscription } from 'rxjs';
+import { faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-view-all-certificates',
@@ -8,13 +10,19 @@ import { RevokeDialogService } from 'src/app/services/revoke-dialog.service';
 })
 export class ViewAllCertificatesComponent implements OnInit {
 
+  //ICONS
+  faArrowDown = faArrowDown;
+  faArrowUp = faArrowUp;
+
   private data: any[] = [];
   private elStatus: any[] = [];
 
+  private subscription: Subscription;
+
   @Input() isRevoked: boolean;
 
-  @Input() set parentData(parentData) {
-    let items = parentData.items;
+  @Input('parentData') set parentData(parentData) {
+    let items = parentData;
     let finalData = []
     let elStatus = []
     for (let i = 0; i < items.length; i++) {
@@ -35,12 +43,26 @@ export class ViewAllCertificatesComponent implements OnInit {
     this.data = finalData;
     this.elStatus = elStatus;
   }
+  get parentData() { return this.data; }
 
   
-
   constructor(private revokeDialogService: RevokeDialogService) { }
 
   ngOnInit() {
+    if (this.isRevoked) return;
+    this.subscription = this.revokeDialogService.getData().subscribe(
+      data => {
+        if (data.revoked) {
+          this.data.splice(data.index, 1);
+          this.elStatus.splice(data.index, 1);
+        }
+      }
+    );
+  }
+
+  ngOnDestroy() {
+    if (this.isRevoked) return;
+    this.subscription.unsubscribe();
   }
 
   initRevokeDialog(item: any): void {

@@ -1,22 +1,146 @@
 package bsep.pki.PublicKeyInfrastructure.service;
 
+import bsep.pki.PublicKeyInfrastructure.data.X509CertificateData;
 import bsep.pki.PublicKeyInfrastructure.dto.CertificateDto;
-import bsep.pki.PublicKeyInfrastructure.model.Certificate;
-import bsep.pki.PublicKeyInfrastructure.utility.CertificateGenerationService;
+import bsep.pki.PublicKeyInfrastructure.exception.ApiBadRequestException;
+import bsep.pki.PublicKeyInfrastructure.exception.ApiNotFoundException;
+import bsep.pki.PublicKeyInfrastructure.model.*;
+import bsep.pki.PublicKeyInfrastructure.repository.CARepository;
+import bsep.pki.PublicKeyInfrastructure.repository.CertificateRepository;
+import bsep.pki.PublicKeyInfrastructure.utility.DateService;
+import bsep.pki.PublicKeyInfrastructure.utility.X500Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Date;
 
 @Service
+@Transactional(propagation = Propagation.REQUIRED)
 public class CertificateService {
-    @Autowired
-    CertificateGenerationService certificateGenSvc;
 
-    // TODO: create root certificate (set validity period)
-    public Certificate createSelfSignedSertificate(CertificateDto certificateDto) {
-        return null;
+    @Autowired
+    private X500Service x500Service;
+
+    @Autowired
+    private DateService dateService;
+
+    @Autowired
+    private CARepository caRepository;
+
+    @Autowired
+    private CertificateRepository certificateRepository;
+
+    @Value("${crl.public.path}")
+    private String crlPublicPath;
+
+    public CertificateDto createCertificate(CertificateRequest certificateRequest) {
+        if (certificateRequest.getCertificateType().equals(CertificateType.SIEM_AGENT)) {
+            CA issuerCaOptional = caRepository
+                    .findByType(CAType.SIEM_AGENT_ISSUER)
+                    .orElseThrow(() -> new ApiNotFoundException("Siem Agent Ca not found."));
+            return createCertificate(certificateRequest, issuerCaOptional);
+        } else if (certificateRequest.getCertificateType().equals(CertificateType.SIEM_CENTER)) {
+            CA issuerCaOptional = caRepository
+                    .findByType(CAType.SIEM_CENTER_ISSUER)
+                    .orElseThrow(() -> new ApiNotFoundException("Siem Center Ca not found."));
+            return createCertificate(certificateRequest, issuerCaOptional);
+        } else {
+            throw new ApiBadRequestException("Specify Certificate Type!!!");
+        }
     }
 
-    // TODO: create subordinate certificate (set validity period)
+    public CertificateDto createCertificate(CertificateRequest certificateRequest, CA issuerCa) {
+        CertificateDto certificateDto = new CertificateDto();
 
-    // TODO: create end user certificate (set validity period)
+        certificateDto.setCertificateType(certificateRequest.getCertificateType());
+        certificateDto.setCommonName(certificateRequest.getCommonName());
+        certificateDto.setCountry(certificateRequest.getCountry());
+        certificateDto.setOrganisation(certificateRequest.getOrganisation());
+        certificateDto.setGivenName(certificateRequest.getGivenName());
+        certificateDto.setSurname(certificateRequest.getSurname());
+        certificateDto.setOrganisationUnit(certificateRequest.getOrganisationUnit());
+        certificateDto.setEmail(certificateRequest.getEmail());
+
+        Date now = new Date();
+        certificateDto.setValidFrom(now);
+
+        Date until = dateService.addMonths(now, 6);
+        certificateDto.setValidUntil(until);
+
+        X509CertificateData subjectX509Data = x500Service.createCertificate(
+                certificateDto, issuerCa.getCertificate());
+
+        Certificate certificate = createCertificateEntity(
+                certificateDto,
+                issuerCa.getCertificate(),
+                subjectX509Data.getSerialNumber());
+
+        certificateRequest.setCertificate(certificate);
+        certificate.setCertificateRequest(certificateRequest);
+
+        certificate = certificateRepository.save(certificate);
+        x500Service.saveX509Certificate(subjectX509Data);
+        return new CertificateDto(certificate);
+    }
+
+    public Certificate createCertificateEntity(
+            CertificateDto subjectCertificateDto,
+            Certificate issuerCertificate,
+            String serialNumber)
+    {
+        Certificate certificate = new Certificate();
+
+        // osnovni podaci
+        certificate.setCN(subjectCertificateDto.getCommonName());
+        certificate.setSurname(subjectCertificateDto.getSurname());
+        certificate.setUserEmail(subjectCertificateDto.getEmail());
+        certificate.setGivenName(subjectCertificateDto.getGivenName());
+        certificate.setC(subjectCertificateDto.getCountry());
+        certificate.setO(subjectCertificateDto.getOrganisation());
+        certificate.setOU(subjectCertificateDto.getOrganisationUnit());
+        certificate.setUserId("test"); // TODO postaviti user id iz keycloak context-a
+        certificate.setValidFrom(subjectCertificateDto.getValidFrom());
+        certificate.setValidUntil(subjectCertificateDto.getValidUntil());
+        certificate.setSerialNumber(serialNumber);
+        certificate.setKeyStoreAlias(serialNumber);
+        certificate.setCertificateType(subjectCertificateDto.getCertificateType());
+
+        // uvezivanje subject sertifikata sa issuer sertifikatom
+        certificate.setIssuedByCertificate(issuerCertificate);
+        issuerCertificate.getIssuerForCertificates().add(certificate);
+
+        Extension bcExtension = new Extension();
+        bcExtension.setName("Basic Constraint");
+        bcExtension.setCertificate(certificate);
+        bcExtension.getAttributes().add(
+                new ExtensionAttribute(null, "Not Certificate Authority.", bcExtension));
+
+        Extension keyUsageExtension = new Extension();
+        keyUsageExtension.setName("Key Usage");
+        keyUsageExtension.setCertificate(certificate);
+
+        if (certificate.getCertificateType().equals(CertificateType.SIEM_AGENT)) {
+            keyUsageExtension.getAttributes().add(
+                    new ExtensionAttribute(null, "DataSign", keyUsageExtension));
+        }
+
+        keyUsageExtension.getAttributes().add(
+                new ExtensionAttribute(null, "KeyEncipherment", keyUsageExtension));
+
+        Extension crlDistPointExtension = new Extension();
+        crlDistPointExtension.setName("CRL Distribution point");
+        crlDistPointExtension.setCertificate(certificate);
+        crlDistPointExtension.getAttributes().add(
+                new ExtensionAttribute(null, crlPublicPath, crlDistPointExtension));
+
+        certificate.getExtensions().add(bcExtension);
+        certificate.getExtensions().add(keyUsageExtension);
+        certificate.getExtensions().add(crlDistPointExtension);
+
+        return certificate;
+    }
+
 }

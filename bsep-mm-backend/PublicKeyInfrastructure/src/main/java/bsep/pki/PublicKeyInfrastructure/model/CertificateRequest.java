@@ -1,5 +1,6 @@
 package bsep.pki.PublicKeyInfrastructure.model;
 
+import bsep.pki.PublicKeyInfrastructure.dto.CertificateRequestDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,6 +25,12 @@ public class CertificateRequest {
     @Column(nullable=false)
     private String commonName;
 
+    @Column(nullable = false)
+    private String givenName;
+
+    @Column(nullable = false)
+    private String surname;
+
     @Column(nullable=false)
     private String organisation;
 
@@ -42,6 +49,25 @@ public class CertificateRequest {
     @Column(nullable=false, length = 500)
     private String publicKey;
 
+    @Enumerated(value = EnumType.STRING)
+    private CertificateType certificateType;
+
     @Column(nullable=false)
     private CertificateRequestStatus status;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private Certificate certificate;
+
+
+    public CertificateRequest(CertificateRequestDto requestDto) {
+        this.commonName = requestDto.getCommonName();
+        this.givenName = requestDto.getGivenName();
+        this.surname = requestDto.getSurname();
+        this.organisation = requestDto.getOrganisation();
+        this.organisationUnit = requestDto.getOrganisationUnit();
+        this.city = requestDto.getCity();
+        this.country = requestDto.getCountry();
+        this.email = requestDto.getEmail();
+        this.publicKey = requestDto.getPublicKey();
+    }
 }

@@ -6,18 +6,15 @@ import bsep.pki.PublicKeyInfrastructure.dto.CertificateDto;
 import bsep.pki.PublicKeyInfrastructure.dto.CertificateSearchDto;
 import bsep.pki.PublicKeyInfrastructure.dto.PageDto;
 import bsep.pki.PublicKeyInfrastructure.exception.ApiNotFoundException;
-import bsep.pki.PublicKeyInfrastructure.model.CA;
-import bsep.pki.PublicKeyInfrastructure.model.CAType;
-import bsep.pki.PublicKeyInfrastructure.model.Certificate;
-import bsep.pki.PublicKeyInfrastructure.model.CertificateType;
+import bsep.pki.PublicKeyInfrastructure.model.*;
 import bsep.pki.PublicKeyInfrastructure.repository.CARepository;
 import bsep.pki.PublicKeyInfrastructure.repository.CertificateRepository;
 import bsep.pki.PublicKeyInfrastructure.utility.KeyStoreService;
 import bsep.pki.PublicKeyInfrastructure.utility.PageService;
 import bsep.pki.PublicKeyInfrastructure.utility.X500Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -53,11 +50,16 @@ public class CAService {
     @Autowired
     private PageService pageService;
 
+    @Value("${crl.public.path}")
+    private String crlPublicPath;
+
     public CADto createCA(CADto caDto) {
-        Optional<CA> optionalCA = caRepository.findById(caDto.getCaIssuerId());
-        if (optionalCA.isPresent()) {
-            CA issuerCa = optionalCA.get();
-            Certificate issuerCertificate = issuerCa.getCertificate();
+        Optional<CA> optionalRootCA = caRepository
+                .findByTypeAndCertificateRevocationNull(CAType.ROOT);
+
+        if (optionalRootCA.isPresent()) {
+            CA rootCa = optionalRootCA.get();
+            Certificate issuerCertificate = rootCa.getCertificate();
             CertificateDto subjectCertificateDto = caDto.getCertificateDto();
 
             // kreiraj subject x509 sertifikat potpisanog od strane issuer (ca) x509 sertifikata
@@ -79,8 +81,8 @@ public class CAService {
             subjectCertificate.setIssuedForCA(subjectCa);
 
             // uvezi sa issuer ca
-            subjectCa.setParent(issuerCa);
-            issuerCa.getChilds().add(subjectCa);
+            subjectCa.setParent(rootCa);
+            rootCa.getChilds().add(subjectCa);
 
             subjectCa = caRepository.save(subjectCa);
             x500Service.saveX509Certificate(subjectX509CertificateData);
@@ -110,11 +112,34 @@ public class CAService {
         certificate.setValidUntil(subjectCertificateDto.getValidUntil());
         certificate.setSerialNumber(serialNumber);
         certificate.setKeyStoreAlias(serialNumber);
+        certificate.setCertificateType(subjectCertificateDto.getCertificateType());
 
         // uvezivanje subject sertifikata sa issuer sertifikatom
         certificate.setIssuedByCertificate(issuerCertificate);
         issuerCertificate.getIssuerForCertificates().add(certificate);
 
+        // extensions
+        Extension bcExtension = new Extension();
+        bcExtension.setName("Basic Constraint");
+        bcExtension.setCertificate(certificate);
+        bcExtension.getAttributes().add(
+                new ExtensionAttribute(null, "Is Certificate Authority.", bcExtension));
+
+        Extension keyUsageExtension = new Extension();
+        keyUsageExtension.setName("Key Usage");
+        keyUsageExtension.setCertificate(certificate);
+        keyUsageExtension.getAttributes().add(
+                new ExtensionAttribute(null, "KeyCertSign", keyUsageExtension));
+
+        Extension crlDistPointExtension = new Extension();
+        crlDistPointExtension.setName("CRL Distribution point");
+        crlDistPointExtension.setCertificate(certificate);
+        crlDistPointExtension.getAttributes().add(
+                new ExtensionAttribute(null, crlPublicPath, crlDistPointExtension));
+
+        certificate.getExtensions().add(bcExtension);
+        certificate.getExtensions().add(keyUsageExtension);
+        certificate.getExtensions().add(crlDistPointExtension);
         return certificate;
     }
 
@@ -162,7 +187,7 @@ public class CAService {
         return new PageDto<CADto>(caDtos, page.getTotalPages());
     }
 
-    public CADto tryCreateCA(Long id) {
+    public CADto tryCreateCA(Long id, CAType caType, CertificateType certificateType) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
         try {
             Date validUntil = sdf.parse("08-04-2020 21:00");
@@ -178,10 +203,11 @@ public class CAService {
                     validFrom,
                     validUntil,
                     null,
-                    CertificateType.UNDEFINED,
+                    certificateType,
+                    null,
                     null);
             // CADto caDto = new CADto(nucertificateDto, CAType.UNDEFINED, id, null);
-            CADto caDto = new CADto(null, id, CAType.UNDEFINED, certificateDto);
+            CADto caDto = new CADto(null, id, caType, certificateDto);
             createCA(caDto);
         } catch (ParseException e) {
             e.printStackTrace();

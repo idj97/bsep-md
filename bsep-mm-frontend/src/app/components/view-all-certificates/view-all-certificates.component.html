@@ -5,7 +5,8 @@
             <td>Type</td>
             <td>Valid From</td>
             <td>Valid Until</td>
-            <td>Action</td>
+            <td *ngIf="!isRevoked">Action</td>
+            <td *ngIf="isRevoked">Revoke Reason</td>
         </tr>
         <tr *ngIf="data.length == 0">
             <td colspan="5" class="nothing-to-display">Currently nothing to display</td>
@@ -20,7 +21,8 @@
                                 <td>{{item.caType}}</td>
                                 <td>{{item.certificateDto.validFrom}}</td>
                                 <td>{{item.certificateDto.validUntil}}</td>
-                                <td (click)="initRevokeDialog(item, i)" class="revoke-action">Revoke</td>
+                                <td *ngIf="!isRevoked" (click)="initRevokeDialog(item, i)" class="revoke-action">Revoke</td>
+                                <td *ngIf="isRevoked">{{item.certificateDto.revocation.revokeReason}}</td>
                             </tr>
                         </table>
                     </div>
