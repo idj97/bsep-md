@@ -49,7 +49,7 @@ public class StartupService {
         caService.tryCreateCA(2L, CAType.SIEM_CENTER_ISSUER, CertificateType.SIEM_CENTER_ISSUER);
 
         crlService.createCRL();
-        crlService.revokeCertificate(new RevocationDto(null, 1L, RevokeReason.KEY_COMPROMISE, null));
+        //crlService.revokeCertificate(new RevocationDto(null, 1L, RevokeReason.KEY_COMPROMISE, null));
         crlService.revokeCertificate(new RevocationDto(null, 2L, RevokeReason.PRIVILEGE_WITHDRAWN, null));
     }
 }

@@ -22,7 +22,7 @@ export class CertificateService {
   }
 
   postSearchUserCertificate(certificateSearchDto: any) {
-    return this.http.post<any>('api/certificates', certificateSearchDto);
+    return this.http.post<any>('api/certificates/search', certificateSearchDto);
   }
 
 }

@@ -34,6 +34,7 @@ export class ViewAllCertificatesComponent implements OnInit {
         extensionsSelected: false,
       }
       if (!this.isRevoked && root.certificateDto.revocation) continue;
+      if (!this.isCA && root.caType) continue
       
       if (root.caIssuerId) {
         this.formCertificateData(root, rootStatus, items);
