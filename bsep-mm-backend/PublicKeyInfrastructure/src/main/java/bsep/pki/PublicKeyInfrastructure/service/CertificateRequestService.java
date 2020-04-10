@@ -24,6 +24,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.PublicKey;
 import java.security.cert.CertificateEncodingException;
@@ -140,9 +142,10 @@ public class CertificateRequestService {
     		throw new ApiException("No such certificate request", HttpStatus.NOT_FOUND);
     	
     	CertificateRequest certReq = optCertReq.get();
-    	
+
     	//TODO get certificate by alias
-    	X509CertificateData certData = keyStoreService.getCaCertificate("dsa");
+    	X509CertificateData certData = keyStoreService.getCaCertificate(
+    	        certReq.getSerialNumber().toString());
     	
     	byte[] binary = null;
 		try {
@@ -152,9 +155,19 @@ public class CertificateRequestService {
 		}
     	
     	InputStreamResource resource = new InputStreamResource(new ByteArrayInputStream(binary));
-    	HttpHeaders headers = this.getDownloadHeaders();
-        headers.setContentDispositionFormData("attachment", "ceritifacte.cer");
-    	return new ResponseEntity<>(resource, headers, HttpStatus.OK);
+
+		try (FileOutputStream fos = new FileOutputStream("/public/certificate.cer")) {
+		    fos.write(binary);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //HttpHeaders headers = this.getDownloadHeaders();
+        //headers.setContentDispositionFormData("attachment", "ceritifacte.cer");
+    	//return new ResponseEntity<>(resource, headers, HttpStatus.OK);
+        return null;
     }
     
     public HttpHeaders getDownloadHeaders() {
