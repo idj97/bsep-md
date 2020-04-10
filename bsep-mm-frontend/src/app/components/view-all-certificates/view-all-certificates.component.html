@@ -28,7 +28,7 @@
                     </div>
                     <div class="col-12 more-info-division not-selected" style="padding: 0px !important;">
                         <div class="row col-12 main-data scroll" style="padding: 0px !important;" [ngClass]="{'selected' : elStatus[i].isSelected}">
-                            <ng-container *ngTemplateOutlet="recursiveListTmpl; context:{ $implicit: item, elStatus: elStatus[i].issuerStatus }"></ng-container>
+                            <ng-container *ngTemplateOutlet="recursiveListTmpl; context:{ $implicit: item, elStatus: elStatus[i] }"></ng-container>
                         </div>
                         <div (click)="moreOrLessInformation($event, i)" class="more-information-indicator d-flex align-items-center justify-content-center" [ngClass]="{'hovered' : elStatus[i].isHovered || elStatus[i].isSelected}">
                             <div *ngIf="!elStatus[i].isSelected">More Information <fa-icon [icon]="faArrowDown" class="navigation-icon" style="font-size: 11px;"></fa-icon></div>
@@ -115,21 +115,29 @@
             </tr>
         </table>
     </div>
-    <div class="col-12 p-0">
-        <div class="extensions-header">
-            Extensions:
+    <div class="col-12 p-0" *ngIf="item.certificateDto.extensionDtoList && elStatus">
+        <div class="extensions-header" (click)="toggleExtensions(elStatus)">
+            Extensions: <fa-icon *ngIf="!elStatus.extensionsSelected" [icon]="faArrowDown" class="navigation-icon" style="font-size: 11px;"></fa-icon><fa-icon *ngIf="elStatus.extensionsSelected" [icon]="faArrowUp" class="navigation-icon" style="font-size: 11px;"></fa-icon>
         </div>
-        <div class="extension-information">
-
+        <div class="extension-information d-flex justify-content-center" [ngClass]="{'selected' : elStatus.extensionsSelected}">
+            <table class="extension-table">
+                <tr *ngFor="let extension of item.certificateDto.extensionDtoList; let i = index">
+                    <td class="extension-name" valign="top">{{extension.name}}:</td>
+                    <td>
+                        <div *ngFor="let attr of extension.attributes">{{attr}}</div>
+                    </td>
+                </tr>
+            </table>
+            
         </div>
     </div>
-    <div *ngIf="item.issuer" class="row col-12 main-data" style="padding: 0px !important;" [ngClass]="{'selected' : elStatus.isSelected}">
+    <div *ngIf="item.issuer" class="row col-12 main-data" style="padding: 0px !important;" [ngClass]="{'selected' : elStatus.issuerStatus.isSelected}">
         <div class="col-12 issuer">Issuer: {{item.issuer.certificateDto.serialNumber}} ({{item.issuer.id}}) for {{item.certificateDto.serialNumber}} ({{item.id}})</div>
         <ng-container *ngTemplateOutlet="recursiveListTmpl; context:{ $implicit: item.issuer,  elStatus: elStatus.issuerStatus }"></ng-container>
     </div>
-    <div *ngIf="item.issuer" (click)="moreOrLessIssuerInformation($event, elStatus)" class="row more-information-indicator issuer-information d-flex align-items-center justify-content-center hovered">
-        <div *ngIf="!elStatus.isSelected">More Issuer Information <fa-icon [icon]="faArrowDown" class="navigation-icon" style="font-size: 11px;"></fa-icon></div>
-        <div *ngIf="elStatus.isSelected">Less Issuer Information <fa-icon [icon]="faArrowUp" class="navigation-icon" style="font-size: 11px;"></fa-icon></div>
+    <div *ngIf="item.issuer" (click)="moreOrLessIssuerInformation($event, elStatus.issuerStatus)" class="row more-information-indicator issuer-information d-flex align-items-center justify-content-center hovered">
+        <div *ngIf="!elStatus.issuerStatus.isSelected">More Issuer Information <fa-icon [icon]="faArrowDown" class="navigation-icon" style="font-size: 11px;"></fa-icon></div>
+        <div *ngIf="elStatus.issuerStatus.isSelected">Less Issuer Information <fa-icon [icon]="faArrowUp" class="navigation-icon" style="font-size: 11px;"></fa-icon></div>
     </div>
     
 </ng-template>

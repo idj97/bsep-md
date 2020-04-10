@@ -8,6 +8,7 @@ import bsep.pki.PublicKeyInfrastructure.exception.ApiException;
 import bsep.pki.PublicKeyInfrastructure.exception.ApiNotFoundException;
 import bsep.pki.PublicKeyInfrastructure.model.CertificateRequestStatus;
 import bsep.pki.PublicKeyInfrastructure.model.CertificateRequest;
+import bsep.pki.PublicKeyInfrastructure.model.CertificateType;
 import bsep.pki.PublicKeyInfrastructure.repository.CertificateRequestRepository;
 import bsep.pki.PublicKeyInfrastructure.utility.KeyStoreService;
 import bsep.pki.PublicKeyInfrastructure.utility.SignatureService;
@@ -65,7 +66,7 @@ public class CertificateRequestService {
 
     public Integer createCertificateSignRequest(CertificateSignedRequestDto certificateReq)  {
 
-        // parse json string into object
+        // deserialize json into dto
         String certificateReqStr = new String(Base64.decodeBase64(certificateReq.getEncodedCsr().getBytes()));
         CertificateRequest request = null;
         try {
@@ -94,6 +95,7 @@ public class CertificateRequestService {
         }
 
         request.setSerialNumber(x500Svc.generateSerialNumber());
+        request.setCertificateType(CertificateType.SIEM_AGENT);
 
         // save certificate request
         request.setStatus(CertificateRequestStatus.PENDING);
@@ -114,7 +116,6 @@ public class CertificateRequestService {
         }
 
         request.setStatus(CertificateRequestStatus.APPROVED);
-        certReqRepo.save(request);
 
         // TODO: create and memorize certificate
         certificateService.createCertificate(request);
