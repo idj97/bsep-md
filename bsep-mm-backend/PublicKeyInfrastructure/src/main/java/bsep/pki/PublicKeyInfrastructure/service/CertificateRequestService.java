@@ -8,6 +8,7 @@ import bsep.pki.PublicKeyInfrastructure.exception.ApiException;
 import bsep.pki.PublicKeyInfrastructure.exception.ApiNotFoundException;
 import bsep.pki.PublicKeyInfrastructure.model.CertificateRequestStatus;
 import bsep.pki.PublicKeyInfrastructure.model.CertificateRequest;
+import bsep.pki.PublicKeyInfrastructure.model.CertificateType;
 import bsep.pki.PublicKeyInfrastructure.repository.CertificateRequestRepository;
 import bsep.pki.PublicKeyInfrastructure.utility.KeyStoreService;
 import bsep.pki.PublicKeyInfrastructure.utility.SignatureService;
@@ -24,6 +25,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.PublicKey;
 import java.security.cert.CertificateEncodingException;
@@ -63,7 +66,7 @@ public class CertificateRequestService {
 
     public Integer createCertificateSignRequest(CertificateSignedRequestDto certificateReq)  {
 
-        // parse json string into object
+        // deserialize json into dto
         String certificateReqStr = new String(Base64.decodeBase64(certificateReq.getEncodedCsr().getBytes()));
         CertificateRequest request = null;
         try {
@@ -92,6 +95,7 @@ public class CertificateRequestService {
         }
 
         request.setSerialNumber(x500Svc.generateSerialNumber());
+        request.setCertificateType(CertificateType.SIEM_AGENT);
 
         // save certificate request
         request.setStatus(CertificateRequestStatus.PENDING);
@@ -112,7 +116,6 @@ public class CertificateRequestService {
         }
 
         request.setStatus(CertificateRequestStatus.APPROVED);
-        certReqRepo.save(request);
 
         // TODO: create and memorize certificate
         certificateService.createCertificate(request);
@@ -140,9 +143,10 @@ public class CertificateRequestService {
     		throw new ApiException("No such certificate request", HttpStatus.NOT_FOUND);
     	
     	CertificateRequest certReq = optCertReq.get();
-    	
+
     	//TODO get certificate by alias
-    	X509CertificateData certData = keyStoreService.getCaCertificate("dsa");
+    	X509CertificateData certData = keyStoreService.getCaCertificate(
+    	        certReq.getSerialNumber().toString());
     	
     	byte[] binary = null;
 		try {
@@ -152,9 +156,19 @@ public class CertificateRequestService {
 		}
     	
     	InputStreamResource resource = new InputStreamResource(new ByteArrayInputStream(binary));
-    	HttpHeaders headers = this.getDownloadHeaders();
-        headers.setContentDispositionFormData("attachment", "ceritifacte.cer");
-    	return new ResponseEntity<>(resource, headers, HttpStatus.OK);
+
+		try (FileOutputStream fos = new FileOutputStream("/public/certificate.cer")) {
+		    fos.write(binary);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //HttpHeaders headers = this.getDownloadHeaders();
+        //headers.setContentDispositionFormData("attachment", "ceritifacte.cer");
+    	//return new ResponseEntity<>(resource, headers, HttpStatus.OK);
+        return null;
     }
     
     public HttpHeaders getDownloadHeaders() {

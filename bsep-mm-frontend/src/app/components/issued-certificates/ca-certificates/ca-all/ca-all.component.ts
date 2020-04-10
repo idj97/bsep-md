@@ -1,6 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CertificateService } from 'src/app/services/certificate.service';
+import { faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { RevokeDialogService } from 'src/app/services/revoke-dialog.service';
+import { CertificateAuthorityService } from 'src/app/services/certificate-authority.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -11,6 +13,8 @@ import { Subscription } from 'rxjs';
 export class CaAllComponent implements OnInit {
 
   private data: any[] = [];
+  private elStatus: any[] = [];
+  private subscription: Subscription;
 
   private params = {
     revoked: false,

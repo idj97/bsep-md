@@ -1,5 +1,6 @@
 package bsep.pki.PublicKeyInfrastructure.model;
 
+import bsep.pki.PublicKeyInfrastructure.dto.CertificateRequestDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -56,4 +57,17 @@ public class CertificateRequest {
 
     @OneToOne(cascade = CascadeType.ALL)
     private Certificate certificate;
+
+
+    public CertificateRequest(CertificateRequestDto requestDto) {
+        this.commonName = requestDto.getCommonName();
+        this.givenName = requestDto.getGivenName();
+        this.surname = requestDto.getSurname();
+        this.organisation = requestDto.getOrganisation();
+        this.organisationUnit = requestDto.getOrganisationUnit();
+        this.city = requestDto.getCity();
+        this.country = requestDto.getCountry();
+        this.email = requestDto.getEmail();
+        this.publicKey = requestDto.getPublicKey();
+    }
 }

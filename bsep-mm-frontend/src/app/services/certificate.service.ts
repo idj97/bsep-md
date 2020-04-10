@@ -20,4 +20,5 @@ export class CertificateService {
   postRevoke(revocationDto: any): Observable<any> {
     return this.http.post<any>('api/certificates/revoke', revocationDto);
   }
+
 }

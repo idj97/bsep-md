@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { CertificateService } from 'src/app/services/certificate.service';
-import { faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons';
-import { RevokeDialogService } from 'src/app/services/revoke-dialog.service';
 
 @Component({
   selector: 'app-ca-revoked',
@@ -11,7 +9,8 @@ import { RevokeDialogService } from 'src/app/services/revoke-dialog.service';
 export class CaRevokedComponent implements OnInit {
 
   private data: any[] = [];
-
+  private elStatus: any[] = [];
+  
   private params = {
     revoked: true,
     commonName: '',
