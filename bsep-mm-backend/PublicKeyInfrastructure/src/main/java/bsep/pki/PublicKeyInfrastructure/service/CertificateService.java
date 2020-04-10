@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class CertificateService {
-
     @Autowired
     CertificateGenerationService certificateGenSvc;
 
@@ -20,5 +19,4 @@ public class CertificateService {
     // TODO: create subordinate certificate (set validity period)
 
     // TODO: create end user certificate (set validity period)
-
 }

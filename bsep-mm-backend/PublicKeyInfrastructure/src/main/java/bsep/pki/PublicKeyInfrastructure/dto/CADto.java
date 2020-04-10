@@ -16,14 +16,15 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 public class CADto {
 
-    @NotNull
-    @Valid
-    private CertificateDto certificateDto;
+    private Long id;
+    private Long caIssuerId;
 
     @NotNull
     private CAType caType;
-    private Long caIssuerId;
-    private Long id;
+
+    @NotNull
+    @Valid
+    private CertificateDto certificateDto;
 
     public CADto(CA ca) {
         id = ca.getId();
