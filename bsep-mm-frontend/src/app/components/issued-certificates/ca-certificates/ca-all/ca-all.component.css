@@ -103,3 +103,12 @@
 .main-data-table td {
     padding: 3px 10px;
 }
+
+.revoke-action {
+    background: rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+}
+
+.revoke-action:hover {
+    background: rgba(0, 0, 0, 0.4);
+}

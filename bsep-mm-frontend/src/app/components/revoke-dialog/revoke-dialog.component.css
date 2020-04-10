@@ -1,0 +1,75 @@
+.revoke-dialog-component {
+    position: fixed;
+    top: 0;
+    right: -550px;
+    width: 520px;
+    background: #292e34;
+    height: 100vh;
+    box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.5);
+    z-index: 999999;
+    transition: .4s;
+}
+
+.revoke-dialog-component.activated {
+    right: 0;
+}
+
+.revoke-dialog-component .header {
+    font-size: 28px;
+    letter-spacing: 1px;
+    font-weight: 600;
+}
+
+.revoke-dialog-component .separator > div {
+    width: 100px;
+    height: 1px;
+    background: white;
+}
+
+.revocation-reason-select {
+    width: 100%;
+    padding: 10px;
+    letter-spacing: 1px;
+    background: transparent;
+    border: 1px solid white;
+    outline: none;
+    color: white;
+}
+
+.revocation-reason-select option {
+    background: #363c42;
+    color: #fff;
+}
+
+.revoke-dialog-component .revoke-button {
+    width: 100%;
+    padding: 10px;
+    text-align: center;
+    letter-spacing: 1px;
+    background: #23292e;
+    color: white;
+    border: 1px solid white;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.revoke-dialog-component .revoke-button:hover {
+    background: white;
+    color: black;
+}
+
+.revoke-dialog-component .sub-header {
+    font-size: 16px;
+    letter-spacing: 1px;
+    font-weight: 600;
+}
+
+.information-holder td{
+    padding-right: 20px;
+    letter-spacing: 1px;
+}
+
+.revoked-information {
+    letter-spacing: 1px;
+    text-align: center;
+}

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CertificateService } from 'src/app/services/certificate.service';
 import { faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons';
+import { RevokeDialogService } from 'src/app/services/revoke-dialog.service';
 
 @Component({
   selector: 'app-ca-all',
@@ -15,7 +16,8 @@ export class CaAllComponent implements OnInit {
   private data: any[] = [];
   private elStatus: any[] = [];
 
-  constructor(private certificateService: CertificateService) { }
+  constructor(private certificateService: CertificateService,
+              private revokeDialogService: RevokeDialogService) { }
 
   ngOnInit() {
     this.certificateService.getAllCA().subscribe(
@@ -33,9 +35,9 @@ export class CaAllComponent implements OnInit {
             this.formCertificateData(root, rootStatus, data);
           }
           finalData.push(root);
-          elStatus.push(rootStatus)
+          elStatus.push(rootStatus);
         }
-        console.log(elStatus);
+        console.log(finalData);
 
         this.data = finalData;
         this.elStatus = elStatus;
@@ -44,7 +46,12 @@ export class CaAllComponent implements OnInit {
       error => {
         console.log(error);
       }
-    )
+    );
+  }
+
+  initRevokeDialog(item: any): void {
+    item.open = true;
+    this.revokeDialogService.sendData(item);
   }
 
   formCertificateData(root: any, rootStatus: any, data: any[]): any {

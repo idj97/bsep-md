@@ -18,6 +18,7 @@ import { CaAllComponent } from './components/issued-certificates/ca-certificates
 import { CaRevokedComponent } from './components/issued-certificates/ca-certificates/ca-revoked/ca-revoked.component';
 import { UserRevokedComponent } from './components/issued-certificates/user-certificates/user-revoked/user-revoked.component';
 import { UserAllComponent } from './components/issued-certificates/user-certificates/user-all/user-all.component';
+import { RevokeDialogComponent } from './components/revoke-dialog/revoke-dialog.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import { UserAllComponent } from './components/issued-certificates/user-certific
     CaRevokedComponent,
     UserRevokedComponent,
     UserAllComponent,
+    RevokeDialogComponent,
   ],
   imports: [
     BrowserModule,

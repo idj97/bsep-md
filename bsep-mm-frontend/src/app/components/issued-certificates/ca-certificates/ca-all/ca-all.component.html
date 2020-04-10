@@ -17,7 +17,7 @@
                                 <td>{{item.caType}}</td>
                                 <td>{{item.certificateDto.validFrom}}</td>
                                 <td>{{item.certificateDto.validUntil}}</td>
-                                <td>Action</td>
+                                <td (click)="initRevokeDialog(item)" class="revoke-action">Revoke</td>
                             </tr>
                         </table>
                     </div>
