@@ -20,6 +20,7 @@ export class ViewAllCertificatesComponent implements OnInit {
   private subscription: Subscription;
 
   @Input() isRevoked: boolean;
+  @Input() isCA: boolean;
 
   @Input('parentData') set parentData(parentData) {
     let items = parentData;
