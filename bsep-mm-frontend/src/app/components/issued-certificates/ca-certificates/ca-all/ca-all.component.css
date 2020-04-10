@@ -80,16 +80,24 @@
 }
 
 .main-data {
-    max-height: 0px;
+    height: 0px;
     overflow: hidden;
     background: rgb(240, 240, 240);
     color: black;
-    transition: max-height .5s;
     margin: 0 !important;
 }
 
 .main-data.selected {
-    max-height: 600px;
+    height: auto;
+}
+
+.main-data.selected > .main-data-table-holder {
+    padding: 20px 0px;
+}
+
+.main-data .main-data-table-holder {
+    transition: .3s;
+    padding: 0px 0px;
 }
 
 .main-data.selected.scroll {
@@ -97,7 +105,7 @@
 }
 
 .main-data-table {
-    width: 360px;
+    width: 400px;
 }
 
 .main-data-table td {
@@ -111,4 +119,10 @@
 
 .revoke-action:hover {
     background: rgba(0, 0, 0, 0.4);
+}
+
+.nothing-to-display {
+    text-align: center;
+    height: 60px;
+    background: rgb(240, 240, 240);
 }

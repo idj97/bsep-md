@@ -16,29 +16,38 @@ export class CaRevokedComponent implements OnInit {
   private data: any[] = [];
   private elStatus: any[] = [];
 
+  private params = {
+    revoked: true,
+    commonName: '',
+    page: 0,
+    pageSize: 20,
+  }
+
   constructor(private certificateService: CertificateService,
               private revokeDialogService: RevokeDialogService) { }
 
   ngOnInit() {
-    this.certificateService.getAllCA().subscribe(
+
+
+    this.certificateService.postSearch(this.params).subscribe(
       data => {
-        console.log(data);
+        
+        let items = data.items;
         let finalData = []
         let elStatus = []
-        for (let i = 0; i < data.length; i++) {
-          let root = data[i];
+        for (let i = 0; i < items.length; i++) {
+          let root = items[i];
           let rootStatus = {
             isHovered: false,
             isSelected: false,
           }
 
           if (root.caIssuerId) {
-            this.formCertificateData(root, rootStatus, data);
+            this.formCertificateData(root, rootStatus, items);
           }
           finalData.push(root);
           elStatus.push(rootStatus);
         }
-        console.log(finalData);
 
         this.data = finalData;
         this.elStatus = elStatus;

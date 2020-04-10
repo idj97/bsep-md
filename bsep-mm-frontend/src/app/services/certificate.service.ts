@@ -12,4 +12,12 @@ export class CertificateService {
   getAllCA(): Observable<any> {
     return this.http.get<any>('api/ca');
   }
+
+  postSearch(certificateSearchDto: any): Observable<any> {
+    return this.http.post<any>('api/ca/search', certificateSearchDto);
+  }
+
+  postRevoke(revocationDto: any): Observable<any> {
+    return this.http.post<any>('api/certificates/revoke', revocationDto);
+  }
 }

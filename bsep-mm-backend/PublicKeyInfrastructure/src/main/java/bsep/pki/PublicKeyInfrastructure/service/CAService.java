@@ -145,7 +145,7 @@ public class CAService {
                 .filter(c -> {
                     if (caSearchDto.isRevoked() == true)
                         return c.getRevocation() != null;
-                    return c.getRevocation() == null;
+                    return true;
                 })
                 .collect(Collectors.toList());
 

@@ -20,6 +20,8 @@ public class CertificateSearchDto {
     private CAType caType;
     private Date validFrom;
     private Date validUntil;
+    @NotNull
     private int page;
+    @NotNull
     private int pageSize;
 }
