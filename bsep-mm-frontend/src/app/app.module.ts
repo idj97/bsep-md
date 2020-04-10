@@ -20,6 +20,7 @@ import { UserRevokedComponent } from './components/issued-certificates/user-cert
 import { UserAllComponent } from './components/issued-certificates/user-certificates/user-all/user-all.component';
 import { RevokeDialogComponent } from './components/revoke-dialog/revoke-dialog.component';
 import { FormsModule } from '@angular/forms';
+import { ViewAllCertificatesComponent } from './components/view-all-certificates/view-all-certificates.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { FormsModule } from '@angular/forms';
     UserRevokedComponent,
     UserAllComponent,
     RevokeDialogComponent,
+    ViewAllCertificatesComponent,
   ],
   imports: [
     BrowserModule,

@@ -113,7 +113,16 @@
             </tr>
         </table>
     </div>
+    <div class="col-12 p-0">
+        <div class="extensions-header">
+            Extensions:
+        </div>
+        <div class="extension-information">
+
+        </div>
+    </div>
     <div *ngIf="item.issuer" class="row col-12 main-data" style="padding: 0px !important;" [ngClass]="{'selected' : elStatus.isSelected}">
+        <div class="col-12 issuer">Issuer: {{item.issuer.certificateDto.serialNumber}} ({{item.issuer.id}}) for {{item.certificateDto.serialNumber}} ({{item.id}})</div>
         <ng-container *ngTemplateOutlet="recursiveListTmpl; context:{ $implicit: item.issuer,  elStatus: elStatus.issuerStatus }"></ng-container>
     </div>
     <div *ngIf="item.issuer" (click)="moreOrLessIssuerInformation($event, elStatus)" class="row more-information-indicator issuer-information d-flex align-items-center justify-content-center hovered">

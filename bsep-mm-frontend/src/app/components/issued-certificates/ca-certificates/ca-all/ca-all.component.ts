@@ -117,6 +117,10 @@ export class CaAllComponent implements OnInit {
 
   moreOrLessInformation(event, index): void {
     this.elStatus[index].isSelected = !this.elStatus[index].isSelected;
+    if (!this.elStatus[index].isSelected) {
+      this.elStatus[index].isHovered = false;
+    }
+    
   }
 
   moreOrLessIssuerInformation(event, issuerStatus): void {
