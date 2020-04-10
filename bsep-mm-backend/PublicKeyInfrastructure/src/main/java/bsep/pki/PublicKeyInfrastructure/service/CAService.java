@@ -3,16 +3,23 @@ package bsep.pki.PublicKeyInfrastructure.service;
 import bsep.pki.PublicKeyInfrastructure.data.X509CertificateData;
 import bsep.pki.PublicKeyInfrastructure.dto.CADto;
 import bsep.pki.PublicKeyInfrastructure.dto.CertificateDto;
+import bsep.pki.PublicKeyInfrastructure.dto.CertificateSearchDto;
+import bsep.pki.PublicKeyInfrastructure.dto.PageDto;
 import bsep.pki.PublicKeyInfrastructure.exception.ApiNotFoundException;
 import bsep.pki.PublicKeyInfrastructure.model.CA;
 import bsep.pki.PublicKeyInfrastructure.model.CAType;
 import bsep.pki.PublicKeyInfrastructure.model.Certificate;
 import bsep.pki.PublicKeyInfrastructure.model.CertificateType;
 import bsep.pki.PublicKeyInfrastructure.repository.CARepository;
-import bsep.pki.PublicKeyInfrastructure.utility.CertificateGenerationService;
+import bsep.pki.PublicKeyInfrastructure.repository.CertificateRepository;
 import bsep.pki.PublicKeyInfrastructure.utility.KeyStoreService;
+import bsep.pki.PublicKeyInfrastructure.utility.PageService;
 import bsep.pki.PublicKeyInfrastructure.utility.X500Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,9 +36,6 @@ import java.util.stream.Collectors;
 public class CAService {
 
     @Autowired
-    private CertificateGenerationService certificateGenerationService;
-
-    @Autowired
     private X500Service x500Service;
 
     @Autowired
@@ -42,6 +46,12 @@ public class CAService {
 
     @Autowired
     private CARepository caRepository;
+
+    @Autowired
+    private CertificateRepository certificateRepository;
+
+    @Autowired
+    private PageService pageService;
 
     public CADto createCA(CADto caDto) {
         Optional<CA> optionalCA = caRepository.findById(caDto.getCaIssuerId());
@@ -108,11 +118,48 @@ public class CAService {
         return certificate;
     }
 
-    public List<CADto> getAll() {
-        return caRepository.findAll()
+    public PageDto<CADto> getAll(CertificateSearchDto caSearchDto) {
+        Pageable pageable = PageRequest.of(caSearchDto.getPage(), caSearchDto.getPageSize());
+
+        List<Certificate> caCertificates = certificateRepository
+                .findByCNContainingAndIssuedForCANotNull(caSearchDto.getCommonName());
+
+        // filtriraj sertifikate
+        caCertificates = caCertificates
                 .stream()
-                .map(CADto::new)
+                .filter(c -> {
+                    if (caSearchDto.getCaType() != null)
+                        return caSearchDto.getCaType().equals(c.getIssuedForCA().getType());
+                    return true;
+                })
+                .filter(c -> {
+                    if (caSearchDto.getValidFrom() != null)
+                        return c.getValidFrom().after(caSearchDto.getValidFrom());
+                    return true;
+                })
+                .filter(c -> {
+                    if (caSearchDto.getValidUntil() != null)
+                        return c.getValidUntil().before(caSearchDto.getValidUntil());
+                    return true;
+                })
+                .filter(c -> {
+                    if (caSearchDto.isRevoked() == true)
+                        return c.getRevocation() != null;
+                    return c.getRevocation() == null;
+                })
                 .collect(Collectors.toList());
+
+        // napravi page
+        Page<Certificate> page = pageService.getPage(caCertificates, pageable);
+
+        // pretvori page sertifikata u page ca dto
+        List<CADto> caDtos = page
+                .getContent()
+                .stream()
+                .map(c -> new CADto(c.getIssuedForCA()))
+                .collect(Collectors.toList());
+
+        return new PageDto<CADto>(caDtos, page.getTotalPages());
     }
 
     public CADto tryCreateCA(Long id) {
