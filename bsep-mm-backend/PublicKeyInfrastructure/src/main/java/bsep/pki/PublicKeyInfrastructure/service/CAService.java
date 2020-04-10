@@ -53,7 +53,9 @@ public class CAService {
     private PageService pageService;
 
     public CADto createCA(CADto caDto) {
-        Optional<CA> optionalRootCA = caRepository.findByTypeAndRevocationNotNull(CAType.ROOT);
+        Optional<CA> optionalRootCA = caRepository
+                .findByTypeAndCertificateRevocationNull(CAType.ROOT);
+
         if (optionalRootCA.isPresent()) {
             CA rootCa = optionalRootCA.get();
             Certificate issuerCertificate = rootCa.getCertificate();

@@ -1,9 +1,12 @@
 package bsep.pki.PublicKeyInfrastructure.utility;
 
+import org.springframework.stereotype.Service;
+
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
+@Service
 public class DateService {
 
     public Date addMonths(Date date, int months) {
