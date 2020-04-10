@@ -11,4 +11,5 @@ import java.util.Optional;
 @Repository
 public interface CARepository extends JpaRepository<CA, Long> {
     Optional<CA> findByType(CAType type);
+    Optional<CA> findByTypeAndRevocationNotNull(CAType type);
 }

@@ -1,6 +1,8 @@
 package bsep.pki.PublicKeyInfrastructure.startup;
 
 import bsep.pki.PublicKeyInfrastructure.dto.RevocationDto;
+import bsep.pki.PublicKeyInfrastructure.model.CAType;
+import bsep.pki.PublicKeyInfrastructure.model.CertificateType;
 import bsep.pki.PublicKeyInfrastructure.model.RevokeReason;
 import bsep.pki.PublicKeyInfrastructure.service.CAService;
 import bsep.pki.PublicKeyInfrastructure.service.CRLService;
@@ -40,14 +42,13 @@ public class StartupService {
     }
 
     public void initialize() {
-//        keystoreService.tryCreateKeyStore();
-//        rootCAService.tryCreateRootCA();
-//        caService.tryCreateCA(1L);
-//        caService.tryCreateCA(2L);
-//
-//
-//        crlService.createCRL();
-//        crlService.revokeCertificate(new RevocationDto(null, 1L, RevokeReason.KEY_COMPROMISE, null));
-//        crlService.revokeCertificate(new RevocationDto(null, 2L, RevokeReason.PRIVILEGE_WITHDRAWN, null));
+        keystoreService.tryCreateKeyStore();
+        rootCAService.tryCreateRootCA();
+        caService.tryCreateCA(1L, CAType.SIEM_AGENT_ISSUER, CertificateType.SIEM_AGENT_ISSUER);
+        caService.tryCreateCA(2L, CAType.SIEM_CENTER_ISSUER, CertificateType.SIEM_CENTER_ISSUER);
+
+        crlService.createCRL();
+        crlService.revokeCertificate(new RevocationDto(null, 1L, RevokeReason.KEY_COMPROMISE, null));
+        crlService.revokeCertificate(new RevocationDto(null, 2L, RevokeReason.PRIVILEGE_WITHDRAWN, null));
     }
 }

@@ -24,6 +24,12 @@ public class CertificateRequest {
     @Column(nullable=false)
     private String commonName;
 
+    @Column(nullable = false)
+    private String givenName;
+
+    @Column(nullable = false)
+    private String surname;
+
     @Column(nullable=false)
     private String organisation;
 
@@ -42,6 +48,12 @@ public class CertificateRequest {
     @Column(nullable=false, length = 500)
     private String publicKey;
 
+    @Enumerated(value = EnumType.STRING)
+    private CertificateType certificateType;
+
     @Column(nullable=false)
     private CertificateRequestStatus status;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private Certificate certificate;
 }

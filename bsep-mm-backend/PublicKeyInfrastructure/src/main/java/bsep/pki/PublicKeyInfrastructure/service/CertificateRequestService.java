@@ -34,6 +34,8 @@ public class CertificateRequestService {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private CertificateService certificateService;
 
     public List<CertificateRequestDto> findByStatus(CertificateRequestStatus status) {
         return certReqRepo
@@ -97,6 +99,7 @@ public class CertificateRequestService {
         certReqRepo.save(request);
 
         // TODO: create and memorize certificate
+        certificateService.createCertificate(request);
 
         return new CertificateRequestDto(certReqRepo.save(request));
     }
