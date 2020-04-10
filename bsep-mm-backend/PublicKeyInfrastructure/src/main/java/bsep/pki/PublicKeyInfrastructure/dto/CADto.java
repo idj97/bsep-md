@@ -2,6 +2,7 @@ package bsep.pki.PublicKeyInfrastructure.dto;
 
 import bsep.pki.PublicKeyInfrastructure.model.CA;
 import bsep.pki.PublicKeyInfrastructure.model.CAType;
+import bsep.pki.PublicKeyInfrastructure.model.Certificate;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,5 +32,12 @@ public class CADto {
         if (ca.getParent() != null) caIssuerId = ca.getParent().getId();
         caType = ca.getType();
         certificateDto = new CertificateDto(ca.getCertificate());
+    }
+
+    public CADto(Certificate certificate) {
+        id = certificate.getId();
+        caIssuerId = certificate.getIssuedByCertificate().getIssuedForCA().getId();
+        caType = null;
+        certificateDto = new CertificateDto(certificate);
     }
 }

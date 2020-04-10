@@ -2,13 +2,13 @@ package bsep.pki.PublicKeyInfrastructure.utility;
 
 import bsep.pki.PublicKeyInfrastructure.data.X509CertificateData;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.security.*;
 import java.security.cert.Certificate;
+import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
@@ -23,6 +23,9 @@ public class KeyStoreService {
 
     @Value("${keystore.create}")
     private Boolean createKeyStore;
+
+    @Value("${crl.path}")
+    private String crlPublicPath;
 
     private KeyStore keyStore;
 
@@ -63,6 +66,7 @@ public class KeyStoreService {
             X509Certificate[] chain = new X509Certificate[originalChain.length];
             for(int i = 0; i < originalChain.length; i++)
                 chain[i] = (X509Certificate) originalChain[i];
+
 
             return new X509CertificateData(
                     chain,
