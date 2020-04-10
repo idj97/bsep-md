@@ -74,6 +74,7 @@ export class NewCertificateComponent implements OnInit {
 
     if(this.newCertificateForm.valid) {
       this.formatDates();
+      this.certificateAuthority.certificateDto.certificateType = this.getType(this.certificateAuthority.caType);
       this.caService.createCA(this.certificateAuthority).subscribe(
         data => {
           console.log(data);
@@ -91,6 +92,18 @@ export class NewCertificateComponent implements OnInit {
       this.datePipe.transform(this.validFromDate, 'dd-MM-yyyy HH:mm');
     this.certificateAuthority.certificateDto.validUntil =
       this.datePipe.transform(this.validUntilDate, 'dd-MM-yyyy HH:mm');
+  }
+
+  getType(enumValue: number) {
+
+    if(enumValue == 0) {
+      return 'ROOT';
+    } else if(enumValue == 1) {
+      return 'SIEM_AGENT_ISSUER';
+    } else{
+      return 'SIEM_CENTER_ISSUER';
+    }
+
   }
 
 }
