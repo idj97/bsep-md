@@ -1,21 +1,30 @@
 package bsep.pki.PublicKeyInfrastructure.service;
 
 import bsep.pki.PublicKeyInfrastructure.data.X509CertificateData;
+import bsep.pki.PublicKeyInfrastructure.dto.CADto;
 import bsep.pki.PublicKeyInfrastructure.dto.CertificateDto;
+import bsep.pki.PublicKeyInfrastructure.dto.CertificateSearchDto;
+import bsep.pki.PublicKeyInfrastructure.dto.PageDto;
 import bsep.pki.PublicKeyInfrastructure.exception.ApiBadRequestException;
 import bsep.pki.PublicKeyInfrastructure.exception.ApiNotFoundException;
 import bsep.pki.PublicKeyInfrastructure.model.*;
 import bsep.pki.PublicKeyInfrastructure.repository.CARepository;
 import bsep.pki.PublicKeyInfrastructure.repository.CertificateRepository;
 import bsep.pki.PublicKeyInfrastructure.utility.DateService;
+import bsep.pki.PublicKeyInfrastructure.utility.PageService;
 import bsep.pki.PublicKeyInfrastructure.utility.X500Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(propagation = Propagation.REQUIRED)
@@ -32,6 +41,9 @@ public class CertificateService {
 
     @Autowired
     private CertificateRepository certificateRepository;
+
+    @Autowired
+    private PageService pageService;
 
     @Value("${crl.public.path}")
     private String crlPublicPath;
@@ -141,6 +153,35 @@ public class CertificateService {
         certificate.getExtensions().add(crlDistPointExtension);
 
         return certificate;
+    }
+
+    public PageDto<CADto> getAll(CertificateSearchDto caSearchDto) {
+        Pageable pageable = PageRequest.of(caSearchDto.getPage(), caSearchDto.getPageSize());
+
+        List<Certificate> caCertificates = certificateRepository
+                .findByCNContainingAndIssuedForCANotNull(caSearchDto.getCommonName());
+
+        List<Certificate> certificates = certificateRepository
+                .findByIssuedForCANull();
+
+        // filtriraj sertifikate
+        certificates = certificates
+                .stream()
+                .filter(c -> {
+                    if (caSearchDto.isRevoked() == true)
+                        return c.getRevocation() != null;
+                    return true;
+                })
+                .collect(Collectors.toList());
+
+        List<CADto> caDtos = caCertificates.stream().map(c -> new CADto(c.getIssuedForCA())).collect(Collectors.toList());
+        List<CADto> certDtos = certificates.stream().map(c -> new CADto(c)).collect(Collectors.toList());
+        caDtos.addAll(certDtos);
+
+        // napravi page
+        Page<CADto> page = pageService.getPage(caDtos, pageable);
+
+        return new PageDto<CADto>(caDtos, page.getTotalPages());
     }
 
 }

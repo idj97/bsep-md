@@ -157,18 +157,9 @@ public class CertificateRequestService {
     	
     	InputStreamResource resource = new InputStreamResource(new ByteArrayInputStream(binary));
 
-		try (FileOutputStream fos = new FileOutputStream("/public/certificate.cer")) {
-		    fos.write(binary);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        //HttpHeaders headers = this.getDownloadHeaders();
-        //headers.setContentDispositionFormData("attachment", "ceritifacte.cer");
-    	//return new ResponseEntity<>(resource, headers, HttpStatus.OK);
-        return null;
+        HttpHeaders headers = this.getDownloadHeaders();
+        headers.setContentDispositionFormData("attachment", "ceritifacte.cer");
+    	return new ResponseEntity<>(resource, headers, HttpStatus.OK);
     }
     
     public HttpHeaders getDownloadHeaders() {

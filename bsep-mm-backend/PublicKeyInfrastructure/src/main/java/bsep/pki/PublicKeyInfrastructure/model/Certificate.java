@@ -6,9 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Getter
@@ -79,7 +77,7 @@ public class Certificate {
     private Date dateCreated = new Date();
 
     @OneToMany(mappedBy = "certificate", cascade = CascadeType.ALL)
-    private Set<Extension> extensions = new HashSet<>();
+    private List<Extension> extensions = new ArrayList<>();
 
     @Enumerated(value = EnumType.STRING)
     private CertificateType certificateType;

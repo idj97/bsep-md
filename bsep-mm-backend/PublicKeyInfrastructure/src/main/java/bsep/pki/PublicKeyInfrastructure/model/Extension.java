@@ -6,7 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -24,7 +26,7 @@ public class Extension {
     private String name;
 
     @OneToMany(mappedBy = "extension", cascade = CascadeType.ALL)
-    private Set<ExtensionAttribute> attributes = new HashSet<>();
+    private List<ExtensionAttribute> attributes = new ArrayList<>();
 
     @ManyToOne(cascade = CascadeType.ALL)
     private Certificate certificate;
