@@ -3,9 +3,7 @@ package bsep.pki.PublicKeyInfrastructure.service;
 import bsep.pki.PublicKeyInfrastructure.data.X509CertificateData;
 import bsep.pki.PublicKeyInfrastructure.dto.CADto;
 import bsep.pki.PublicKeyInfrastructure.dto.CertificateDto;
-import bsep.pki.PublicKeyInfrastructure.model.CA;
-import bsep.pki.PublicKeyInfrastructure.model.CAType;
-import bsep.pki.PublicKeyInfrastructure.model.Certificate;
+import bsep.pki.PublicKeyInfrastructure.model.*;
 import bsep.pki.PublicKeyInfrastructure.repository.CARepository;
 import bsep.pki.PublicKeyInfrastructure.repository.CertificateRepository;
 import bsep.pki.PublicKeyInfrastructure.utility.KeyStoreService;
@@ -90,6 +88,7 @@ public class RootCAService {
                         validUntil,
                         null,
                         null,
+                        null,
                         null);
                 CADto caDto = new CADto(null, null, CAType.ROOT, certificateDto);
                 //CADto caDto = new CADto(certificateDto, CAType.ROOT, null, null);
@@ -143,6 +142,24 @@ public class RootCAService {
         certificate.setValidUntil(certificateDto.getValidUntil());
         certificate.setSerialNumber(serialNumber);
         certificate.setKeyStoreAlias(serialNumber);
+        certificate.setCertificateType(certificateDto.getCertificateType());
+
+        Extension bcExtension = new Extension();
+        bcExtension.setName("Basic Constraint");
+        bcExtension.setCertificate(certificate);
+        bcExtension.getAttributes().add(
+                new ExtensionAttribute(null, "Is Root Certificate Authority.", bcExtension));
+
+        Extension keyUsageExtension = new Extension();
+        keyUsageExtension.setName("Key Usage");
+        keyUsageExtension.setCertificate(certificate);
+        keyUsageExtension.getAttributes().add(
+                new ExtensionAttribute(null, "KeyCertSign", keyUsageExtension));
+        keyUsageExtension.getAttributes().add(
+                new ExtensionAttribute(null, "CrlSign", keyUsageExtension));
+
+        certificate.getExtensions().add(bcExtension);
+        certificate.getExtensions().add(keyUsageExtension);
         return certificate;
     }
 }

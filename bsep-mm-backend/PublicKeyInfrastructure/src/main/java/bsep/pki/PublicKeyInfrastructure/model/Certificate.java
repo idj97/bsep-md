@@ -77,4 +77,10 @@ public class Certificate {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
     private Date dateCreated = new Date();
+
+    @OneToMany(mappedBy = "certificate", cascade = CascadeType.ALL)
+    private Set<Extension> extensions = new HashSet<>();
+
+    @Enumerated(value = EnumType.STRING)
+    private CertificateType certificateType;
 }
