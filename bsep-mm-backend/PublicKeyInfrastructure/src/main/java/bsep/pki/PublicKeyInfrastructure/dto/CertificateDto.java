@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class    CertificateDto {
+public class CertificateDto {
     @NotBlank
     private String commonName;
 

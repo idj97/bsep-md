@@ -28,4 +28,5 @@ public class CertificateController {
         return new ResponseEntity<>(crlService.revokeCertificate(revocationDto), HttpStatus.OK);
     }
 
+
 }

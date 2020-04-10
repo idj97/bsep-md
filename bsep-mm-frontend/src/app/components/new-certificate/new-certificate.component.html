@@ -119,8 +119,9 @@
             <div class="col-6">
                 <p> Certificate authority type: </p>
                 <select class="custom-select" name="caType" [(ngModel)]="certificateAuthority.caType">
-                    <option value="" selected disabled hidden>CA type</option>
-                    <option value="0">Undefined</option>
+                    <option value="0">Root</option>
+                    <option value="1">Siem agent issuer</option>
+                    <option value="2">Siem center issuer</option>
                 </select>
             </div>
         </div>

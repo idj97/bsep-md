@@ -32,4 +32,5 @@ public class CAController {
     public ResponseEntity<PageDto<CADto>> searchCAs(@RequestBody @Valid CertificateSearchDto certificateSearchDto) {
         return new ResponseEntity<>(caService.getAll(certificateSearchDto), HttpStatus.OK);
     }
+
 }
