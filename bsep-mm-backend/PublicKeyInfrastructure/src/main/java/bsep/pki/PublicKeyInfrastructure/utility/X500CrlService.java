@@ -2,7 +2,7 @@ package bsep.pki.PublicKeyInfrastructure.utility;
 
 import bsep.pki.PublicKeyInfrastructure.model.RevokeReason;
 import org.bouncycastle.asn1.x500.X500Name;
-import org.bouncycastle.asn1.x509.Extension;
+import org.bouncycastle.asn1.x509.*;
 import org.bouncycastle.cert.CertIOException;
 import org.bouncycastle.cert.X509CRLHolder;
 import org.bouncycastle.cert.X509CertificateHolder;
@@ -34,6 +34,9 @@ public class X500CrlService {
 
     @Value("${crl.path}")
     private String crlFilePath;
+
+    @Value("${crl.public.path}")
+    private String crlPublicPath;
 
     public void createRevocationList(X509Certificate issuerX509Certificate, PrivateKey issuerPrivateKey) {
         try {
@@ -112,5 +115,24 @@ public class X500CrlService {
         } catch (OperatorCreationException e) {
             e.printStackTrace();
         }
+    }
+
+    public CRLDistPoint getCRLDistPoint() {
+        GeneralName generalName = new GeneralName(
+                GeneralName.uniformResourceIdentifier,
+                crlPublicPath);
+
+        DistributionPointName distributionPointName = new DistributionPointName(
+                new GeneralNames(generalName));
+
+        DistributionPoint distributionPoint = new DistributionPoint(
+                distributionPointName,
+                null,
+                null);
+
+        DistributionPoint[] distributionPoints = new DistributionPoint[1];
+        distributionPoints[0] = distributionPoint;
+
+        return new CRLDistPoint(distributionPoints);
     }
 }

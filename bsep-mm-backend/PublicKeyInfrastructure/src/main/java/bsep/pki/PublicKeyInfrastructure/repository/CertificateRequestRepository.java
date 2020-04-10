@@ -9,8 +9,6 @@ import java.util.Optional;
 
 
 public interface CertificateRequestRepository extends JpaRepository<CertificateRequest, Long> {
-
     List<CertificateRequest> findAllByStatus(CertificateRequestStatus status);
-
     Optional<CertificateRequest> findOneByCommonName(String commonName);
 }

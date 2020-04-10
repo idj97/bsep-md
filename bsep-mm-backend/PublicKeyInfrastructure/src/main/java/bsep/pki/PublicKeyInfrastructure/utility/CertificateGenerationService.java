@@ -2,9 +2,11 @@ package bsep.pki.PublicKeyInfrastructure.utility;
 
 import bsep.pki.PublicKeyInfrastructure.data.IssuerData;
 import bsep.pki.PublicKeyInfrastructure.data.SubjectData;
+import bsep.pki.PublicKeyInfrastructure.exception.ApiBadRequestException;
+import bsep.pki.PublicKeyInfrastructure.model.Certificate;
 import bsep.pki.PublicKeyInfrastructure.model.CertificateType;
-import org.bouncycastle.asn1.x509.BasicConstraints;
-import org.bouncycastle.asn1.x509.Extension;
+import org.bouncycastle.asn1.x509.*;
+import org.bouncycastle.cert.AttributeCertificateIssuer;
 import org.bouncycastle.cert.CertIOException;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
@@ -13,6 +15,8 @@ import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
+import org.hibernate.Criteria;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
@@ -22,6 +26,12 @@ import java.security.cert.X509Certificate;
 
 @Service
 public class CertificateGenerationService {
+
+    private static boolean CRITICAL = true;
+    private static boolean NOT_CRITICAL = false;
+
+    @Autowired
+    private X500CrlService x500CrlService;
 
     public X509Certificate generate(
             SubjectData subjectData,
@@ -51,8 +61,16 @@ public class CertificateGenerationService {
             //Postavljaju se ekstenzije u zavisnosti od tipa/namene sertifikata
             if (certificateType.equals(CertificateType.ROOT)) {
                 setRootExtensions(certGen);
+            } else if (certificateType.equals(CertificateType.SIEM_AGENT_ISSUER)) {
+                setCertIssuerExtensions(certGen);
+            } else if (certificateType.equals(CertificateType.SIEM_CENTER_ISSUER)) {
+                setCertIssuerExtensions(certGen);
+            } else if (certificateType.equals(CertificateType.SIEM_AGENT)){
+                setSiemAgentCertExtensions(certGen);
+            } else if (certificateType.equals(CertificateType.SIEM_CENTER)) {
+                setSiemCenterCertExtensions(certGen);
             } else {
-
+                throw new ApiBadRequestException("Bad certificate type.");
             }
 
             //Generise se sertifikat
@@ -81,7 +99,82 @@ public class CertificateGenerationService {
 
     public void setRootExtensions(X509v3CertificateBuilder certGen) {
         try {
-            certGen.addExtension(Extension.basicConstraints, false, new BasicConstraints(true));
+            certGen.addExtension(
+                    Extension.basicConstraints,
+                    CRITICAL,
+                    new BasicConstraints(true));
+
+            int keyUsageBits = KeyUsage.keyCertSign | KeyUsage.cRLSign;
+            certGen.addExtension(
+                    Extension.keyUsage,
+                    CRITICAL,
+                    new KeyUsage(keyUsageBits));
+        } catch (CertIOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setCertIssuerExtensions(X509v3CertificateBuilder certGen) {
+        try {
+            certGen.addExtension(
+                    Extension.basicConstraints,
+                    CRITICAL,
+                    new BasicConstraints(true));
+
+            int keyUsageBits = KeyUsage.keyCertSign;
+            certGen.addExtension(
+                    Extension.keyUsage,
+                    CRITICAL,
+                    new KeyUsage(keyUsageBits));
+
+            certGen.addExtension(
+                    Extension.cRLDistributionPoints,
+                    NOT_CRITICAL,
+                    x500CrlService.getCRLDistPoint());
+        } catch (CertIOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setSiemAgentCertExtensions(X509v3CertificateBuilder certGen) {
+        try {
+            certGen.addExtension(
+                    Extension.basicConstraints,
+                    CRITICAL,
+                    new BasicConstraints(false));
+
+            int keyUsageBits = KeyUsage.keyEncipherment | KeyUsage.digitalSignature;
+            certGen.addExtension(
+                    Extension.keyUsage,
+                    CRITICAL,
+                    new KeyUsage(keyUsageBits));
+
+            certGen.addExtension(
+                    Extension.cRLDistributionPoints,
+                    NOT_CRITICAL,
+                    x500CrlService.getCRLDistPoint());
+        } catch (CertIOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setSiemCenterCertExtensions(X509v3CertificateBuilder certGen) {
+        try {
+            certGen.addExtension(
+                    Extension.basicConstraints,
+                    CRITICAL,
+                    new BasicConstraints(false));
+
+            int keyUsageBits = KeyUsage.keyEncipherment;
+            certGen.addExtension(
+                    Extension.keyUsage,
+                    CRITICAL,
+                    new KeyUsage(keyUsageBits));
+
+            certGen.addExtension(
+                    Extension.cRLDistributionPoints,
+                    NOT_CRITICAL,
+                    x500CrlService.getCRLDistPoint());
         } catch (CertIOException e) {
             e.printStackTrace();
         }

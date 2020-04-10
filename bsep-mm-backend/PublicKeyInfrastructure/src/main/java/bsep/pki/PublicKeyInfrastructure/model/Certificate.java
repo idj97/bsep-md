@@ -33,6 +33,9 @@ public class Certificate {
     @OneToOne(cascade = CascadeType.ALL)
     private CertificateRevocation revocation;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    private CertificateRequest certificateRequest;
+
     @Column(nullable = false, unique = true)
     private String serialNumber;
 
