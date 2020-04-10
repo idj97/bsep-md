@@ -21,4 +21,8 @@ export class CertificateService {
     return this.http.post<any>('api/certificates/revoke', revocationDto);
   }
 
+  postSearchUserCertificate(certificateSearchDto: any) {
+    return this.http.post<any>('api/certificates/search', certificateSearchDto);
+  }
+
 }

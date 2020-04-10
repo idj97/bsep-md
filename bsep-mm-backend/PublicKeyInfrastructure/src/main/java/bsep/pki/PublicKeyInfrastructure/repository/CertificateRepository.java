@@ -16,4 +16,5 @@ import java.util.Optional;
 public interface CertificateRepository extends JpaRepository<Certificate, Long> {
     Optional<Certificate> findBySerialNumber(String serialNumber);
     List<Certificate> findByCNContainingAndIssuedForCANotNull(String commonName);
+    List<Certificate> findByIssuedForCANull();
 }
