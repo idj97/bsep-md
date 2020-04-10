@@ -2,5 +2,9 @@ package bsep.pki.PublicKeyInfrastructure.model;
 
 public enum CertificateType {
     ROOT,
-    UNDEFINED // dok ne smislimo validne
+    SIEM_AGENT_ISSUER,
+    SIEM_CENTER_ISSUER,
+    SIEM_AGENT,
+    SIEM_CENTER,
+    UNDEFINED
 }

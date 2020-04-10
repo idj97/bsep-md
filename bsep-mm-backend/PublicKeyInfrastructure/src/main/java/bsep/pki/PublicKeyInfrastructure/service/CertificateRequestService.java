@@ -1,25 +1,40 @@
 package bsep.pki.PublicKeyInfrastructure.service;
 
+import bsep.pki.PublicKeyInfrastructure.data.X509CertificateData;
 import bsep.pki.PublicKeyInfrastructure.dto.CertificateRequestDto;
 import bsep.pki.PublicKeyInfrastructure.dto.CertificateSignedRequestDto;
 import bsep.pki.PublicKeyInfrastructure.exception.ApiBadRequestException;
+import bsep.pki.PublicKeyInfrastructure.exception.ApiException;
 import bsep.pki.PublicKeyInfrastructure.exception.ApiNotFoundException;
 import bsep.pki.PublicKeyInfrastructure.model.CertificateRequestStatus;
 import bsep.pki.PublicKeyInfrastructure.model.CertificateRequest;
 import bsep.pki.PublicKeyInfrastructure.repository.CertificateRequestRepository;
+import bsep.pki.PublicKeyInfrastructure.utility.KeyStoreService;
 import bsep.pki.PublicKeyInfrastructure.utility.SignatureService;
 import bsep.pki.PublicKeyInfrastructure.utility.X500Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.PublicKey;
+import java.security.cert.CertificateEncodingException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(propagation = Propagation.REQUIRED)
 public class CertificateRequestService {
 
     @Autowired
@@ -33,7 +48,12 @@ public class CertificateRequestService {
 
     @Autowired
     private ObjectMapper objectMapper;
+    
+    @Autowired
+    private KeyStoreService keyStoreService;
 
+    @Autowired
+    private CertificateService certificateService;
 
     public List<CertificateRequestDto> findByStatus(CertificateRequestStatus status) {
         return certReqRepo
@@ -96,6 +116,7 @@ public class CertificateRequestService {
         request.setStatus(CertificateRequestStatus.APPROVED);
 
         // TODO: create and memorize certificate
+        certificateService.createCertificate(request);
 
         return new CertificateRequestDto(certReqRepo.save(request));
     }
@@ -112,6 +133,48 @@ public class CertificateRequestService {
 
         request.setStatus(CertificateRequestStatus.DENIED);
         return new CertificateRequestDto(certReqRepo.save(request));
+    }
+    
+    public ResponseEntity<InputStreamResource> downloadCertificate(long certificateRequestId) {
+    	Optional<CertificateRequest> optCertReq = certReqRepo.findById(certificateRequestId);
+    	if (!optCertReq.isPresent()) 
+    		throw new ApiException("No such certificate request", HttpStatus.NOT_FOUND);
+    	
+    	CertificateRequest certReq = optCertReq.get();
+
+    	//TODO get certificate by alias
+    	X509CertificateData certData = keyStoreService.getCaCertificate(
+    	        certReq.getSerialNumber().toString());
+    	
+    	byte[] binary = null;
+		try {
+			binary = certData.getX509CertificateChain()[0].getEncoded();
+		} catch (CertificateEncodingException e) {
+			e.printStackTrace();
+		}
+    	
+    	InputStreamResource resource = new InputStreamResource(new ByteArrayInputStream(binary));
+
+		try (FileOutputStream fos = new FileOutputStream("/public/certificate.cer")) {
+		    fos.write(binary);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //HttpHeaders headers = this.getDownloadHeaders();
+        //headers.setContentDispositionFormData("attachment", "ceritifacte.cer");
+    	//return new ResponseEntity<>(resource, headers, HttpStatus.OK);
+        return null;
+    }
+    
+    public HttpHeaders getDownloadHeaders() {
+    	HttpHeaders headers = new HttpHeaders();
+        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+        headers.add("Pragma", "no-cache");
+        headers.add("Expires", "0");
+    	return headers;
     }
 
 }

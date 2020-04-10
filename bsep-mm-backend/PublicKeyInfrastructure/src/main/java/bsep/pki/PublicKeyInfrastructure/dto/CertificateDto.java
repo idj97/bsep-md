@@ -2,6 +2,7 @@ package bsep.pki.PublicKeyInfrastructure.dto;
 
 import bsep.pki.PublicKeyInfrastructure.model.Certificate;
 import bsep.pki.PublicKeyInfrastructure.model.CertificateType;
+import bsep.pki.PublicKeyInfrastructure.model.Extension;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,6 +13,8 @@ import javax.validation.constraints.Future;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -49,10 +52,9 @@ public class    CertificateDto {
     private Date validUntil;
 
     private Integer serialNumber;
-
     private CertificateType certificateType = CertificateType.UNDEFINED;
-
     private RevocationDto revocation;
+    private List<ExtensionDto> extensionDtoList;
 
     public CertificateDto(Certificate certificate) {
         super();
@@ -66,7 +68,14 @@ public class    CertificateDto {
         validFrom = certificate.getValidFrom();
         validUntil = certificate.getValidUntil();
         serialNumber = Integer.parseInt(certificate.getSerialNumber());
+
         if (certificate.getRevocation() != null)
             this.revocation = new RevocationDto(certificate.getRevocation());
+
+        extensionDtoList = certificate
+                .getExtensions()
+                .stream()
+                .map(ExtensionDto::new)
+                .collect(Collectors.toList());
     }
 }

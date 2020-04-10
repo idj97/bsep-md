@@ -33,6 +33,9 @@ public class Certificate {
     @OneToOne(cascade = CascadeType.ALL)
     private CertificateRevocation revocation;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    private CertificateRequest certificateRequest;
+
     @Column(nullable = false, unique = true)
     private String serialNumber;
 
@@ -74,4 +77,10 @@ public class Certificate {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
     private Date dateCreated = new Date();
+
+    @OneToMany(mappedBy = "certificate", cascade = CascadeType.ALL)
+    private Set<Extension> extensions = new HashSet<>();
+
+    @Enumerated(value = EnumType.STRING)
+    private CertificateType certificateType;
 }

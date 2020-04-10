@@ -5,15 +5,15 @@
     </div>
     <div class="pl-4 pr-4 pt-4">Revocation reason:</div>
     <div class="pl-4 pr-4 pt-2 pb-2">
-        <select [disabled]="revoked" class="revocation-reason-select">
+        <select [(ngModel)]="selectedValue" [disabled]="revoked" class="revocation-reason-select">
             <option value="0">Unspecified</option>
             <option value="1">Key Compromised</option>
             <option value="2">CA Compromised</option>
             <option value="3">Privilege Withdrawn</option>
         </select>
     </div>
-    <div *ngIf="!revoking" class="pl-4 pr-4 pt-2 pb-4">
-        <div class="revoke-button" (click)="revoke()">Revoke</div>
+    <div *ngIf="!revoking && !revoked" class="pl-4 pr-4 pt-2 pb-4">
+        <div class="revoke-button" (click)="revoke(data)">Revoke</div>
     </div>
     <div *ngIf="revoking && !revoked" class="d-flex justify-content-center align-items-center pl-4 pr-4 pt-2 pb-4">
         <div class="spinner-border" role="status">
@@ -31,7 +31,7 @@
         <div></div>
     </div>
 
-    <div class="information-holder p-4" *ngIf="data">
+    <div class="information-holder p-4" *ngIf="data && data.certificateDto">
         <table>
             <tr>
                 <td>Serial Number:</td>
