@@ -16,5 +16,4 @@ public class CertificateSignedRequestDto {
 
     @NotBlank
     private String signedCsr;
-
 }
