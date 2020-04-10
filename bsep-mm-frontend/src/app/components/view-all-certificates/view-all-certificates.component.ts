@@ -71,8 +71,9 @@ export class ViewAllCertificatesComponent implements OnInit {
     this.subscription.unsubscribe();
   }
 
-  initRevokeDialog(item: any): void {
+  initRevokeDialog(item: any, index: number): void {
     item.open = true;
+    item.index = index;
     this.revokeDialogService.sendData(item);
   }
 
