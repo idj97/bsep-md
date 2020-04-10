@@ -44,6 +44,7 @@ public class StartupService {
     public void initialize() {
         keystoreService.tryCreateKeyStore();
         rootCAService.tryCreateRootCA();
+
         caService.tryCreateCA(1L, CAType.SIEM_AGENT_ISSUER, CertificateType.SIEM_AGENT_ISSUER);
         caService.tryCreateCA(2L, CAType.SIEM_CENTER_ISSUER, CertificateType.SIEM_CENTER_ISSUER);
 

@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.util.Date;
 
 @Setter
@@ -22,7 +25,8 @@ public class RevocationDto {
 
     @NotNull
     private RevokeReason revokeReason;
-
+    
+    @JsonFormat(pattern = "dd-MM-yyyy HH:mm", timezone = "Europe/Belgrade")
     private Date revocationDate;
 
     public RevocationDto(CertificateRevocation certificateRevocation) {
