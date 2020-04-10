@@ -25,6 +25,8 @@ public class CSRService {
         CertificateRequest request = new CertificateRequest();
 
         request.setCommonName(inputSvc.getUserInput("Enter common name:"));
+        request.setGivenName(inputSvc.getUserInput("Enter given name:"));
+        request.setSurname(inputSvc.getUserInput("Enter surname:"));
         request.setOrganisation(inputSvc.getUserInput("Enter organisation:"));
         request.setOrganisationUnit(inputSvc.getUserInput("Enter organisation unit:"));
         request.setCity(inputSvc.getUserInput("Enter city: "));

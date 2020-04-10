@@ -45,11 +45,11 @@ public class StartupService {
         keystoreService.tryCreateKeyStore();
         rootCAService.tryCreateRootCA();
 
-        caService.tryCreateCA(1L, CAType.SIEM_AGENT_ISSUER, CertificateType.SIEM_AGENT_ISSUER);
-        caService.tryCreateCA(2L, CAType.SIEM_CENTER_ISSUER, CertificateType.SIEM_CENTER_ISSUER);
+        //caService.tryCreateCA(1L, CAType.SIEM_AGENT_ISSUER, CertificateType.SIEM_AGENT_ISSUER);
+        //caService.tryCreateCA(2L, CAType.SIEM_CENTER_ISSUER, CertificateType.SIEM_CENTER_ISSUER);
 
-        crlService.createCRL();
-        crlService.revokeCertificate(new RevocationDto(null, 1L, RevokeReason.KEY_COMPROMISE, null));
-        crlService.revokeCertificate(new RevocationDto(null, 2L, RevokeReason.PRIVILEGE_WITHDRAWN, null));
+        //crlService.createCRL();
+        //crlService.revokeCertificate(new RevocationDto(null, 1L, RevokeReason.KEY_COMPROMISE, null));
+       // crlService.revokeCertificate(new RevocationDto(null, 2L, RevokeReason.PRIVILEGE_WITHDRAWN, null));
     }
 }
