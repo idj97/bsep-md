@@ -32,6 +32,10 @@ export class CertificateRequestsComponent implements OnInit {
 
   getCertificateRequests() {
 
+    // basic constraints - CA, end_user 
+    // key usage - digital signature, key encipherment
+    // crl distribution point - crl location
+
   }
 
   approveCertificateRequest(id: number, index: number) {

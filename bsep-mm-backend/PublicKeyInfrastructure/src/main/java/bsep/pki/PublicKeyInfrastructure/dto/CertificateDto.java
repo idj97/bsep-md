@@ -17,7 +17,7 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CertificateDto {
+public class    CertificateDto {
     @NotBlank
     private String commonName;
 

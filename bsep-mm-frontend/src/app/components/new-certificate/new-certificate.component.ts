@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
+import { CertificateAuthority } from 'src/app/dtos/CertificateAuthority.dto';
+import { Certificate } from 'src/app/dtos/Certificate.dto';
 
 @Component({
   selector: 'app-new-certificate',
@@ -7,6 +9,9 @@ import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
   styleUrls: ['./new-certificate.component.css']
 })
 export class NewCertificateComponent implements OnInit {
+
+  certificateAuthority: CertificateAuthority;
+  @ViewChild("ncf", {static: false}) newCertificateForm: any;
 
   private blurTimeout;
 
@@ -16,6 +21,7 @@ export class NewCertificateComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+    this.certificateAuthority = new CertificateAuthority();
   }
 
   focusInput(event: FocusEvent) {
@@ -39,6 +45,11 @@ export class NewCertificateComponent implements OnInit {
       text.classList.remove('focused');
       text.classList.add('blurred');
     }, 20);
+  }
+
+  createCertificate() {
+    console.log(this.certificateAuthority);
+    console.log(this.newCertificateForm.valid);
   }
 
 }

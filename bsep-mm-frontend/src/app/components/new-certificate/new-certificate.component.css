@@ -50,3 +50,12 @@
 .form-holder {
     padding: 20px;
 }
+
+.wide-btn {
+    width: 100%;
+    margin-bottom: 2ex;
+}
+
+small {
+    color: red;
+}

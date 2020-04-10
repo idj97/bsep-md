@@ -94,7 +94,6 @@ public class CertificateRequestService {
         }
 
         request.setStatus(CertificateRequestStatus.APPROVED);
-        certReqRepo.save(request);
 
         // TODO: create and memorize certificate
 
