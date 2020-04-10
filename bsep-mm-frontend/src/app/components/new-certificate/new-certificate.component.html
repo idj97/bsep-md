@@ -109,6 +109,7 @@
             </div>
             <div class="section-info col-12">Extensions</div>
             <div class="col-6">
+                <p> Key usage: </p>
                 <select class="custom-select">
                     <option value="" selected disabled hidden>Key usage</option>
                     <option value="digital-signature">Digital signature</option>
@@ -116,9 +117,10 @@
                 </select>
             </div>
             <div class="col-6">
-                <select class="custom-select">
+                <p> Certificate authority type: </p>
+                <select class="custom-select" name="caType" [(ngModel)]="certificateAuthority.caType">
                     <option value="" selected disabled hidden>CA type</option>
-                    <option value="undefined">Undefined</option>
+                    <option value="0">Undefined</option>
                 </select>
             </div>
         </div>
