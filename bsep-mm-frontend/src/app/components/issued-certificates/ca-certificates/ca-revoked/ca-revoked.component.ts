@@ -22,6 +22,7 @@ export class CaRevokedComponent implements OnInit {
   ngOnInit() {
     this.certificateService.getAllCA().subscribe(
       data => {
+        console.log(data);
         let finalData = []
         let elStatus = []
         for (let i = 0; i < data.length; i++) {
