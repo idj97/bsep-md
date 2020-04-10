@@ -4,7 +4,7 @@ export class CertificateAuthority {
     
     id: number;
     caIssuerId: number;
-    caType: string;
+    caType: number;
     certificateDto: Certificate;
 
     constructor() {

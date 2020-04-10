@@ -18,6 +18,11 @@ export class CertificateRequestsComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.getCertificateRequests();
+  }
+
+  getCertificateRequests() {
+
     this.certificateReqSvc.getPendingSignedRequests().subscribe(
       data => {
         this.certificateSignRequests = data;
@@ -28,13 +33,6 @@ export class CertificateRequestsComponent implements OnInit {
     ).add(() => {
       this.showSpinner = false;
     });
-  }
-
-  getCertificateRequests() {
-
-    // basic constraints - CA, end_user 
-    // key usage - digital signature, key encipherment
-    // crl distribution point - crl location
 
   }
 

@@ -10,8 +10,8 @@ export class Certificate {
     country: string;
     email: string;
 
-    validFrom: Date;
-    validUnit: Date;
+    validFrom: string;
+    validUntil: string;
 
     serialNumber: number;
     certificateType: string;

@@ -20,6 +20,7 @@ import { UserRevokedComponent } from './components/issued-certificates/user-cert
 import { UserAllComponent } from './components/issued-certificates/user-certificates/user-all/user-all.component';
 import { RevokeDialogComponent } from './components/revoke-dialog/revoke-dialog.component';
 import { FormsModule } from '@angular/forms';
+import { DlDateTimeDateModule, DlDateTimePickerModule } from 'angular-bootstrap-datetimepicker';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,9 @@ import { FormsModule } from '@angular/forms';
     FontAwesomeModule,
     HttpClientModule,
     NgbModule,
-    FormsModule
+    FormsModule,
+    DlDateTimeDateModule,
+    DlDateTimePickerModule,
   ],
   providers: [
     {

@@ -59,3 +59,13 @@
 small {
     color: red;
 }
+
+.date-holder {
+    background-color: whitesmoke;
+    border-radius: 20px;
+}
+
+.centered-message {
+    margin-left: 35%;
+}
+

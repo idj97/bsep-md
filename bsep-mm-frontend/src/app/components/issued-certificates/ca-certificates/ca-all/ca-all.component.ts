@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CertificateService } from 'src/app/services/certificate.service';
 import { faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { RevokeDialogService } from 'src/app/services/revoke-dialog.service';
+import { CertificateAuthorityService } from 'src/app/services/certificate-authority.service';
 
 @Component({
   selector: 'app-ca-all',
@@ -16,11 +17,11 @@ export class CaAllComponent implements OnInit {
   private data: any[] = [];
   private elStatus: any[] = [];
 
-  constructor(private certificateService: CertificateService,
+  constructor(private caService: CertificateAuthorityService,
               private revokeDialogService: RevokeDialogService) { }
 
   ngOnInit() {
-    this.certificateService.getAllCA().subscribe(
+    this.caService.getAllCA().subscribe(
       data => {
         let finalData = []
         let elStatus = []
