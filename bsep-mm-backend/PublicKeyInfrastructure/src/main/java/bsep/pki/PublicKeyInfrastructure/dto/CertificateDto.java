@@ -2,7 +2,6 @@ package bsep.pki.PublicKeyInfrastructure.dto;
 
 import bsep.pki.PublicKeyInfrastructure.model.Certificate;
 import bsep.pki.PublicKeyInfrastructure.model.CertificateType;
-import bsep.pki.PublicKeyInfrastructure.model.Extension;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -51,6 +50,7 @@ public class CertificateDto {
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm", timezone = "Europe/Belgrade")
     private Date validUntil;
 
+    private CertificateDto issuer;
     private Integer serialNumber;
     private CertificateType certificateType;
     private RevocationDto revocation;
@@ -78,5 +78,8 @@ public class CertificateDto {
                 .stream()
                 .map(ExtensionDto::new)
                 .collect(Collectors.toList());
+
+        if (certificate.getIssuedByCertificate() != null)
+            issuer = new CertificateDto(certificate.getIssuedByCertificate());
     }
 }

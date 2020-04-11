@@ -6,7 +6,9 @@ import bsep.pki.PublicKeyInfrastructure.model.CertificateType;
 import bsep.pki.PublicKeyInfrastructure.model.RevokeReason;
 import bsep.pki.PublicKeyInfrastructure.service.CAService;
 import bsep.pki.PublicKeyInfrastructure.service.CRLService;
+import bsep.pki.PublicKeyInfrastructure.service.CertificateService;
 import bsep.pki.PublicKeyInfrastructure.service.RootCAService;
+import bsep.pki.PublicKeyInfrastructure.utility.DateService;
 import bsep.pki.PublicKeyInfrastructure.utility.KeyStoreService;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,12 @@ public class StartupService {
 
     @Value("${app.init}")
     private Boolean initApp;
+
+    @Autowired
+    private CertificateService certificateService;
+
+    @Autowired
+    private DateService dateService;
 
     @EventListener
     public void onStartup(ContextRefreshedEvent contextRefreshedEvent) {

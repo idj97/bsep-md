@@ -84,6 +84,7 @@ public class RootCAService {
                     validFrom,
                     validUntil,
                     null,
+                    null,
                     CertificateType.ROOT,
                     null,
                     null);

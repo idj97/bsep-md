@@ -168,7 +168,7 @@ public class CertificateService {
         certificates = certificates
                 .stream()
                 .filter(c -> {
-                    if (caSearchDto.isRevoked() == true)
+                    if (caSearchDto.getRevoked() == true)
                         return c.getRevocation() != null;
                     return true;
                 })
@@ -184,4 +184,31 @@ public class CertificateService {
         return new PageDto<CADto>(caDtos, page.getTotalPages());
     }
 
+    public PageDto<CertificateDto> search(CertificateSearchDto certificateSearchDto) {
+        // pripremi page request podatke
+        Pageable pageable = PageRequest.of(
+                certificateSearchDto.getPage(),
+                certificateSearchDto.getPageSize());
+
+        // pretraga
+        Page<Certificate> certificates = certificateRepository.search(
+                certificateSearchDto.getCommonName(),
+                certificateSearchDto.getRevoked(),
+                certificateSearchDto.getIsCa(),
+                certificateSearchDto.getValidFrom(),
+                certificateSearchDto.getValidUntil(),
+                certificateSearchDto.getCertificateType(),
+                pageable);
+
+        // pretvori u certificate dto
+        PageDto<CertificateDto> pageDto = new PageDto<>();
+        pageDto.setItems(certificates
+                .getContent()
+                .stream()
+                .map(CertificateDto::new)
+                .collect(Collectors.toList()));
+        pageDto.setNumberOfPages(certificates.getTotalPages());
+
+        return pageDto;
+    }
 }

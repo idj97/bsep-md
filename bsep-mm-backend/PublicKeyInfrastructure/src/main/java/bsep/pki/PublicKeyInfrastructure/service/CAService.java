@@ -168,7 +168,7 @@ public class CAService {
                     return true;
                 })
                 .filter(c -> {
-                    if (caSearchDto.isRevoked() == true)
+                    if (caSearchDto.getRevoked() == true)
                         return c.getRevocation() != null;
                     return true;
                 })
@@ -202,6 +202,7 @@ public class CAService {
                     "google-pki@gmail.com",
                     validFrom,
                     validUntil,
+                    null,
                     null,
                     certificateType,
                     null,
