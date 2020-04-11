@@ -52,9 +52,6 @@ public class RootCAService {
     @Value("${root.validUntil}")
     private String validUntilStr;
 
-    @Value("${root.create}")
-    private Boolean createRoot;
-
     @Autowired
     private X500Service x500Service;
 
@@ -71,31 +68,29 @@ public class RootCAService {
     private KeyStoreService keyStoreService;
 
     public void tryCreateRootCA() {
-        if (createRoot) {
-            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-            try {
-                Date validUntil = sdf.parse(validUntilStr);
-                Date validFrom = sdf.parse(validFromStr);
-                CertificateDto certificateDto = new CertificateDto(
-                        commonName,
-                        givenName,
-                        surname,
-                        organisation,
-                        orgnisationUnit,
-                        country,
-                        email,
-                        validFrom,
-                        validUntil,
-                        null,
-                        null,
-                        null,
-                        null);
-                CADto caDto = new CADto(null, null, CAType.ROOT, certificateDto);
-                //CADto caDto = new CADto(certificateDto, CAType.ROOT, null, null);
-                createRootCA(caDto);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+        try {
+            Date validUntil = sdf.parse(validUntilStr);
+            Date validFrom = sdf.parse(validFromStr);
+            CertificateDto certificateDto = new CertificateDto(
+                    commonName,
+                    givenName,
+                    surname,
+                    organisation,
+                    orgnisationUnit,
+                    country,
+                    email,
+                    validFrom,
+                    validUntil,
+                    null,
+                    null,
+                    null,
+                    null);
+            CADto caDto = new CADto(null, null, CAType.ROOT, certificateDto);
+            //CADto caDto = new CADto(certificateDto, CAType.ROOT, null, null);
+            createRootCA(caDto);
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
     }
 
