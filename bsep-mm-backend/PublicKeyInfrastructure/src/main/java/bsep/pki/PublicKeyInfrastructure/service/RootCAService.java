@@ -96,7 +96,7 @@ public class RootCAService {
     }
 
     public CADto createRootCA(CADto caDto) {
-        Optional<CA> optionalCA = caRepository.findByType(CAType.ROOT);
+        Optional<CA> optionalCA = caRepository.findByTypeAndCertificateRevocationNull(CAType.ROOT);
         if (!optionalCA.isPresent()) {
             CertificateDto certificateDto = caDto.getCertificateDto();
 
