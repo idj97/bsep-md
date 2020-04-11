@@ -206,7 +206,6 @@ public class CAService {
                     certificateType,
                     null,
                     null);
-            // CADto caDto = new CADto(nucertificateDto, CAType.UNDEFINED, id, null);
             CADto caDto = new CADto(null, id, caType, certificateDto);
             createCA(caDto);
         } catch (ParseException e) {

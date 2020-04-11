@@ -52,7 +52,7 @@ public class CertificateDto {
     private Date validUntil;
 
     private Integer serialNumber;
-    private CertificateType certificateType = CertificateType.UNDEFINED;
+    private CertificateType certificateType;
     private RevocationDto revocation;
     private List<ExtensionDto> extensionDtoList;
 
@@ -68,6 +68,7 @@ public class CertificateDto {
         validFrom = certificate.getValidFrom();
         validUntil = certificate.getValidUntil();
         serialNumber = Integer.parseInt(certificate.getSerialNumber());
+        certificateType = certificate.getCertificateType();
 
         if (certificate.getRevocation() != null)
             this.revocation = new RevocationDto(certificate.getRevocation());

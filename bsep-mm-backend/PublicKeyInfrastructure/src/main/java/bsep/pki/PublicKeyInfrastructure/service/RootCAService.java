@@ -3,6 +3,7 @@ package bsep.pki.PublicKeyInfrastructure.service;
 import bsep.pki.PublicKeyInfrastructure.data.X509CertificateData;
 import bsep.pki.PublicKeyInfrastructure.dto.CADto;
 import bsep.pki.PublicKeyInfrastructure.dto.CertificateDto;
+import bsep.pki.PublicKeyInfrastructure.exception.ApiBadRequestException;
 import bsep.pki.PublicKeyInfrastructure.model.*;
 import bsep.pki.PublicKeyInfrastructure.repository.CARepository;
 import bsep.pki.PublicKeyInfrastructure.repository.CertificateRepository;
@@ -83,7 +84,7 @@ public class RootCAService {
                     validFrom,
                     validUntil,
                     null,
-                    null,
+                    CertificateType.ROOT,
                     null,
                     null);
             CADto caDto = new CADto(null, null, CAType.ROOT, certificateDto);
@@ -94,7 +95,7 @@ public class RootCAService {
         }
     }
 
-    public CA createRootCA(CADto caDto) {
+    public CADto createRootCA(CADto caDto) {
         Optional<CA> optionalCA = caRepository.findByType(CAType.ROOT);
         if (!optionalCA.isPresent()) {
             CertificateDto certificateDto = caDto.getCertificateDto();
@@ -117,9 +118,9 @@ public class RootCAService {
             // usnimi entitet i sertifikat
             ca = caRepository.save(ca);
             x500Service.saveX509Certificate(x509CertificateData);
-            return ca;
+            return new CADto(ca);
         } else {
-            throw new BadRequestException("Root CA already exists.");
+            throw new ApiBadRequestException("Root CA already exists.");
         }
     }
 
