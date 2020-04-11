@@ -6,7 +6,7 @@ The pages listed below contain information that helped us develop the applicatio
 - https://www.sslshopper.com/what-is-a-csr-certificate-signing-request.
 
 ## Commands:
-`openssl crl -inform DER -noout -text -in pki_revocations.crl`
+`openssl crl -inform DER -noout -text -in public/pki_revocations.crl`
 
 `keytool -list -v -keystore pki_keystore.jks -storepass password`
 
