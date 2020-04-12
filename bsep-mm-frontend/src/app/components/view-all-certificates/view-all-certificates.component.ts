@@ -33,11 +33,11 @@ export class ViewAllCertificatesComponent implements OnInit {
         isSelected: false,
         extensionsSelected: false,
       }
-      if (!this.isRevoked && root.certificateDto.revocation) continue;
-      if (this.isRevoked && !root.certificateDto.revocation) continue;
+      if (!this.isRevoked && root.revocation) continue;
+      if (this.isRevoked && !root.revocation) continue;
       if (!this.isCA && root.caType) continue
       
-      if (root.caIssuerId) {
+      if (root.issuer) {
         this.formCertificateData(root, rootStatus, items);
       }
       finalData.push(root);
@@ -82,16 +82,13 @@ export class ViewAllCertificatesComponent implements OnInit {
     let issuerStatus = rootStatus;
 
     
-    if (issuer.caIssuerId) {
-      issuer.issuer = this.findIssuerById(issuer.caIssuerId, data);
+    if (issuer.issuer) {
       issuerStatus.issuerStatus = {
         isHovered: false,
         isSelected: false,
         extensionsSelected: false,
       };
-      if (issuer.issuer.caIssuerId) {
-        this.formCertificateData(issuer.issuer, issuerStatus.issuerStatus, data);
-      }
+      this.formCertificateData(issuer.issuer, issuerStatus.issuerStatus, data);
     }
 
     return issuer;

@@ -5,6 +5,10 @@ import bsep.pki.PublicKeyInfrastructure.data.SubjectData;
 import bsep.pki.PublicKeyInfrastructure.exception.ApiBadRequestException;
 import bsep.pki.PublicKeyInfrastructure.model.Certificate;
 import bsep.pki.PublicKeyInfrastructure.model.CertificateType;
+
+import org.bouncycastle.asn1.ASN1EncodableVector;
+import org.bouncycastle.asn1.DERIA5String;
+import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.x509.*;
 import org.bouncycastle.cert.AttributeCertificateIssuer;
 import org.bouncycastle.cert.CertIOException;
@@ -57,6 +61,17 @@ public class CertificateGenerationService {
                     subjectData.getEndDate(),
                     subjectData.getX500name(),
                     subjectData.getPublicKey());
+            
+            //Authority Information Access
+//            AccessDescription caIssuers = new AccessDescription(
+//            		AccessDescription.id_ad_caIssuers,
+//            		new GeneralName(GeneralName.uniformResourceIdentifier,
+//            				new DERIA5String("URL")));
+//
+//        	ASN1EncodableVector aia_ASN = new ASN1EncodableVector();
+//        	aia_ASN.add(caIssuers);
+//
+//        	certGen.addExtension(Extension.authorityInfoAccess, false, new DERSequence(aia_ASN));
 
             //Postavljaju se ekstenzije u zavisnosti od tipa/namene sertifikata
             if (certificateType.equals(CertificateType.ROOT)) {
@@ -93,7 +108,7 @@ public class CertificateGenerationService {
             e.printStackTrace();
         } catch (CertificateException e) {
             e.printStackTrace();
-        }
+        } 
         return null;
     }
 

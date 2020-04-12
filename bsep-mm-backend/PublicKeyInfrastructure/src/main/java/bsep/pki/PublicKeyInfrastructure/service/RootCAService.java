@@ -74,6 +74,7 @@ public class RootCAService {
             Date validUntil = sdf.parse(validUntilStr);
             Date validFrom = sdf.parse(validFromStr);
             CertificateDto certificateDto = new CertificateDto(
+            		null,
                     commonName,
                     givenName,
                     surname,

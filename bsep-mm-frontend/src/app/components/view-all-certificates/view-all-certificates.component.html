@@ -17,12 +17,12 @@
                     <div class="col-12" style="padding: 0px !important;">
                         <table class="certificates-table-inner">
                             <tr class="certificate-row-inner not-selected">
-                                <td>{{item.certificateDto.commonName}}</td>
-                                <td>{{item.caType}}</td>
-                                <td>{{item.certificateDto.validFrom}}</td>
-                                <td>{{item.certificateDto.validUntil}}</td>
+                                <td>{{item.commonName}}</td>
+                                <td>{{item.certificateType}}</td>
+                                <td>{{item.validFrom}}</td>
+                                <td>{{item.validUntil}}</td>
                                 <td *ngIf="!isRevoked" (click)="initRevokeDialog(item, i)" class="revoke-action">Revoke</td>
-                                <td *ngIf="isRevoked">{{item.certificateDto.revocation.revokeReason}}</td>
+                                <td *ngIf="isRevoked">{{item.revocation.revokeReason}}</td>
                             </tr>
                         </table>
                     </div>
@@ -51,27 +51,27 @@
             </tr>
             <tr>
                 <td>Serial Number: </td>
-                <td>{{item.certificateDto.serialNumber}}</td>
+                <td>{{item.serialNumber}}</td>
             </tr>
             <tr>
                 <td>Common Name: </td>
-                <td>{{item.certificateDto.commonName}}</td>
+                <td>{{item.commonName}}</td>
             </tr>
             <tr>
                 <td>Given Name: </td>
-                <td>{{item.certificateDto.givenName}}</td>
+                <td>{{item.givenName}}</td>
             </tr>
             <tr>
                 <td>Surname: </td>
-                <td>{{item.certificateDto.surname}}</td>
+                <td>{{item.surname}}</td>
             </tr>
             <tr>
                 <td>Organisation: </td>
-                <td>{{item.certificateDto.organisation}}</td>
+                <td>{{item.organisation}}</td>
             </tr>
             <tr>
                 <td>Organisation Unit: </td>
-                <td>{{item.certificateDto.organisationUnit}}</td>
+                <td>{{item.organisationUnit}}</td>
             </tr>
         </table>
     </div>
@@ -79,49 +79,49 @@
         <table class="main-data-table">
             <tr>
                 <td>Certificate Type: </td>
-                <td>{{item.certificateDto.certificateType}}</td>
+                <td>{{item.certificateType}}</td>
             </tr>
             <tr>
                 <td>Country: </td>
-                <td>{{item.certificateDto.country}}</td>
+                <td>{{item.country}}</td>
             </tr>
             <tr>
                 <td>Email: </td>
-                <td>{{item.certificateDto.email}}</td>
+                <td>{{item.email}}</td>
             </tr>
             <tr>
                 <td>Surname: </td>
-                <td>{{item.certificateDto.surname}}</td>
+                <td>{{item.surname}}</td>
             </tr>
             <tr>
                 <td>Valid From: </td>
-                <td>{{item.certificateDto.validFrom}}</td>
+                <td>{{item.validFrom}}</td>
             </tr>
             <tr>
                 <td>Valid Until: </td>
-                <td>{{item.certificateDto.validUntil}}</td>
+                <td>{{item.validUntil}}</td>
             </tr>
-            <tr *ngIf="item.certificateDto.revocation">
+            <tr *ngIf="item.revocation">
                 <td>Status: </td>
                 <td>REVOKED</td>
             </tr>
-            <tr *ngIf="item.certificateDto.revocation">
+            <tr *ngIf="item.revocation">
                 <td>Revocation Reason: </td>
-                <td>{{item.certificateDto.revocation.revokeReason}}</td>
+                <td>{{item.revocation.revokeReason}}</td>
             </tr>
-            <tr *ngIf="item.certificateDto.revocation">
+            <tr *ngIf="item.revocation">
                 <td>Revocation Date: </td>
-                <td>{{item.certificateDto.revocation.revocationDate}}</td>
+                <td>{{item.revocation.revocationDate}}</td>
             </tr>
         </table>
     </div>
-    <div class="col-12 p-0" *ngIf="item.certificateDto.extensionDtoList && elStatus">
+    <div class="col-12 p-0" *ngIf="item.extensionDtoList && elStatus">
         <div class="extensions-header" (click)="toggleExtensions(elStatus)">
             Extensions: <fa-icon *ngIf="!elStatus.extensionsSelected" [icon]="faArrowDown" class="navigation-icon" style="font-size: 11px;"></fa-icon><fa-icon *ngIf="elStatus.extensionsSelected" [icon]="faArrowUp" class="navigation-icon" style="font-size: 11px;"></fa-icon>
         </div>
         <div class="extension-information d-flex justify-content-center" [ngClass]="{'selected' : elStatus.extensionsSelected}">
             <table class="extension-table">
-                <tr *ngFor="let extension of item.certificateDto.extensionDtoList; let i = index">
+                <tr *ngFor="let extension of item.extensionDtoList; let i = index">
                     <td class="extension-name" valign="top">{{extension.name}}:</td>
                     <td>
                         <div *ngFor="let attr of extension.attributes">{{attr}}</div>
@@ -132,7 +132,7 @@
         </div>
     </div>
     <div *ngIf="item.issuer" class="row col-12 main-data" style="padding: 0px !important;" [ngClass]="{'selected' : elStatus.issuerStatus.isSelected}">
-        <div class="col-12 issuer">Issuer: {{item.issuer.certificateDto.serialNumber}} ({{item.issuer.id}}) for {{item.certificateDto.serialNumber}} ({{item.id}})</div>
+        <div class="col-12 issuer">Issuer: {{item.issuer.serialNumber}} ({{item.issuer.id}}) for {{item.serialNumber}} ({{item.id}})</div>
         <ng-container *ngTemplateOutlet="recursiveListTmpl; context:{ $implicit: item.issuer,  elStatus: elStatus.issuerStatus }"></ng-container>
     </div>
     <div *ngIf="item.issuer" (click)="moreOrLessIssuerInformation($event, elStatus.issuerStatus)" class="row more-information-indicator issuer-information d-flex align-items-center justify-content-center hovered">

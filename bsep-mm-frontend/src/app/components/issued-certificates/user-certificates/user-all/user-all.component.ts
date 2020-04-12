@@ -15,15 +15,15 @@ export class UserAllComponent implements OnInit {
 
   private params = {
     revoked: false,
-    commonName: '',
+    isCa: false,
     page: 0,
-    pageSize: 50,
+    pageSize: 20,
   }
 
   constructor(private certificateService: CertificateService) { }
 
   ngOnInit() {
-    this.certificateService.postSearchUserCertificate(this.params).subscribe(
+    this.certificateService.postSimpleSearchCertificate(this.params).subscribe(
       data => {
         console.log(data);
         this.data = data.items;

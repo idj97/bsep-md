@@ -25,4 +25,8 @@ export class CertificateService {
     return this.http.post<any>('api/certificates/search', certificateSearchDto);
   }
 
+  postSimpleSearchCertificate(certificateSearchDto: any) {
+    return this.http.post<any>('api/certificates/simple-search', certificateSearchDto);
+  }
+
 }

@@ -193,6 +193,7 @@ public class CAService {
             Date validUntil = sdf.parse("08-04-2020 21:00");
             Date validFrom = sdf.parse("08-04-2021 21:00");
             CertificateDto certificateDto = new CertificateDto(
+            		null,
                     "*.google-ca.com",
                     "google",
                     "ca",

@@ -64,7 +64,7 @@ public class CertificateRequestController {
     }
     
     @GetMapping("/download/{id}")
-    public ResponseEntity<InputStreamResource> downloadXML(@PathVariable Long id) { 
+    public ResponseEntity<InputStreamResource> downloadRequestedCertificate(@PathVariable Long id) { 
 		return certificateReqSvc.downloadCertificate(id);
     }
 

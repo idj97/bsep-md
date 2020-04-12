@@ -12,8 +12,8 @@ export class CaRevokedComponent implements OnInit {
   private elStatus: any[] = [];
   
   private params = {
-    revoked: false,
-    commonName: '',
+    revoked: true,
+    isCa: true,
     page: 0,
     pageSize: 20,
   }
@@ -21,7 +21,7 @@ export class CaRevokedComponent implements OnInit {
   constructor(private certificateService: CertificateService) { }
 
   ngOnInit() {
-    this.certificateService.postSearch(this.params).subscribe(
+    this.certificateService.postSimpleSearchCertificate(this.params).subscribe(
       data => {
         console.log(data);
         this.data = data.items;

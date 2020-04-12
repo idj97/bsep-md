@@ -21,7 +21,7 @@
         </div>
     </div>
     <div *ngIf="revoked" class="pl-4 pr-4 pt-2 pb-4">
-        <div class="revoked-information">Certificate {{data.certificateDto.serialNumber}} is successfully revoked!</div>
+        <div class="revoked-information">Certificate {{data.serialNumber}} is successfully revoked!</div>
     </div>
     <div class="separator pl-4">
         <div></div>
@@ -31,11 +31,11 @@
         <div></div>
     </div>
 
-    <div class="information-holder p-4" *ngIf="data && data.certificateDto">
+    <div class="information-holder p-4" *ngIf="data">
         <table>
             <tr>
                 <td>Serial Number:</td>
-                <td>{{data.certificateDto.serialNumber}}</td>
+                <td>{{data.serialNumber}}</td>
             </tr>
             <tr>
                 <td>ID:</td>
@@ -43,39 +43,39 @@
             </tr>
             <tr>
                 <td>Common Name:</td>
-                <td>{{data.certificateDto.commonName}}</td>
+                <td>{{data.commonName}}</td>
             </tr>
             <tr>
                 <td>Common Name:</td>
-                <td>{{data.certificateDto.givenName}}</td>
+                <td>{{data.givenName}}</td>
             </tr>
             <tr>
                 <td>Surname:</td>
-                <td>{{data.certificateDto.surname}}</td>
+                <td>{{data.surname}}</td>
             </tr>
             <tr>
                 <td>Organisation:</td>
-                <td>{{data.certificateDto.organisation}}</td>
+                <td>{{data.organisation}}</td>
             </tr>
             <tr>
                 <td>Organisation Unit:</td>
-                <td>{{data.certificateDto.organisationUnit}}</td>
+                <td>{{data.organisationUnit}}</td>
             </tr>
             <tr>
                 <td>Country:</td>
-                <td>{{data.certificateDto.country}}</td>
+                <td>{{data.country}}</td>
             </tr>
             <tr>
                 <td>Email:</td>
-                <td>{{data.certificateDto.email}}</td>
+                <td>{{data.email}}</td>
             </tr>
             <tr>
                 <td>Valid From:</td>
-                <td>{{data.certificateDto.validFrom}}</td>
+                <td>{{data.validFrom}}</td>
             </tr>
             <tr>
                 <td>Valid Until:</td>
-                <td>{{data.certificateDto.validUntil}}</td>
+                <td>{{data.validUntil}}</td>
             </tr>
             
 

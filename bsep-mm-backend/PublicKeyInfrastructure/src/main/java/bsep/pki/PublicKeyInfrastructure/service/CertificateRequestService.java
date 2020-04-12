@@ -144,7 +144,6 @@ public class CertificateRequestService {
     	
     	CertificateRequest certReq = optCertReq.get();
 
-    	//TODO get certificate by alias
     	X509CertificateData certData = keyStoreService.getCaCertificate(
     	        certReq.getSerialNumber().toString());
     	

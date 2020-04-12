@@ -20,6 +20,8 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CertificateDto {
+	private Long id;
+	
     @NotBlank
     private String commonName;
 
@@ -58,6 +60,7 @@ public class CertificateDto {
 
     public CertificateDto(Certificate certificate) {
         super();
+        id = certificate.getId();
         commonName = certificate.getCN();
         givenName = certificate.getGivenName();
         surname = certificate.getGivenName();
