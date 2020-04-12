@@ -1,7 +1,6 @@
 package bsep.pki.PublicKeyInfrastructure.service;
 
 import bsep.pki.PublicKeyInfrastructure.data.X509CertificateData;
-import bsep.pki.PublicKeyInfrastructure.dto.CADto;
 import bsep.pki.PublicKeyInfrastructure.dto.CertificateDto;
 import bsep.pki.PublicKeyInfrastructure.dto.CertificateSearchDto;
 import bsep.pki.PublicKeyInfrastructure.dto.PageDto;
@@ -23,7 +22,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -155,35 +153,6 @@ public class CertificateService {
         return certificate;
     }
 
-    public PageDto<CADto> getAll(CertificateSearchDto caSearchDto) {
-        Pageable pageable = PageRequest.of(caSearchDto.getPage(), caSearchDto.getPageSize());
-
-        List<Certificate> caCertificates = certificateRepository
-                .findByCNContainingAndIssuedForCANotNull(caSearchDto.getCommonName());
-
-        List<Certificate> certificates = certificateRepository
-                .findByIssuedForCANull();
-
-        // filtriraj sertifikate
-        certificates = certificates
-                .stream()
-                .filter(c -> {
-                    if (caSearchDto.getRevoked() == true)
-                        return c.getRevocation() != null;
-                    return true;
-                })
-                .collect(Collectors.toList());
-
-        List<CADto> caDtos = caCertificates.stream().map(c -> new CADto(c.getIssuedForCA())).collect(Collectors.toList());
-        List<CADto> certDtos = certificates.stream().map(c -> new CADto(c)).collect(Collectors.toList());
-        caDtos.addAll(certDtos);
-
-        // napravi page
-        Page<CADto> page = pageService.getPage(caDtos, pageable);
-
-        return new PageDto<CADto>(caDtos, page.getTotalPages());
-    }
-
     public PageDto<CertificateDto> search(CertificateSearchDto certificateSearchDto) {
         // pripremi page request podatke
         Pageable pageable = PageRequest.of(
@@ -211,4 +180,6 @@ public class CertificateService {
 
         return pageDto;
     }
+
+
 }

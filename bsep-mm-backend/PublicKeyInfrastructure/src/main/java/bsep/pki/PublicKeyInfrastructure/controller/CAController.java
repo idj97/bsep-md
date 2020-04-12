@@ -1,8 +1,6 @@
 package bsep.pki.PublicKeyInfrastructure.controller;
 
 import bsep.pki.PublicKeyInfrastructure.dto.CADto;
-import bsep.pki.PublicKeyInfrastructure.dto.CertificateSearchDto;
-import bsep.pki.PublicKeyInfrastructure.dto.PageDto;
 import bsep.pki.PublicKeyInfrastructure.model.CAType;
 import bsep.pki.PublicKeyInfrastructure.service.CAService;
 import bsep.pki.PublicKeyInfrastructure.service.RootCAService;
@@ -38,10 +36,4 @@ public class CAController {
         }
         return new ResponseEntity<>(caDtoRet, HttpStatus.OK);
     }
-
-    @PostMapping(path = "/search")
-    public ResponseEntity<PageDto<CADto>> searchCAs(@RequestBody @Valid CertificateSearchDto certificateSearchDto) {
-        return new ResponseEntity<>(caService.getAll(certificateSearchDto), HttpStatus.OK);
-    }
-
 }

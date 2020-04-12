@@ -30,12 +30,6 @@ public class CertificateController {
         return new ResponseEntity<>(crlService.revokeCertificate(revocationDto), HttpStatus.OK);
     }
 
-    @PostMapping("/search")
-    @PreAuthorize("hasRole('admin')")
-    public ResponseEntity<PageDto<CADto>> search(@RequestBody @Valid CertificateSearchDto certificateSearchDto) {
-        return new ResponseEntity<>(certificateService.getAll(certificateSearchDto), HttpStatus.OK);
-    }
-
     @PostMapping("/simple-search")
     @PreAuthorize("hasRole('admin')")
     public ResponseEntity<PageDto<CertificateDto>> simpleSearch(@RequestBody @Valid CertificateSearchDto certificateSearchDto) {

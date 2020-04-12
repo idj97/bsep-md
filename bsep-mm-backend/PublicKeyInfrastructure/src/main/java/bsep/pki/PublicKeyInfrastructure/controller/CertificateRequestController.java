@@ -7,6 +7,7 @@ import bsep.pki.PublicKeyInfrastructure.model.CertificateRequestStatus;
 import bsep.pki.PublicKeyInfrastructure.service.CertificateRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -64,8 +65,17 @@ public class CertificateRequestController {
     }
     
     @GetMapping("/download/{id}")
-    public ResponseEntity<InputStreamResource> downloadRequestedCertificate(@PathVariable Long id) { 
-		return certificateReqSvc.downloadCertificate(id);
+    public ResponseEntity<InputStreamResource> downloadRequestedCertificate(@PathVariable Long id) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+        headers.add("Pragma", "no-cache");
+        headers.add("Expires", "0");
+        headers.setContentDispositionFormData("attachment", "ceritifacte.cer");
+
+        return new ResponseEntity<>(
+                certificateReqSvc.getCertFileForCertRequest(id),
+                headers,
+                HttpStatus.OK);
     }
 
 

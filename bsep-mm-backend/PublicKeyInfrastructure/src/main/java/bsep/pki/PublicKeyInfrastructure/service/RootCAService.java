@@ -15,8 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.BadRequestException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -55,9 +53,6 @@ public class RootCAService {
 
     @Autowired
     private X500Service x500Service;
-
-    @Autowired
-    private HttpServletRequest request;
 
     @Autowired
     private CARepository caRepository;
