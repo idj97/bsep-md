@@ -7,8 +7,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.bouncycastle.asn1.x500.X500Name;
 
+import java.math.BigInteger;
 import java.security.KeyPair;
 import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.Date;
@@ -20,8 +22,10 @@ import java.util.Date;
 public class CreateX509CertificateData {
     private X500Name issuerX500Name;
     private X500Name subjectX500Name;
-    private Integer subjectSerialNumber;
+    private BigInteger subjectSerialNumber;
+    private BigInteger issuerSerialNumber;
     private KeyPair subjectKeys;
+    private PublicKey issuerPublicKey;
     private PrivateKey issuerPrivateKey;
     private Date validFrom;
     private Date validUntil;

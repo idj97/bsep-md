@@ -10,10 +10,12 @@ import bsep.pki.PublicKeyInfrastructure.model.*;
 import bsep.pki.PublicKeyInfrastructure.repository.CARepository;
 import bsep.pki.PublicKeyInfrastructure.repository.CertificateRepository;
 import bsep.pki.PublicKeyInfrastructure.utility.DateService;
+import bsep.pki.PublicKeyInfrastructure.utility.KeyStoreService;
 import bsep.pki.PublicKeyInfrastructure.utility.PageService;
 import bsep.pki.PublicKeyInfrastructure.utility.X500Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,7 +23,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.ByteArrayInputStream;
+import java.security.cert.CertificateEncodingException;
+import java.security.cert.X509Certificate;
 import java.util.Date;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,7 +47,7 @@ public class CertificateService {
     private CertificateRepository certificateRepository;
 
     @Autowired
-    private PageService pageService;
+    private KeyStoreService keyStoreService;
 
     @Value("${crl.public.path}")
     private String crlPublicPath;
@@ -181,5 +187,23 @@ public class CertificateService {
         return pageDto;
     }
 
+    public InputStreamResource getCertFileBySerialNumber(String serialNumber) {
+        Optional<Certificate> optionalCertificate = certificateRepository.findBySerialNumber(serialNumber);
+        if (optionalCertificate.isPresent()) {
+            Certificate certificate = optionalCertificate.get();
+            X509Certificate x509Certificate = keyStoreService.getCertificate(
+                    certificate.getSerialNumber()).getX509CertificateChain()[0];
 
+            byte[] binary = null;
+            try {
+                binary = x509Certificate.getEncoded();
+            } catch (CertificateEncodingException e) {
+                e.printStackTrace();
+            }
+
+            return new InputStreamResource(new ByteArrayInputStream(binary));
+        } else {
+            throw new ApiNotFoundException("Cert not found.");
+        }
+    }
 }

@@ -46,6 +46,9 @@ public class CAService {
     @Value("${crl.public.path}")
     private String crlPublicPath;
 
+    @Value("${certs.endpoint}")
+    private String certEndpoint;
+
     public CADto createCA(CADto caDto) {
         Optional<CA> optionalRootCA = caRepository
                 .findByTypeAndCertificateRevocationNull(CAType.ROOT);
@@ -130,17 +133,27 @@ public class CAService {
         crlDistPointExtension.getAttributes().add(
                 new ExtensionAttribute(null, crlPublicPath, crlDistPointExtension));
 
+        Extension aiaExtension = new Extension();
+        aiaExtension.setName("Authority Information Access");
+        aiaExtension.setCertificate(certificate);
+        aiaExtension.getAttributes().add(
+                new ExtensionAttribute(
+                        null,
+                        "URL: " + certEndpoint + issuerCertificate.getSerialNumber(),
+                        aiaExtension));
+
         certificate.getExtensions().add(bcExtension);
         certificate.getExtensions().add(keyUsageExtension);
         certificate.getExtensions().add(crlDistPointExtension);
+        certificate.getExtensions().add(aiaExtension);
         return certificate;
     }
 
     public CADto tryCreateCA(Long id, CAType caType, CertificateType certificateType) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
         try {
-            Date validUntil = sdf.parse("08-04-2020 21:00");
-            Date validFrom = sdf.parse("08-04-2021 21:00");
+            Date validFrom = sdf.parse("08-04-2019 21:00");
+            Date validUntil = sdf.parse("08-04-2025 21:00");
             CertificateDto certificateDto = new CertificateDto(
             		null,
                     "*.google-ca.com",

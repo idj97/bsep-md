@@ -49,6 +49,32 @@ public class KeyStoreService {
         return null;
     }
 
+    public X509CertificateData getCertificate(String alias) {
+        try {
+            KeyStore keyStore = KeyStore.getInstance(new File(keyStoreName), keyStorePassword.toCharArray());
+
+            Certificate[] originalChain = keyStore.getCertificateChain(alias);
+            X509Certificate[] chain = new X509Certificate[originalChain.length];
+            for(int i = 0; i < originalChain.length; i++)
+                chain[i] = (X509Certificate) originalChain[i];
+
+            return new X509CertificateData(
+                    chain,
+                    null,
+                    alias);
+
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (CertificateException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public X509CertificateData getCaCertificate(String alias) {
         try {
             KeyStore keyStore = KeyStore.getInstance(new File(keyStoreName), keyStorePassword.toCharArray());
@@ -59,7 +85,6 @@ public class KeyStoreService {
             X509Certificate[] chain = new X509Certificate[originalChain.length];
             for(int i = 0; i < originalChain.length; i++)
                 chain[i] = (X509Certificate) originalChain[i];
-
 
             return new X509CertificateData(
                     chain,

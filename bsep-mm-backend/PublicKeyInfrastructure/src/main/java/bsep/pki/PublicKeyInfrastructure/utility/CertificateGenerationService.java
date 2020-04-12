@@ -15,15 +15,18 @@ import org.bouncycastle.cert.CertIOException;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
+import org.bouncycastle.cert.jcajce.JcaX509ExtensionUtils;
 import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.hibernate.Criteria;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
+import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
@@ -33,9 +36,22 @@ public class CertificateGenerationService {
 
     private static boolean CRITICAL = true;
     private static boolean NOT_CRITICAL = false;
+    private static JcaX509ExtensionUtils jcaX509ExtensionUtils;
+
+    static {
+        try {
+            jcaX509ExtensionUtils = new JcaX509ExtensionUtils();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     @Autowired
     private X500CrlService x500CrlService;
+
+    @Value("${certs.endpoint}")
+    private String certsEndpoint;
 
     public X509Certificate generate(
             SubjectData subjectData,
@@ -61,29 +77,18 @@ public class CertificateGenerationService {
                     subjectData.getEndDate(),
                     subjectData.getX500name(),
                     subjectData.getPublicKey());
-            
-            //Authority Information Access
-//            AccessDescription caIssuers = new AccessDescription(
-//            		AccessDescription.id_ad_caIssuers,
-//            		new GeneralName(GeneralName.uniformResourceIdentifier,
-//            				new DERIA5String("URL")));
-//
-//        	ASN1EncodableVector aia_ASN = new ASN1EncodableVector();
-//        	aia_ASN.add(caIssuers);
-//
-//        	certGen.addExtension(Extension.authorityInfoAccess, false, new DERSequence(aia_ASN));
 
             //Postavljaju se ekstenzije u zavisnosti od tipa/namene sertifikata
             if (certificateType.equals(CertificateType.ROOT)) {
                 setRootExtensions(certGen);
             } else if (certificateType.equals(CertificateType.SIEM_AGENT_ISSUER)) {
-                setCertIssuerExtensions(certGen);
+                setCertIssuerExtensions(certGen, issuerData);
             } else if (certificateType.equals(CertificateType.SIEM_CENTER_ISSUER)) {
-                setCertIssuerExtensions(certGen);
+                setCertIssuerExtensions(certGen, issuerData);
             } else if (certificateType.equals(CertificateType.SIEM_AGENT)){
-                setSiemAgentCertExtensions(certGen);
+                setSiemAgentCertExtensions(certGen, issuerData);
             } else if (certificateType.equals(CertificateType.SIEM_CENTER)) {
-                setSiemCenterCertExtensions(certGen);
+                setSiemCenterCertExtensions(certGen, issuerData);
             } else {
                 throw new ApiBadRequestException("Bad certificate type.");
             }
@@ -129,7 +134,7 @@ public class CertificateGenerationService {
         }
     }
 
-    public void setCertIssuerExtensions(X509v3CertificateBuilder certGen) {
+    public void setCertIssuerExtensions(X509v3CertificateBuilder certGen, IssuerData issuerData) {
         try {
             certGen.addExtension(
                     Extension.basicConstraints,
@@ -146,12 +151,23 @@ public class CertificateGenerationService {
                     Extension.cRLDistributionPoints,
                     NOT_CRITICAL,
                     x500CrlService.getCRLDistPoint());
+
+        	certGen.addExtension(
+        	        Extension.authorityInfoAccess,
+                    NOT_CRITICAL,
+                    getAIADerSequence(certsEndpoint + issuerData.getSerialNumber().toString()));
+
+        	certGen.addExtension(
+        	        Extension.authorityKeyIdentifier,
+                    CRITICAL,
+                    jcaX509ExtensionUtils.createAuthorityKeyIdentifier(issuerData.getPublicKey()));
+
         } catch (CertIOException e) {
             e.printStackTrace();
         }
     }
 
-    public void setSiemAgentCertExtensions(X509v3CertificateBuilder certGen) {
+    public void setSiemAgentCertExtensions(X509v3CertificateBuilder certGen, IssuerData issuerData) {
         try {
             certGen.addExtension(
                     Extension.basicConstraints,
@@ -168,12 +184,23 @@ public class CertificateGenerationService {
                     Extension.cRLDistributionPoints,
                     NOT_CRITICAL,
                     x500CrlService.getCRLDistPoint());
+
+            certGen.addExtension(
+                    Extension.authorityInfoAccess,
+                    NOT_CRITICAL,
+                    getAIADerSequence(certsEndpoint + issuerData.getSerialNumber().toString()));
+
+            certGen.addExtension(
+                    Extension.authorityKeyIdentifier,
+                    CRITICAL,
+                    jcaX509ExtensionUtils.createAuthorityKeyIdentifier(issuerData.getPublicKey()));
+
         } catch (CertIOException e) {
             e.printStackTrace();
         }
     }
 
-    public void setSiemCenterCertExtensions(X509v3CertificateBuilder certGen) {
+    public void setSiemCenterCertExtensions(X509v3CertificateBuilder certGen, IssuerData issuerData) {
         try {
             certGen.addExtension(
                     Extension.basicConstraints,
@@ -190,9 +217,33 @@ public class CertificateGenerationService {
                     Extension.cRLDistributionPoints,
                     NOT_CRITICAL,
                     x500CrlService.getCRLDistPoint());
+
+            certGen.addExtension(
+                    Extension.authorityInfoAccess,
+                    NOT_CRITICAL,
+                    getAIADerSequence(certsEndpoint + issuerData.getSerialNumber().toString()));
+
+            certGen.addExtension(
+                    Extension.authorityKeyIdentifier,
+                    CRITICAL,
+                    jcaX509ExtensionUtils.createAuthorityKeyIdentifier(issuerData.getPublicKey()));
+
         } catch (CertIOException e) {
             e.printStackTrace();
         }
     }
+
+    public DERSequence getAIADerSequence(String url) {
+        AccessDescription caIssuer = new AccessDescription(
+                AccessDescription.id_ad_caIssuers,
+                new GeneralName(
+                        GeneralName.uniformResourceIdentifier,
+                        new DERIA5String(url)));
+
+        ASN1EncodableVector aia_ASN = new ASN1EncodableVector();
+        aia_ASN.add(caIssuer);
+        return new DERSequence(aia_ASN);
+    }
+
 
 }

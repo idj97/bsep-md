@@ -4,13 +4,12 @@ import bsep.pki.PublicKeyInfrastructure.dto.*;
 import bsep.pki.PublicKeyInfrastructure.service.CRLService;
 import bsep.pki.PublicKeyInfrastructure.service.CertificateService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -34,6 +33,20 @@ public class CertificateController {
     @PreAuthorize("hasRole('admin')")
     public ResponseEntity<PageDto<CertificateDto>> simpleSearch(@RequestBody @Valid CertificateSearchDto certificateSearchDto) {
         return new ResponseEntity<>(certificateService.search(certificateSearchDto), HttpStatus.OK);
+    }
+
+    @GetMapping("/download/{serialNumber}")
+    public ResponseEntity<InputStreamResource> downloadRequestedCertificate(@PathVariable String serialNumber) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+        headers.add("Pragma", "no-cache");
+        headers.add("Expires", "0");
+        headers.setContentDispositionFormData("attachment", "ceritifacte.cer");
+
+        return new ResponseEntity<>(
+                certificateService.getCertFileBySerialNumber(serialNumber),
+                headers,
+                HttpStatus.OK);
     }
 
 }

@@ -77,8 +77,4 @@ public class CertificateRequestController {
                 headers,
                 HttpStatus.OK);
     }
-
-
-
-
 }
