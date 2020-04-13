@@ -25,7 +25,7 @@ public class Simulator {
         CertificateSignedRequest signed = csr.createSignedRequest(request, pair.getPrivate());
 
 
-        System.out.println("Your signed request is:\n");
+        System.out.println("\nYour signed request is:");
         System.out.println(signed.toString() + "\n");
 
     }

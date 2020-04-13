@@ -58,8 +58,6 @@ public class CSRService {
                 )
         );
 
-        System.out.println(signedRequest.getEncodedCsr().getBytes().length == signedRequest.getSignedCsr().getBytes().length);
-
         return signedRequest;
     }
 
