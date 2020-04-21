@@ -140,7 +140,7 @@ public class X500Service {
         builder.addRDN(BCStyle.SURNAME, certificateDto.getSurname());
         builder.addRDN(BCStyle.GIVENNAME, certificateDto.getGivenName());
         builder.addRDN(BCStyle.O, certificateDto.getOrganisation());
-        builder.addRDN(BCStyle.OU, certificateDto.getOrganisation());
+        builder.addRDN(BCStyle.OU, certificateDto.getOrganisationUnit());
         builder.addRDN(BCStyle.C, certificateDto.getCountry());
         builder.addRDN(BCStyle.E, certificateDto.getEmail());
         builder.addRDN(BCStyle.SERIALNUMBER, certificateDto.getSerialNumber().toString());
