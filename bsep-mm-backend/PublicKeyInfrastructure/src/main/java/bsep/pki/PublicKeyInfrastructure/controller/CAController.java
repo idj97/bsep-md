@@ -1,9 +1,9 @@
 package bsep.pki.PublicKeyInfrastructure.controller;
 
 import bsep.pki.PublicKeyInfrastructure.dto.CADto;
-import bsep.pki.PublicKeyInfrastructure.dto.CertificateSearchDto;
-import bsep.pki.PublicKeyInfrastructure.dto.PageDto;
+import bsep.pki.PublicKeyInfrastructure.model.CAType;
 import bsep.pki.PublicKeyInfrastructure.service.CAService;
+import bsep.pki.PublicKeyInfrastructure.service.RootCAService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,15 +22,18 @@ public class CAController {
     @Autowired
     private CAService caService;
 
+    @Autowired
+    private RootCAService rootCAService;
+
     @PostMapping
     @PreAuthorize("hasRole('admin')")
     public ResponseEntity<CADto> create(@RequestBody @Valid CADto caDto) {
-        return new ResponseEntity<>(caService.createCA(caDto), HttpStatus.OK);
+        CADto caDtoRet = null;
+        if (caDto.getCaType().equals(CAType.ROOT)) {
+            caDtoRet = rootCAService.createRootCA(caDto);
+        } else {
+            caDtoRet = caService.createCA(caDto);
+        }
+        return new ResponseEntity<>(caDtoRet, HttpStatus.OK);
     }
-
-    @PostMapping(path = "/search")
-    public ResponseEntity<PageDto<CADto>> searchCAs(@RequestBody @Valid CertificateSearchDto certificateSearchDto) {
-        return new ResponseEntity<>(caService.getAll(certificateSearchDto), HttpStatus.OK);
-    }
-
 }

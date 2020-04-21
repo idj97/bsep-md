@@ -1,6 +1,8 @@
 package bsep.pki.PublicKeyInfrastructure.dto;
 
 import bsep.pki.PublicKeyInfrastructure.model.CAType;
+import bsep.pki.PublicKeyInfrastructure.model.CertificateType;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,13 +17,25 @@ import java.util.Date;
 @AllArgsConstructor
 public class CertificateSearchDto {
     @NotNull
-    private boolean revoked;
-    private String commonName;
-    private CAType caType;
-    private Date validFrom;
-    private Date validUntil;
-    @NotNull
     private int page;
+
     @NotNull
     private int pageSize;
+
+    @NotNull
+    private Boolean revoked;
+
+    //@NotNull ODKOMENTARISATI NAKON STO SE getAll zameni simpleSearch-om.
+    private Boolean isCa;
+
+    private String commonName = "";
+    private CAType caType; // TREBA IZBRISATI NAKON STO SE getAll metoda za pretragu izbrise
+    private CertificateType certificateType;
+
+    @JsonFormat(pattern = "dd-MM-yyyy HH:mm", timezone = "Europe/Belgrade")
+    private Date validFrom;
+
+    @JsonFormat(pattern = "dd-MM-yyyy HH:mm", timezone = "Europe/Belgrade")
+    private Date validUntil;
+
 }

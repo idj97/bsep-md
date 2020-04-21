@@ -14,6 +14,7 @@ import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
 import java.security.*;
 import java.security.cert.X509Certificate;
 import java.util.Optional;
@@ -38,8 +39,10 @@ public class X500Service {
         return createX509Certificate(new CreateX509CertificateData(
                 createX500NameFromCertificateDto(certificateDto),
                 createX500NameFromCertificateDto(certificateDto),
-                subjectSerialNumber,
+                BigInteger.valueOf(subjectSerialNumber),
+                null,
                 subjectKeyPair,
+                null,
                 subjectKeyPair.getPrivate(),
                 certificateDto.getValidFrom(),
                 certificateDto.getValidUntil(),
@@ -59,10 +62,12 @@ public class X500Service {
                 .getCaCertificate(issuerCertificate.getKeyStoreAlias());
 
         return createX509Certificate(new CreateX509CertificateData(
-                createX500NameFromCertificateDto(subjectCertificateDto),
                 createX500NameFromCertificate(issuerCertificate),
-                subjectSerialNumber,
+                createX500NameFromCertificateDto(subjectCertificateDto),
+                BigInteger.valueOf(subjectSerialNumber),
+                new BigInteger(issuerCertificate.getSerialNumber()),
                 subjectKeyPair,
+                issuerCertificateData.getX509CertificateChain()[0].getPublicKey(),
                 issuerCertificateData.getPrivateKey(),
                 subjectCertificateDto.getValidFrom(),
                 subjectCertificateDto.getValidUntil(),
@@ -83,8 +88,10 @@ public class X500Service {
 
         // popuni issuer podatke
         IssuerData issuerData = new IssuerData(
+                data.getIssuerPublicKey(),
                 data.getIssuerPrivateKey(),
-                data.getIssuerX500Name());
+                data.getIssuerX500Name(),
+                data.getIssuerSerialNumber());
 
         // kreiraj sertifikat
         X509Certificate subjectCertificate = certificateGenerationService.generate(
@@ -133,7 +140,7 @@ public class X500Service {
         builder.addRDN(BCStyle.SURNAME, certificateDto.getSurname());
         builder.addRDN(BCStyle.GIVENNAME, certificateDto.getGivenName());
         builder.addRDN(BCStyle.O, certificateDto.getOrganisation());
-        builder.addRDN(BCStyle.OU, certificateDto.getOrganisation());
+        builder.addRDN(BCStyle.OU, certificateDto.getOrganisationUnit());
         builder.addRDN(BCStyle.C, certificateDto.getCountry());
         builder.addRDN(BCStyle.E, certificateDto.getEmail());
         builder.addRDN(BCStyle.SERIALNUMBER, certificateDto.getSerialNumber().toString());

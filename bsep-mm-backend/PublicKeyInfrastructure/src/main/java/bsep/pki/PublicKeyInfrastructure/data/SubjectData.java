@@ -14,7 +14,6 @@ import java.util.Date;
 @Getter
 @Setter
 public class SubjectData {
-
 	private PublicKey publicKey;
 	private X500Name x500name;
 	private String serialNumber;

@@ -3,8 +3,6 @@ package bsep.pki.PublicKeyInfrastructure.service;
 import bsep.pki.PublicKeyInfrastructure.data.X509CertificateData;
 import bsep.pki.PublicKeyInfrastructure.dto.CADto;
 import bsep.pki.PublicKeyInfrastructure.dto.CertificateDto;
-import bsep.pki.PublicKeyInfrastructure.dto.CertificateSearchDto;
-import bsep.pki.PublicKeyInfrastructure.dto.PageDto;
 import bsep.pki.PublicKeyInfrastructure.exception.ApiNotFoundException;
 import bsep.pki.PublicKeyInfrastructure.model.*;
 import bsep.pki.PublicKeyInfrastructure.repository.CARepository;
@@ -14,9 +12,6 @@ import bsep.pki.PublicKeyInfrastructure.utility.PageService;
 import bsep.pki.PublicKeyInfrastructure.utility.X500Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,9 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(propagation = Propagation.REQUIRED)
@@ -52,6 +45,9 @@ public class CAService {
 
     @Value("${crl.public.path}")
     private String crlPublicPath;
+
+    @Value("${certs.endpoint}")
+    private String certEndpoint;
 
     public CADto createCA(CADto caDto) {
         Optional<CA> optionalRootCA = caRepository
@@ -137,62 +133,29 @@ public class CAService {
         crlDistPointExtension.getAttributes().add(
                 new ExtensionAttribute(null, crlPublicPath, crlDistPointExtension));
 
+        Extension aiaExtension = new Extension();
+        aiaExtension.setName("Authority Information Access");
+        aiaExtension.setCertificate(certificate);
+        aiaExtension.getAttributes().add(
+                new ExtensionAttribute(
+                        null,
+                        "URL: " + certEndpoint + issuerCertificate.getSerialNumber(),
+                        aiaExtension));
+
         certificate.getExtensions().add(bcExtension);
         certificate.getExtensions().add(keyUsageExtension);
         certificate.getExtensions().add(crlDistPointExtension);
+        certificate.getExtensions().add(aiaExtension);
         return certificate;
-    }
-
-    public PageDto<CADto> getAll(CertificateSearchDto caSearchDto) {
-        Pageable pageable = PageRequest.of(caSearchDto.getPage(), caSearchDto.getPageSize());
-
-        List<Certificate> caCertificates = certificateRepository
-                .findByCNContainingAndIssuedForCANotNull(caSearchDto.getCommonName());
-
-        // filtriraj sertifikate
-        caCertificates = caCertificates
-                .stream()
-                .filter(c -> {
-                    if (caSearchDto.getCaType() != null)
-                        return caSearchDto.getCaType().equals(c.getIssuedForCA().getType());
-                    return true;
-                })
-                .filter(c -> {
-                    if (caSearchDto.getValidFrom() != null)
-                        return c.getValidFrom().after(caSearchDto.getValidFrom());
-                    return true;
-                })
-                .filter(c -> {
-                    if (caSearchDto.getValidUntil() != null)
-                        return c.getValidUntil().before(caSearchDto.getValidUntil());
-                    return true;
-                })
-                .filter(c -> {
-                    if (caSearchDto.isRevoked() == true)
-                        return c.getRevocation() != null;
-                    return true;
-                })
-                .collect(Collectors.toList());
-
-        // napravi page
-        Page<Certificate> page = pageService.getPage(caCertificates, pageable);
-
-        // pretvori page sertifikata u page ca dto
-        List<CADto> caDtos = page
-                .getContent()
-                .stream()
-                .map(c -> new CADto(c.getIssuedForCA()))
-                .collect(Collectors.toList());
-
-        return new PageDto<CADto>(caDtos, page.getTotalPages());
     }
 
     public CADto tryCreateCA(Long id, CAType caType, CertificateType certificateType) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
         try {
-            Date validUntil = sdf.parse("08-04-2020 21:00");
-            Date validFrom = sdf.parse("08-04-2021 21:00");
+            Date validFrom = sdf.parse("08-04-2019 21:00");
+            Date validUntil = sdf.parse("08-04-2025 21:00");
             CertificateDto certificateDto = new CertificateDto(
+            		null,
                     "*.google-ca.com",
                     "google",
                     "ca",
@@ -203,10 +166,10 @@ public class CAService {
                     validFrom,
                     validUntil,
                     null,
+                    null,
                     certificateType,
                     null,
                     null);
-            // CADto caDto = new CADto(nucertificateDto, CAType.UNDEFINED, id, null);
             CADto caDto = new CADto(null, id, caType, certificateDto);
             createCA(caDto);
         } catch (ParseException e) {

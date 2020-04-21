@@ -43,7 +43,7 @@ public class CRLService {
     private Boolean createCrlFile;
 
     public CertificateDto revokeCertificate(RevocationDto revocationDto) {
-        Optional<CA> rootCaOptional  = caRepository.findByType(CAType.ROOT);
+        Optional<CA> rootCaOptional  = caRepository.findByTypeAndCertificateRevocationNull(CAType.ROOT);
         Optional<Certificate> certificateOptional = certificateRepository
                 .findById(revocationDto.getCertificateId());
 

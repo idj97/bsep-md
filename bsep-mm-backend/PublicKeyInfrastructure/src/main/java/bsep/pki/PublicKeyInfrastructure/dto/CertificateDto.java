@@ -2,7 +2,6 @@ package bsep.pki.PublicKeyInfrastructure.dto;
 
 import bsep.pki.PublicKeyInfrastructure.model.Certificate;
 import bsep.pki.PublicKeyInfrastructure.model.CertificateType;
-import bsep.pki.PublicKeyInfrastructure.model.Extension;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,6 +20,8 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CertificateDto {
+	private Long id;
+	
     @NotBlank
     private String commonName;
 
@@ -51,13 +52,15 @@ public class CertificateDto {
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm", timezone = "Europe/Belgrade")
     private Date validUntil;
 
+    private CertificateDto issuer;
     private Integer serialNumber;
-    private CertificateType certificateType = CertificateType.UNDEFINED;
+    private CertificateType certificateType;
     private RevocationDto revocation;
     private List<ExtensionDto> extensionDtoList;
 
     public CertificateDto(Certificate certificate) {
         super();
+        id = certificate.getId();
         commonName = certificate.getCN();
         givenName = certificate.getGivenName();
         surname = certificate.getGivenName();
@@ -68,6 +71,7 @@ public class CertificateDto {
         validFrom = certificate.getValidFrom();
         validUntil = certificate.getValidUntil();
         serialNumber = Integer.parseInt(certificate.getSerialNumber());
+        certificateType = certificate.getCertificateType();
 
         if (certificate.getRevocation() != null)
             this.revocation = new RevocationDto(certificate.getRevocation());
@@ -77,5 +81,8 @@ public class CertificateDto {
                 .stream()
                 .map(ExtensionDto::new)
                 .collect(Collectors.toList());
+
+        if (certificate.getIssuedByCertificate() != null)
+            issuer = new CertificateDto(certificate.getIssuedByCertificate());
     }
 }

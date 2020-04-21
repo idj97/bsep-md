@@ -3,6 +3,7 @@ package bsep.pki.PublicKeyInfrastructure.service;
 import bsep.pki.PublicKeyInfrastructure.data.X509CertificateData;
 import bsep.pki.PublicKeyInfrastructure.dto.CADto;
 import bsep.pki.PublicKeyInfrastructure.dto.CertificateDto;
+import bsep.pki.PublicKeyInfrastructure.exception.ApiBadRequestException;
 import bsep.pki.PublicKeyInfrastructure.model.*;
 import bsep.pki.PublicKeyInfrastructure.repository.CARepository;
 import bsep.pki.PublicKeyInfrastructure.repository.CertificateRepository;
@@ -14,8 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.BadRequestException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -52,14 +51,8 @@ public class RootCAService {
     @Value("${root.validUntil}")
     private String validUntilStr;
 
-    @Value("${root.create}")
-    private Boolean createRoot;
-
     @Autowired
     private X500Service x500Service;
-
-    @Autowired
-    private HttpServletRequest request;
 
     @Autowired
     private CARepository caRepository;
@@ -71,36 +64,36 @@ public class RootCAService {
     private KeyStoreService keyStoreService;
 
     public void tryCreateRootCA() {
-        if (createRoot) {
-            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-            try {
-                Date validUntil = sdf.parse(validUntilStr);
-                Date validFrom = sdf.parse(validFromStr);
-                CertificateDto certificateDto = new CertificateDto(
-                        commonName,
-                        givenName,
-                        surname,
-                        organisation,
-                        orgnisationUnit,
-                        country,
-                        email,
-                        validFrom,
-                        validUntil,
-                        null,
-                        null,
-                        null,
-                        null);
-                CADto caDto = new CADto(null, null, CAType.ROOT, certificateDto);
-                //CADto caDto = new CADto(certificateDto, CAType.ROOT, null, null);
-                createRootCA(caDto);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+        try {
+            Date validUntil = sdf.parse(validUntilStr);
+            Date validFrom = sdf.parse(validFromStr);
+            CertificateDto certificateDto = new CertificateDto(
+            		null,
+                    commonName,
+                    givenName,
+                    surname,
+                    organisation,
+                    orgnisationUnit,
+                    country,
+                    email,
+                    validFrom,
+                    validUntil,
+                    null,
+                    null,
+                    CertificateType.ROOT,
+                    null,
+                    null);
+            CADto caDto = new CADto(null, null, CAType.ROOT, certificateDto);
+            //CADto caDto = new CADto(certificateDto, CAType.ROOT, null, null);
+            createRootCA(caDto);
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
     }
 
-    public CA createRootCA(CADto caDto) {
-        Optional<CA> optionalCA = caRepository.findByType(CAType.ROOT);
+    public CADto createRootCA(CADto caDto) {
+        Optional<CA> optionalCA = caRepository.findByTypeAndCertificateRevocationNull(CAType.ROOT);
         if (!optionalCA.isPresent()) {
             CertificateDto certificateDto = caDto.getCertificateDto();
 
@@ -122,9 +115,9 @@ public class RootCAService {
             // usnimi entitet i sertifikat
             ca = caRepository.save(ca);
             x500Service.saveX509Certificate(x509CertificateData);
-            return ca;
+            return new CADto(ca);
         } else {
-            throw new BadRequestException("Root CA already exists.");
+            throw new ApiBadRequestException("Root CA already exists.");
         }
     }
 

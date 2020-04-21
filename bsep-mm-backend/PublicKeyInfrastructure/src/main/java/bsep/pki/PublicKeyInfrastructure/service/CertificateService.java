@@ -1,7 +1,6 @@
 package bsep.pki.PublicKeyInfrastructure.service;
 
 import bsep.pki.PublicKeyInfrastructure.data.X509CertificateData;
-import bsep.pki.PublicKeyInfrastructure.dto.CADto;
 import bsep.pki.PublicKeyInfrastructure.dto.CertificateDto;
 import bsep.pki.PublicKeyInfrastructure.dto.CertificateSearchDto;
 import bsep.pki.PublicKeyInfrastructure.dto.PageDto;
@@ -11,10 +10,12 @@ import bsep.pki.PublicKeyInfrastructure.model.*;
 import bsep.pki.PublicKeyInfrastructure.repository.CARepository;
 import bsep.pki.PublicKeyInfrastructure.repository.CertificateRepository;
 import bsep.pki.PublicKeyInfrastructure.utility.DateService;
+import bsep.pki.PublicKeyInfrastructure.utility.KeyStoreService;
 import bsep.pki.PublicKeyInfrastructure.utility.PageService;
 import bsep.pki.PublicKeyInfrastructure.utility.X500Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,8 +23,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.ByteArrayInputStream;
+import java.security.cert.CertificateEncodingException;
+import java.security.cert.X509Certificate;
 import java.util.Date;
-import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,7 +47,7 @@ public class CertificateService {
     private CertificateRepository certificateRepository;
 
     @Autowired
-    private PageService pageService;
+    private KeyStoreService keyStoreService;
 
     @Value("${crl.public.path}")
     private String crlPublicPath;
@@ -155,33 +159,51 @@ public class CertificateService {
         return certificate;
     }
 
-    public PageDto<CADto> getAll(CertificateSearchDto caSearchDto) {
-        Pageable pageable = PageRequest.of(caSearchDto.getPage(), caSearchDto.getPageSize());
+    public PageDto<CertificateDto> search(CertificateSearchDto certificateSearchDto) {
+        // pripremi page request podatke
+        Pageable pageable = PageRequest.of(
+                certificateSearchDto.getPage(),
+                certificateSearchDto.getPageSize());
 
-        List<Certificate> caCertificates = certificateRepository
-                .findByCNContainingAndIssuedForCANotNull(caSearchDto.getCommonName());
+        // pretraga
+        Page<Certificate> certificates = certificateRepository.search(
+                certificateSearchDto.getCommonName(),
+                certificateSearchDto.getRevoked(),
+                certificateSearchDto.getIsCa(),
+                certificateSearchDto.getValidFrom(),
+                certificateSearchDto.getValidUntil(),
+                certificateSearchDto.getCertificateType(),
+                pageable);
 
-        List<Certificate> certificates = certificateRepository
-                .findByIssuedForCANull();
-
-        // filtriraj sertifikate
-        certificates = certificates
+        // pretvori u certificate dto
+        PageDto<CertificateDto> pageDto = new PageDto<>();
+        pageDto.setItems(certificates
+                .getContent()
                 .stream()
-                .filter(c -> {
-                    if (caSearchDto.isRevoked() == true)
-                        return c.getRevocation() != null;
-                    return true;
-                })
-                .collect(Collectors.toList());
+                .map(CertificateDto::new)
+                .collect(Collectors.toList()));
+        pageDto.setNumberOfPages(certificates.getTotalPages());
 
-        List<CADto> caDtos = caCertificates.stream().map(c -> new CADto(c.getIssuedForCA())).collect(Collectors.toList());
-        List<CADto> certDtos = certificates.stream().map(c -> new CADto(c)).collect(Collectors.toList());
-        caDtos.addAll(certDtos);
-
-        // napravi page
-        Page<CADto> page = pageService.getPage(caDtos, pageable);
-
-        return new PageDto<CADto>(caDtos, page.getTotalPages());
+        return pageDto;
     }
 
+    public InputStreamResource getCertFileBySerialNumber(String serialNumber) {
+        Optional<Certificate> optionalCertificate = certificateRepository.findBySerialNumber(serialNumber);
+        if (optionalCertificate.isPresent()) {
+            Certificate certificate = optionalCertificate.get();
+            X509Certificate x509Certificate = keyStoreService.getCertificate(
+                    certificate.getSerialNumber()).getX509CertificateChain()[0];
+
+            byte[] binary = null;
+            try {
+                binary = x509Certificate.getEncoded();
+            } catch (CertificateEncodingException e) {
+                e.printStackTrace();
+            }
+
+            return new InputStreamResource(new ByteArrayInputStream(binary));
+        } else {
+            throw new ApiNotFoundException("Cert not found.");
+        }
+    }
 }
