@@ -7,6 +7,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Calendar;
 import java.util.Date;
 
 @Service
@@ -23,8 +24,12 @@ public class DateService {
     }
 
     public Date addMonths(Date date, int months) {
-        LocalDateTime localDateTime = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-        localDateTime.plusMonths((long)months);
-        return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+    	Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.add(Calendar.MONTH, months);
+        return c.getTime();
+        //LocalDateTime localDateTime = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        //localDateTime = localDateTime.plusMonths((long)months);
+        //return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
     }
 }

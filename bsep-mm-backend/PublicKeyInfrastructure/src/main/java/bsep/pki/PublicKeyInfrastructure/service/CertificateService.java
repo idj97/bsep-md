@@ -51,6 +51,9 @@ public class CertificateService {
 
     @Value("${crl.public.path}")
     private String crlPublicPath;
+    
+    @Value("${certs.endpoint}")
+    private String certEndpoint;
 
     public CertificateDto createCertificate(CertificateRequest certificateRequest) {
         if (certificateRequest.getCertificateType().equals(CertificateType.SIEM_AGENT)) {
@@ -151,10 +154,20 @@ public class CertificateService {
         crlDistPointExtension.setCertificate(certificate);
         crlDistPointExtension.getAttributes().add(
                 new ExtensionAttribute(null, crlPublicPath, crlDistPointExtension));
+        
+        Extension aiaExtension = new Extension();
+        aiaExtension.setName("Authority Information Access");
+        aiaExtension.setCertificate(certificate);
+        aiaExtension.getAttributes().add(
+                new ExtensionAttribute(
+                        null,
+                        "URL: " + certEndpoint + issuerCertificate.getSerialNumber(),
+                        aiaExtension));
 
         certificate.getExtensions().add(bcExtension);
         certificate.getExtensions().add(keyUsageExtension);
         certificate.getExtensions().add(crlDistPointExtension);
+        certificate.getExtensions().add(aiaExtension);
 
         return certificate;
     }
