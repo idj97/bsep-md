@@ -124,7 +124,6 @@ public class CertificateRequestService {
     }
 
     public CertificateRequestDto declineCertificateSignRequest(Long id) {
-
         CertificateRequest request = certReqRepo
                 .findById(id)
                 .orElseThrow(() -> new ApiNotFoundException("Certificate not found"));
@@ -137,14 +136,12 @@ public class CertificateRequestService {
         return new CertificateRequestDto(certReqRepo.save(request));
     }
     
-    public ResponseEntity<InputStreamResource> downloadCertificate(long certificateRequestId) {
+    public InputStreamResource getCertFileForCertRequest(long certificateRequestId) {
     	Optional<CertificateRequest> optCertReq = certReqRepo.findById(certificateRequestId);
     	if (!optCertReq.isPresent()) 
     		throw new ApiException("No such certificate request", HttpStatus.NOT_FOUND);
     	
     	CertificateRequest certReq = optCertReq.get();
-
-    	//TODO get certificate by alias
     	X509CertificateData certData = keyStoreService.getCaCertificate(
     	        certReq.getSerialNumber().toString());
     	
@@ -155,19 +152,6 @@ public class CertificateRequestService {
 			e.printStackTrace();
 		}
     	
-    	InputStreamResource resource = new InputStreamResource(new ByteArrayInputStream(binary));
-
-        HttpHeaders headers = this.getDownloadHeaders();
-        headers.setContentDispositionFormData("attachment", "ceritifacte.cer");
-    	return new ResponseEntity<>(resource, headers, HttpStatus.OK);
+    	return new InputStreamResource(new ByteArrayInputStream(binary));
     }
-    
-    public HttpHeaders getDownloadHeaders() {
-    	HttpHeaders headers = new HttpHeaders();
-        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
-        headers.add("Pragma", "no-cache");
-        headers.add("Expires", "0");
-    	return headers;
-    }
-
 }

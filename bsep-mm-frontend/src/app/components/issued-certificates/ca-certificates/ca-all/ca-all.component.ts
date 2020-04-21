@@ -18,7 +18,7 @@ export class CaAllComponent implements OnInit {
 
   private params = {
     revoked: false,
-    commonName: '',
+    isCa: true,
     page: 0,
     pageSize: 20,
   }
@@ -26,7 +26,7 @@ export class CaAllComponent implements OnInit {
   constructor(private certificateService: CertificateService) { }
 
   ngOnInit() {
-    this.certificateService.postSearch(this.params).subscribe(
+    this.certificateService.postSimpleSearchCertificate(this.params).subscribe(
       data => {
         console.log(data);
         this.data = data.items;

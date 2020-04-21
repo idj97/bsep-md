@@ -2,13 +2,13 @@ package bsep.pki.PublicKeyInfrastructure.utility;
 
 import bsep.pki.PublicKeyInfrastructure.data.X509CertificateData;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.security.*;
 import java.security.cert.Certificate;
-import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
@@ -21,18 +21,11 @@ public class KeyStoreService {
     @Value("${keystore.password}")
     private String keyStorePassword;
 
-    @Value("${keystore.create}")
-    private Boolean createKeyStore;
-
     @Value("${crl.path}")
     private String crlPublicPath;
 
-    private KeyStore keyStore;
-
     public void tryCreateKeyStore() {
-        if (createKeyStore) {
-            keyStore = createKeystore();
-        }
+        createKeystore();
     }
 
     public KeyStore createKeystore() {
@@ -56,6 +49,32 @@ public class KeyStoreService {
         return null;
     }
 
+    public X509CertificateData getCertificate(String alias) {
+        try {
+            KeyStore keyStore = KeyStore.getInstance(new File(keyStoreName), keyStorePassword.toCharArray());
+
+            Certificate[] originalChain = keyStore.getCertificateChain(alias);
+            X509Certificate[] chain = new X509Certificate[originalChain.length];
+            for(int i = 0; i < originalChain.length; i++)
+                chain[i] = (X509Certificate) originalChain[i];
+
+            return new X509CertificateData(
+                    chain,
+                    null,
+                    alias);
+
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (CertificateException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public X509CertificateData getCaCertificate(String alias) {
         try {
             KeyStore keyStore = KeyStore.getInstance(new File(keyStoreName), keyStorePassword.toCharArray());
@@ -66,7 +85,6 @@ public class KeyStoreService {
             X509Certificate[] chain = new X509Certificate[originalChain.length];
             for(int i = 0; i < originalChain.length; i++)
                 chain[i] = (X509Certificate) originalChain[i];
-
 
             return new X509CertificateData(
                     chain,
