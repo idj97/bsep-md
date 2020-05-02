@@ -15,12 +15,11 @@ export class NewCertificateComponent implements OnInit {
 
   certificateAuthority: CertificateAuthority;
   validFromDate: Date;
-  validUntilDate: Date;
 
-  datesValid: boolean;
   datePipe: DatePipe;
   @ViewChild("ncf", {static: false}) newCertificateForm: any;
 
+  submitting: boolean;
   private blurTimeout;
 
   //ICONS
@@ -30,8 +29,8 @@ export class NewCertificateComponent implements OnInit {
 
   ngOnInit() {
     this.certificateAuthority = new CertificateAuthority();
-    this.datesValid = true;
-    this.certificateAuthority.caType = 0;
+    this.submitting = false;
+    this.setDefaultFormValues();
     this.datePipe = new DatePipe('en-US');
   }
 
@@ -64,43 +63,51 @@ export class NewCertificateComponent implements OnInit {
 
   createCertificate() {
 
-    // validating dates
-    if(this.validFromDate >= this.validUntilDate) {
-      this.datesValid = false;
-      return;
-    } else {
-      this.datesValid = true;
-    }
-
     if(this.newCertificateForm.valid) {
-      this.formatDates();
-      this.certificateAuthority.certificateDto.certificateType = this.getType(this.certificateAuthority.caType);
+      this.submitting = true;
+      this.formatDate();
+      this.certificateAuthority.certificateDto.certificateType = this.getEnumString(this.certificateAuthority.caType);
       this.caService.createCA(this.certificateAuthority).subscribe(
         data => {
-          console.log(data);
           this.newCertificateForm.resetForm();
+          this.setDefaultFormValues();
         },
         err => {
           console.log(err.error);
         }
-      );
+      ).add(() => {
+        this.submitting = false;
+      });
     }
   }
 
-  formatDates() {
+  formatDate() {
     this.certificateAuthority.certificateDto.validFrom =
       this.datePipe.transform(this.validFromDate, 'dd-MM-yyyy HH:mm');
-    this.certificateAuthority.certificateDto.validUntil =
-      this.datePipe.transform(this.validUntilDate, 'dd-MM-yyyy HH:mm');
   }
 
-  getType(enumValue: number) {
+  setDefaultFormValues() {
+    this.certificateAuthority.certificateDto.certificateType = 'SIEM_AGENT_ISSUER';
+    this.certificateAuthority.caType = 1;
+    this.certificateAuthority.certificateDto.validityInMonths = 6;
+  }
 
-    if(enumValue == 0) {
+  caTypeChanged(event: any) {
+    if (event.target.value == 0) { // if root ca selected
+      this.certificateAuthority.certificateDto.validityInMonths = 72;
+    } else {
+      this.certificateAuthority.certificateDto.validityInMonths = 6;
+    }
+  }
+
+  
+  getEnumString(enumNumber: number) {
+
+    if(enumNumber == 0) {
       return 'ROOT';
-    } else if(enumValue == 1) {
+    } else if(enumNumber == 1) {
       return 'SIEM_AGENT_ISSUER';
-    } else{
+    } else {
       return 'SIEM_CENTER_ISSUER';
     }
 

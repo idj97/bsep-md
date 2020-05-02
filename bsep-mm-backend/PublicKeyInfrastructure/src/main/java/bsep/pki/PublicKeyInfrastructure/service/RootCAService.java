@@ -7,6 +7,7 @@ import bsep.pki.PublicKeyInfrastructure.exception.ApiBadRequestException;
 import bsep.pki.PublicKeyInfrastructure.model.*;
 import bsep.pki.PublicKeyInfrastructure.repository.CARepository;
 import bsep.pki.PublicKeyInfrastructure.repository.CertificateRepository;
+import bsep.pki.PublicKeyInfrastructure.utility.DateService;
 import bsep.pki.PublicKeyInfrastructure.utility.KeyStoreService;
 import bsep.pki.PublicKeyInfrastructure.utility.X500Service;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +64,9 @@ public class RootCAService {
     @Autowired
     private KeyStoreService keyStoreService;
 
+    @Autowired
+    private DateService dateService;
+
     public void tryCreateRootCA() {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
         try {
@@ -78,6 +82,7 @@ public class RootCAService {
                     country,
                     email,
                     validFrom,
+                    0,
                     validUntil,
                     null,
                     null,
@@ -96,6 +101,15 @@ public class RootCAService {
         Optional<CA> optionalCA = caRepository.findByTypeAndCertificateRevocationNull(CAType.ROOT);
         if (!optionalCA.isPresent()) {
             CertificateDto certificateDto = caDto.getCertificateDto();
+
+            // if the end date wasn't directly specified, but was given in number of months
+            if(caDto.getCertificateDto().getValidUntil() == null) {
+                caDto.getCertificateDto().setValidUntil(
+                        dateService.addMonths(
+                                caDto.getCertificateDto().getValidFrom(),
+                                caDto.getCertificateDto().getValidityInMonths())
+                );
+            }
 
             // kreiranje x509 sertifikata
             X509CertificateData x509CertificateData = x500Service

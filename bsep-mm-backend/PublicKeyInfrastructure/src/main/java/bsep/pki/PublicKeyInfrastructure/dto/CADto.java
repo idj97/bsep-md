@@ -19,8 +19,7 @@ public class CADto {
 
     private Long id;
     private Long caIssuerId;
-
-    @NotNull
+    
     private CAType caType;
 
     @NotNull

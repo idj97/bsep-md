@@ -11,6 +11,7 @@ export class Certificate {
     email: string;
 
     validFrom: string;
+    validityInMonths: number;
     validUntil: string;
 
     serialNumber: number;

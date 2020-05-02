@@ -7,6 +7,7 @@ import bsep.pki.PublicKeyInfrastructure.exception.ApiNotFoundException;
 import bsep.pki.PublicKeyInfrastructure.model.*;
 import bsep.pki.PublicKeyInfrastructure.repository.CARepository;
 import bsep.pki.PublicKeyInfrastructure.repository.CertificateRepository;
+import bsep.pki.PublicKeyInfrastructure.utility.DateService;
 import bsep.pki.PublicKeyInfrastructure.utility.KeyStoreService;
 import bsep.pki.PublicKeyInfrastructure.utility.PageService;
 import bsep.pki.PublicKeyInfrastructure.utility.X500Service;
@@ -43,6 +44,9 @@ public class CAService {
     @Autowired
     private PageService pageService;
 
+    @Autowired
+    private DateService dateService;
+
     @Value("${crl.public.path}")
     private String crlPublicPath;
 
@@ -57,6 +61,15 @@ public class CAService {
             CA rootCa = optionalRootCA.get();
             Certificate issuerCertificate = rootCa.getCertificate();
             CertificateDto subjectCertificateDto = caDto.getCertificateDto();
+
+            // if the end date wasn't directly specified, but was given in number of months
+            if(subjectCertificateDto.getValidUntil() == null) {
+                subjectCertificateDto.setValidUntil(
+                        dateService.addMonths(
+                                subjectCertificateDto.getValidFrom(),
+                                subjectCertificateDto.getValidityInMonths())
+                );
+            }
 
             // kreiraj subject x509 sertifikat potpisanog od strane issuer (ca) x509 sertifikata
             X509CertificateData subjectX509CertificateData = x500Service
@@ -164,6 +177,7 @@ public class CAService {
                     "usa",
                     "google-pki@gmail.com",
                     validFrom,
+                    0,
                     validUntil,
                     null,
                     null,

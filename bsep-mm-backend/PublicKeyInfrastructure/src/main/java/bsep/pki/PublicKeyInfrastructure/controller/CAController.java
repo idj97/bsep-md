@@ -2,6 +2,7 @@ package bsep.pki.PublicKeyInfrastructure.controller;
 
 import bsep.pki.PublicKeyInfrastructure.dto.CADto;
 import bsep.pki.PublicKeyInfrastructure.model.CAType;
+import bsep.pki.PublicKeyInfrastructure.model.CertificateType;
 import bsep.pki.PublicKeyInfrastructure.service.CAService;
 import bsep.pki.PublicKeyInfrastructure.service.RootCAService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,7 @@ public class CAController {
     @PreAuthorize("hasRole('admin')")
     public ResponseEntity<CADto> create(@RequestBody @Valid CADto caDto) {
         CADto caDtoRet = null;
-        if (caDto.getCaType().equals(CAType.ROOT)) {
+        if (caDto.getCertificateDto().getCertificateType().equals(CertificateType.ROOT)) {
             caDtoRet = rootCAService.createRootCA(caDto);
         } else {
             caDtoRet = caService.createCA(caDto);
