@@ -13,8 +13,8 @@ export class CertificateRequestService {
     return this.http.get('api/certificate-request');
   }
 
-  approveCertificateRequest(id: number): Observable<any> {
-    return this.http.put(`api/certificate-request/approve/${id}`, null);
+  approveCertificateRequest(certRequestId: number, issuerId: number): Observable<any> {
+    return this.http.put(`api/certificate-request/approve/${certRequestId}/${issuerId}`, null);
   }
 
   declineCertificateRequest(id: number): Observable<any> {

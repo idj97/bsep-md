@@ -17,7 +17,7 @@ export class ToasterService {
     document.getElementById('toaster-message').innerHTML = content;
     
     if (!this.isDisplayed) {
-      document.getElementById('toaster').style.height = '20%'; // I hope it's enough
+      document.getElementById('toaster').style.height = '25%'; // I hope it's enough
 
       window.setTimeout(() => this.hideMessage(), 4000);
       this.isDisplayed = true;

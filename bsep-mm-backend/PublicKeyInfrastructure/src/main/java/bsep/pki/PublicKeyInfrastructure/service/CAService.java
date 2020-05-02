@@ -20,7 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(propagation = Propagation.REQUIRED)
@@ -54,11 +56,11 @@ public class CAService {
     private String certEndpoint;
 
     public CADto createCA(CADto caDto) {
-        Optional<CA> optionalRootCA = caRepository
+        List<CA> optionalRootCA = caRepository
                 .findByTypeAndCertificateRevocationNull(CAType.ROOT);
 
-        if (optionalRootCA.isPresent()) {
-            CA rootCa = optionalRootCA.get();
+        if (optionalRootCA.size() > 0) {
+            CA rootCa = optionalRootCA.get(0);
             Certificate issuerCertificate = rootCa.getCertificate();
             CertificateDto subjectCertificateDto = caDto.getCertificateDto();
 
@@ -190,5 +192,15 @@ public class CAService {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public List<CADto> findByType(CAType type) {
+
+        return caRepository
+                .findByTypeAndCertificateRevocationNull(type)
+                .stream()
+                .map(ca -> new CADto(ca))
+                .collect(Collectors.toList());
+
     }
 }

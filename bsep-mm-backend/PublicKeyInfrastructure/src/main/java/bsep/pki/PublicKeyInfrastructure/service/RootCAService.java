@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -98,8 +99,8 @@ public class RootCAService {
     }
 
     public CADto createRootCA(CADto caDto) {
-        Optional<CA> optionalCA = caRepository.findByTypeAndCertificateRevocationNull(CAType.ROOT);
-        if (!optionalCA.isPresent()) {
+        List<CA> optionalCA = caRepository.findByTypeAndCertificateRevocationNull(CAType.ROOT);
+        if (optionalCA.size() == 0) {
             CertificateDto certificateDto = caDto.getCertificateDto();
 
             // if the end date wasn't directly specified, but was given in number of months

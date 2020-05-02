@@ -1,0 +1,83 @@
+<table >
+    <tr>
+        <td class="attribute"> Common name: </td>
+        <td> {{ certificateRequest.commonName }}  </td>
+    </tr>
+    <tr>
+        <td class="attribute"> Organisation: </td>
+        <td> {{ certificateRequest.organisation }} </td>
+    </tr>
+    <tr>
+        <td class="attribute"> Organisation unit: </td>
+        <td> {{ certificateRequest.organisationUnit }}</td>
+    </tr>
+    <tr>
+        <td class="attribute"> City: </td>
+        <td> {{ certificateRequest.city }}</td>
+    </tr>
+    <tr>
+        <td class="attribute"> Country: </td>
+        <td> {{ certificateRequest.country }}</td>
+    </tr>
+    <tr>
+        <td class="attribute"> Email: </td>
+        <td> {{ certificateRequest.email }}</td>
+    </tr>
+    <tr>
+        <td> Issuer type: </td>
+        <td>
+            <select [(ngModel)]="selectedCAType" class="custom-select custom-select-sm" (change)="caTypeChanged()">
+                <option value="" selected disabled hidden>Choose type</option>
+                <option value="SIEM_AGENT_ISSUER"> Siem agent </option>
+                <option value="SIEM_CENTER_ISSUER"> Siem center </option>
+            </select>
+        </td>
+    </tr>
+</table>
+
+<div>
+    <div class="inline-element"> Select issuer: </div>
+    <div class="inline-element">
+        <select class="custom-select custom-select-sm" [(ngModel)]="issuerId"
+            *ngIf="selectedCAType == 'SIEM_AGENT_ISSUER' && siemAgentCAs.length > 0">
+            <option value="" selected disabled hidden>Choose issuer</option>
+            <option *ngFor="let agentCA of siemAgentCAs" [value]="agentCA.id"> 
+                {{ agentCA.certificateDto.commonName}}, {{ agentCA.certificateDto.organisation }},
+                {{ agentCA.certificateDto.country }}
+            </option>
+        </select>
+
+        <select class="custom-select custom-select-sm" [(ngModel)]="issuerId"
+            *ngIf="selectedCAType == 'SIEM_CENTER_ISSUER'  && siemCenterCAs.length > 0">
+            <option value="" selected disabled hidden>Choose issuer</option>
+            <option *ngFor="let centerCA of siemCenterCAs" [value]="centerCA.id"> 
+                {{ centerCA.certificateDto.commonName}}, {{ centerCA.certificateDto.organisation }},
+                {{ centerCA.certificateDto.country }}
+            </option>
+        </select>
+
+        <p *ngIf="selectedCAType == 'SIEM_AGENT_ISSUER' && siemAgentCAs.length == 0">
+             No siem agents available
+        </p>
+
+        <p *ngIf="selectedCAType == 'SIEM_CENTER_ISSUER' && siemCenterCAs.length == 0">
+            No siem agents available
+       </p>
+
+       <p *ngIf="selectedCAType == undefined"> Ca type not selected </p>
+    </div>
+</div>
+     
+<div>  
+    <div class="inline-button">
+        <button class="btn btn-dark btn-sm" (click)="approveCertificateRequest()"> 
+            Approve
+        </button>
+    </div>
+    <div class="inline-button">
+        <button class="btn btn-danger btn-sm" (click)="declineCertificateRequest()">
+            Decline
+        </button>
+    </div>  
+</div>
+   
