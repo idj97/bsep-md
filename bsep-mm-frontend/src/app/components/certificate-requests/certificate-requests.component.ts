@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CertificateSignRequest } from 'src/app/dtos/CertificateSignRequest.dto';
 import { CertificateRequestService } from 'src/app/services/certificate-request.service';
+import { ToasterService } from 'src/app/services/toaster.service';
 
 @Component({
   selector: 'app-certificate-requests',
@@ -12,7 +13,9 @@ export class CertificateRequestsComponent implements OnInit {
   certificateSignRequests: Array<CertificateSignRequest>;
   showSpinner: boolean;
 
-  constructor(private certificateReqSvc: CertificateRequestService) {
+  constructor(
+    private certificateReqSvc: CertificateRequestService,
+    private toasterService: ToasterService) {
     this.certificateSignRequests = [];
     this.showSpinner = true;
   }
@@ -28,7 +31,7 @@ export class CertificateRequestsComponent implements OnInit {
         this.certificateSignRequests = data;
       },
       err => {
-        console.log(err.error);
+        this.toasterService.showErrorMessage(err);
       }
     ).add(() => {
       this.showSpinner = false;
@@ -45,9 +48,10 @@ export class CertificateRequestsComponent implements OnInit {
     this.certificateReqSvc.approveCertificateRequest(id).subscribe(
       data => {
         this.removeCertificateRequest(index);
+        this.toasterService.showMessage('Approved', 'Certificate successfully approved');
       },
       err => {
-        console.log(err.error);
+        this.toasterService.showErrorMessage(err);
       }
     );
   }
@@ -63,7 +67,8 @@ export class CertificateRequestsComponent implements OnInit {
         this.removeCertificateRequest(index);
       },
       err => {
-        console.log(err.error);
+        this.toasterService.showErrorMessage(err);
+        this.toasterService.showMessage('Removed', 'Certificate successfully removed');
       }
     );
   }

@@ -1,10 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import { CertificateAuthority } from 'src/app/dtos/CertificateAuthority.dto';
-import { Certificate } from 'src/app/dtos/Certificate.dto';
 import { CertificateAuthorityService } from 'src/app/services/certificate-authority.service';
 import { DateButton } from 'angular-bootstrap-datetimepicker';
 import { DatePipe } from '@angular/common';
+import { ToasterService } from 'src/app/services/toaster.service';
 
 @Component({
   selector: 'app-new-certificate',
@@ -25,7 +25,10 @@ export class NewCertificateComponent implements OnInit {
   //ICONS
   faQuestionCircle = faQuestionCircle;
 
-  constructor(private caService: CertificateAuthorityService) { }
+  constructor(
+    private caService: CertificateAuthorityService,
+    private toasterSvc: ToasterService
+    ) { }
 
   ngOnInit() {
     this.certificateAuthority = new CertificateAuthority();
@@ -71,9 +74,10 @@ export class NewCertificateComponent implements OnInit {
         data => {
           this.newCertificateForm.resetForm();
           this.setDefaultFormValues();
+          this.toasterSvc.showMessage('Success', 'Certificate authority successfully created');
         },
         err => {
-          console.log(err.error);
+          this.toasterSvc.showErrorMessage(err);
         }
       ).add(() => {
         this.submitting = false;

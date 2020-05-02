@@ -17,8 +17,11 @@
     </div>
     
     <div class="row">
+     <div class="col-lg-6" *ngIf="!showSpinner && certificateSignRequests.length == 0"> 
+         <h6 class="header"> No signed requests at the moment. </h6>
+    </div>
       <div class="col-lg-6" *ngFor="let req of certificateSignRequests; index as i">
-        <table>
+        <table *ngIf="certificateSignRequests.length != 0" >
             <tr>
                 <td class="attribute"> Common name: </td>
                 <td> {{ req.commonName }}  </td>
