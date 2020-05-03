@@ -1,7 +1,7 @@
 package bsep.pki.PublicKeyInfrastructure.repository;
 
 import bsep.pki.PublicKeyInfrastructure.model.CA;
-import bsep.pki.PublicKeyInfrastructure.model.CAType;
+import bsep.pki.PublicKeyInfrastructure.model.enums.CAType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

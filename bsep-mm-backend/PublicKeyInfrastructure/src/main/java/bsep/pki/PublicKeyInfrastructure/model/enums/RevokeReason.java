@@ -1,4 +1,4 @@
-package bsep.pki.PublicKeyInfrastructure.model;
+package bsep.pki.PublicKeyInfrastructure.model.enums;
 
 public enum RevokeReason {
     UNSPECIFIED(0),

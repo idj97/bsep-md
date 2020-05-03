@@ -7,11 +7,12 @@ import bsep.pki.PublicKeyInfrastructure.dto.PageDto;
 import bsep.pki.PublicKeyInfrastructure.exception.ApiBadRequestException;
 import bsep.pki.PublicKeyInfrastructure.exception.ApiNotFoundException;
 import bsep.pki.PublicKeyInfrastructure.model.*;
+import bsep.pki.PublicKeyInfrastructure.model.enums.CAType;
+import bsep.pki.PublicKeyInfrastructure.model.enums.CertificateType;
 import bsep.pki.PublicKeyInfrastructure.repository.CARepository;
 import bsep.pki.PublicKeyInfrastructure.repository.CertificateRepository;
 import bsep.pki.PublicKeyInfrastructure.utility.DateService;
 import bsep.pki.PublicKeyInfrastructure.utility.KeyStoreService;
-import bsep.pki.PublicKeyInfrastructure.utility.PageService;
 import bsep.pki.PublicKeyInfrastructure.utility.X500Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -131,38 +132,37 @@ public class CertificateService {
         certificate.setIssuedByCertificate(issuerCertificate);
         issuerCertificate.getIssuerForCertificates().add(certificate);
 
-        Extension bcExtension = new Extension();
+        CertificateExtension bcExtension = new CertificateExtension();
         bcExtension.setName("Basic Constraint");
-        bcExtension.setCertificate(certificate);
+        //bcExtension.setCertificate(certificate);
         bcExtension.getAttributes().add(
-                new ExtensionAttribute(null, "Not Certificate Authority.", bcExtension));
+                new ExtensionAttribute(null, "Not Certificate Authority."));
 
-        Extension keyUsageExtension = new Extension();
+        CertificateExtension keyUsageExtension = new CertificateExtension();
         keyUsageExtension.setName("Key Usage");
-        keyUsageExtension.setCertificate(certificate);
+        //keyUsageExtension.setCertificate(certificate);
 
         if (certificate.getCertificateType().equals(CertificateType.SIEM_AGENT)) {
             keyUsageExtension.getAttributes().add(
-                    new ExtensionAttribute(null, "DataSign", keyUsageExtension));
+                    new ExtensionAttribute(null, "DataSign"));
         }
 
         keyUsageExtension.getAttributes().add(
-                new ExtensionAttribute(null, "KeyEncipherment", keyUsageExtension));
+                new ExtensionAttribute(null, "KeyEncipherment"));
 
-        Extension crlDistPointExtension = new Extension();
+        CertificateExtension crlDistPointExtension = new CertificateExtension();
         crlDistPointExtension.setName("CRL Distribution point");
-        crlDistPointExtension.setCertificate(certificate);
+        //crlDistPointExtension.setCertificate(certificate);
         crlDistPointExtension.getAttributes().add(
-                new ExtensionAttribute(null, crlPublicPath, crlDistPointExtension));
+                new ExtensionAttribute(null, crlPublicPath));
         
-        Extension aiaExtension = new Extension();
+        CertificateExtension aiaExtension = new CertificateExtension();
         aiaExtension.setName("Authority Information Access");
-        aiaExtension.setCertificate(certificate);
+        //aiaExtension.setCertificate(certificate);
         aiaExtension.getAttributes().add(
                 new ExtensionAttribute(
                         null,
-                        "URL: " + certEndpoint + issuerCertificate.getSerialNumber(),
-                        aiaExtension));
+                        "URL: " + certEndpoint + issuerCertificate.getSerialNumber()));
 
         certificate.getExtensions().add(bcExtension);
         certificate.getExtensions().add(keyUsageExtension);

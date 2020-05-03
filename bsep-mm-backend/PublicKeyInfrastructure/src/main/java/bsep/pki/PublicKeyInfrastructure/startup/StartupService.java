@@ -1,9 +1,9 @@
 package bsep.pki.PublicKeyInfrastructure.startup;
 
 import bsep.pki.PublicKeyInfrastructure.dto.RevocationDto;
-import bsep.pki.PublicKeyInfrastructure.model.CAType;
-import bsep.pki.PublicKeyInfrastructure.model.CertificateType;
-import bsep.pki.PublicKeyInfrastructure.model.RevokeReason;
+import bsep.pki.PublicKeyInfrastructure.model.enums.CAType;
+import bsep.pki.PublicKeyInfrastructure.model.enums.CertificateType;
+import bsep.pki.PublicKeyInfrastructure.model.enums.RevokeReason;
 import bsep.pki.PublicKeyInfrastructure.service.CAService;
 import bsep.pki.PublicKeyInfrastructure.service.CRLService;
 import bsep.pki.PublicKeyInfrastructure.service.CertificateService;

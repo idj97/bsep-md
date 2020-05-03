@@ -1,5 +1,6 @@
 package bsep.pki.PublicKeyInfrastructure.model;
 
+import bsep.pki.PublicKeyInfrastructure.model.enums.RevokeReason;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

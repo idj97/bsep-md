@@ -6,7 +6,7 @@ import bsep.pki.PublicKeyInfrastructure.data.SubjectData;
 import bsep.pki.PublicKeyInfrastructure.data.X509CertificateData;
 import bsep.pki.PublicKeyInfrastructure.dto.CertificateDto;
 import bsep.pki.PublicKeyInfrastructure.model.Certificate;
-import bsep.pki.PublicKeyInfrastructure.model.CertificateType;
+import bsep.pki.PublicKeyInfrastructure.model.enums.CertificateType;
 import bsep.pki.PublicKeyInfrastructure.repository.CertificateRepository;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.X500NameBuilder;

@@ -1,5 +1,6 @@
 package bsep.pki.PublicKeyInfrastructure.model;
 
+import bsep.pki.PublicKeyInfrastructure.model.enums.CertificateType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -76,8 +77,8 @@ public class Certificate {
     @Column(nullable = false)
     private Date dateCreated = new Date();
 
-    @OneToMany(mappedBy = "certificate", cascade = CascadeType.ALL)
-    private List<Extension> extensions = new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<CertificateExtension> extensions = new ArrayList<>();
 
     @Enumerated(value = EnumType.STRING)
     private CertificateType certificateType;

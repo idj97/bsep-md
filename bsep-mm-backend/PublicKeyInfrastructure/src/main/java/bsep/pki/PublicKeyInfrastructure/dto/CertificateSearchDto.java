@@ -1,7 +1,7 @@
 package bsep.pki.PublicKeyInfrastructure.dto;
 
-import bsep.pki.PublicKeyInfrastructure.model.CAType;
-import bsep.pki.PublicKeyInfrastructure.model.CertificateType;
+import bsep.pki.PublicKeyInfrastructure.model.enums.CAType;
+import bsep.pki.PublicKeyInfrastructure.model.enums.CertificateType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

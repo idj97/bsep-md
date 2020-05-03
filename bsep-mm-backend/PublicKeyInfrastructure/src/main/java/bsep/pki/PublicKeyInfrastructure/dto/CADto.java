@@ -1,7 +1,7 @@
 package bsep.pki.PublicKeyInfrastructure.dto;
 
 import bsep.pki.PublicKeyInfrastructure.model.CA;
-import bsep.pki.PublicKeyInfrastructure.model.CAType;
+import bsep.pki.PublicKeyInfrastructure.model.enums.CAType;
 import bsep.pki.PublicKeyInfrastructure.model.Certificate;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

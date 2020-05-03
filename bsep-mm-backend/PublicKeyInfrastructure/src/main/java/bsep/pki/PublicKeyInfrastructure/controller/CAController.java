@@ -1,7 +1,7 @@
 package bsep.pki.PublicKeyInfrastructure.controller;
 
 import bsep.pki.PublicKeyInfrastructure.dto.CADto;
-import bsep.pki.PublicKeyInfrastructure.model.CAType;
+import bsep.pki.PublicKeyInfrastructure.model.enums.CAType;
 import bsep.pki.PublicKeyInfrastructure.service.CAService;
 import bsep.pki.PublicKeyInfrastructure.service.RootCAService;
 import org.springframework.beans.factory.annotation.Autowired;

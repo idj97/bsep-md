@@ -1,7 +1,7 @@
 package bsep.pki.PublicKeyInfrastructure.dto;
 
 import bsep.pki.PublicKeyInfrastructure.model.CertificateRevocation;
-import bsep.pki.PublicKeyInfrastructure.model.RevokeReason;
+import bsep.pki.PublicKeyInfrastructure.model.enums.RevokeReason;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

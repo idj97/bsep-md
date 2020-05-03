@@ -1,6 +1,6 @@
 package bsep.pki.PublicKeyInfrastructure.dto;
 
-import bsep.pki.PublicKeyInfrastructure.model.Extension;
+import bsep.pki.PublicKeyInfrastructure.model.CertificateExtension;
 import bsep.pki.PublicKeyInfrastructure.model.ExtensionAttribute;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,7 +18,7 @@ public class ExtensionDto {
     private String name;
     private List<String> attributes;
 
-    public ExtensionDto(Extension extension) {
+    public ExtensionDto(CertificateExtension extension) {
         super();
         name = extension.getName();
         attributes = extension

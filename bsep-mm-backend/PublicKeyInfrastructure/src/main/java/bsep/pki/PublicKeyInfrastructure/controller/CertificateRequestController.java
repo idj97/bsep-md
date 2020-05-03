@@ -2,8 +2,7 @@ package bsep.pki.PublicKeyInfrastructure.controller;
 
 import bsep.pki.PublicKeyInfrastructure.dto.CertificateRequestDto;
 import bsep.pki.PublicKeyInfrastructure.dto.CertificateSignedRequestDto;
-import bsep.pki.PublicKeyInfrastructure.model.CertificateRequest;
-import bsep.pki.PublicKeyInfrastructure.model.CertificateRequestStatus;
+import bsep.pki.PublicKeyInfrastructure.model.enums.CertificateRequestStatus;
 import bsep.pki.PublicKeyInfrastructure.service.CertificateRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;

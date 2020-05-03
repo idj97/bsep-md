@@ -6,7 +6,7 @@ import bsep.pki.PublicKeyInfrastructure.dto.RevocationDto;
 import bsep.pki.PublicKeyInfrastructure.exception.ApiBadRequestException;
 import bsep.pki.PublicKeyInfrastructure.exception.ApiNotFoundException;
 import bsep.pki.PublicKeyInfrastructure.model.CA;
-import bsep.pki.PublicKeyInfrastructure.model.CAType;
+import bsep.pki.PublicKeyInfrastructure.model.enums.CAType;
 import bsep.pki.PublicKeyInfrastructure.model.Certificate;
 import bsep.pki.PublicKeyInfrastructure.model.CertificateRevocation;
 import bsep.pki.PublicKeyInfrastructure.repository.CARepository;

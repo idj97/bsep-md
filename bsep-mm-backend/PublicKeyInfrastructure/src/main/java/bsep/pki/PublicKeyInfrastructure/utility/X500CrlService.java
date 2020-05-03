@@ -1,6 +1,6 @@
 package bsep.pki.PublicKeyInfrastructure.utility;
 
-import bsep.pki.PublicKeyInfrastructure.model.RevokeReason;
+import bsep.pki.PublicKeyInfrastructure.model.enums.RevokeReason;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.*;
 import org.bouncycastle.cert.CertIOException;

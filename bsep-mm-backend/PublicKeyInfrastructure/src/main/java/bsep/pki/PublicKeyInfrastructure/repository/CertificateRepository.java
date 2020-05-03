@@ -1,7 +1,7 @@
 package bsep.pki.PublicKeyInfrastructure.repository;
 
 import bsep.pki.PublicKeyInfrastructure.model.Certificate;
-import bsep.pki.PublicKeyInfrastructure.model.CertificateType;
+import bsep.pki.PublicKeyInfrastructure.model.enums.CertificateType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
