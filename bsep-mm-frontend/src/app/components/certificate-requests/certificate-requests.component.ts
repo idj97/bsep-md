@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CertificateSignRequest } from 'src/app/dtos/CertificateSignRequest.dto';
 import { CertificateRequestService } from 'src/app/services/certificate-request.service';
+import { ToasterService } from 'src/app/services/toaster.service';
+import { CertificateAuthority } from 'src/app/dtos/CertificateAuthority.dto';
+import { CertificateAuthorityService } from 'src/app/services/certificate-authority.service';
 
 @Component({
   selector: 'app-certificate-requests',
@@ -12,12 +15,22 @@ export class CertificateRequestsComponent implements OnInit {
   certificateSignRequests: Array<CertificateSignRequest>;
   showSpinner: boolean;
 
-  constructor(private certificateReqSvc: CertificateRequestService) {
+  siemAgentAuthorities: Array<CertificateAuthority>;
+  siemCenterAuthorities: Array<CertificateAuthority>;
+
+  constructor(
+    private certificateReqSvc: CertificateRequestService,
+    private caService: CertificateAuthorityService,
+    private toasterService: ToasterService
+  ) {
+
     this.certificateSignRequests = [];
     this.showSpinner = true;
   }
 
   ngOnInit() {
+    this.getCAByType('SIEM_AGENT_ISSUER');
+    this.getCAByType('SIEM_CENTER_ISSUER');
     this.getCertificateRequests();
   }
 
@@ -28,7 +41,7 @@ export class CertificateRequestsComponent implements OnInit {
         this.certificateSignRequests = data;
       },
       err => {
-        console.log(err.error);
+        this.toasterService.showErrorMessage(err);
       }
     ).add(() => {
       this.showSpinner = false;
@@ -36,40 +49,22 @@ export class CertificateRequestsComponent implements OnInit {
 
   }
 
-  approveCertificateRequest(id: number, index: number) {
+  getCAByType(caType: string) {
 
-    if(!window.confirm('Are you sure you want to approve this request?')) {
-      return;
-    }
-
-    this.certificateReqSvc.approveCertificateRequest(id).subscribe(
+    this.caService.getCAByType(caType).subscribe(
       data => {
-        this.removeCertificateRequest(index);
+        caType == 'SIEM_AGENT_ISSUER' ? this.siemAgentAuthorities = data : this.siemCenterAuthorities = data;
       },
       err => {
-        console.log(err.error);
+        this.toasterService.showErrorMessage(err);
       }
     );
+
   }
 
-  declineCertificateRequest(id: number, index: number) {
 
-    if(!window.confirm('Are you sure you want to decline this request?')) {
-      return;
-    }
-
-    this.certificateReqSvc.declineCertificateRequest(id).subscribe(
-      data => {
-        this.removeCertificateRequest(index);
-      },
-      err => {
-        console.log(err.error);
-      }
-    );
-  }
-
-  removeCertificateRequest(index: number) {
-    this.certificateSignRequests.splice(index, 1);
+  removeCertificateRequest($index) {
+    this.certificateSignRequests.splice($index, 1);
   }
 
 }

@@ -14,7 +14,7 @@ export class CertificateAuthorityService {
     return this.http.post('api/ca', ca);
   }
 
-  getAllCA(): Observable<any> {
-    return this.http.get<any>('api/ca');
+  getCAByType(type: string): Observable<any> {
+    return this.http.get<any>(`api/ca/${type}`);
   }
 }

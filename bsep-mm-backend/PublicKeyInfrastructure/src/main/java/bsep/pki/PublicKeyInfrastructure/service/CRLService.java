@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigInteger;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -43,12 +44,12 @@ public class CRLService {
     private Boolean createCrlFile;
 
     public CertificateDto revokeCertificate(RevocationDto revocationDto) {
-        Optional<CA> rootCaOptional  = caRepository.findByTypeAndCertificateRevocationNull(CAType.ROOT);
+        List<CA> rootCaOptional  = caRepository.findByTypeAndCertificateRevocationNull(CAType.ROOT);
         Optional<Certificate> certificateOptional = certificateRepository
                 .findById(revocationDto.getCertificateId());
 
-        if (rootCaOptional.isPresent() && certificateOptional.isPresent()) {
-            CA rootCa = rootCaOptional.get();
+        if (rootCaOptional.size() > 0 && certificateOptional.isPresent()) {
+            CA rootCa = rootCaOptional.get(0);
             Certificate certificate = certificateOptional.get();
 
             // proveri da li je vec revoke-ovan
@@ -84,7 +85,7 @@ public class CRLService {
             // dobavi serial numebr za root CA
             String rootSerialNumber = caRepository
                     .findByType(CAType.ROOT)
-                    .get()
+                    .get(0)
                     .getCertificate()
                     .getSerialNumber();
 
