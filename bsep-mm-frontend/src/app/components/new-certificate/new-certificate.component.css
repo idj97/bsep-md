@@ -9,6 +9,17 @@
     margin: 0 !important;
 }
 
+.centered-content {
+    position: absolute;
+    width: 60%;
+    left: 30%;
+}
+
+.disabled-holder {
+    pointer-events: none !important;
+    opacity: 0.5 !important;
+}
+
 .input-text-value {
     position: absolute;
     left: 20px;

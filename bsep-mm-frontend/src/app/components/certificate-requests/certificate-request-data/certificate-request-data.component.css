@@ -1,0 +1,22 @@
+td.attribute {
+    text-decoration: underline;
+}
+
+table {
+    border-collapse: separate;
+    border-spacing: 10px;
+}
+
+.inline-element {
+    display: inline-block;
+    margin-left: 1em;
+    margin-right: 2em;
+    margin-bottom: 3ex;
+}
+
+.inline-button {
+    display: inline-block;
+    margin-left: 2em;
+    margin-right: 4em;
+}
+

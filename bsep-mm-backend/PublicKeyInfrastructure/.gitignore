@@ -5,6 +5,7 @@ target/
 !**/src/test/**
 
 *.jks
+*.crl
 
 ### STS ###
 .apt_generated

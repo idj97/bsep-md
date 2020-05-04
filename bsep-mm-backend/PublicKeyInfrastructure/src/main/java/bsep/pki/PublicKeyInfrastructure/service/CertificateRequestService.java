@@ -105,10 +105,10 @@ public class CertificateRequestService {
 
     }
 
-    public CertificateRequestDto approveCertificateSignRequest(Long id) {
+    public CertificateRequestDto approveCertificateSignRequest(Long certRequestId, Long issuerId) {
 
         CertificateRequest request = certReqRepo
-                .findById(id)
+                .findById(certRequestId)
                 .orElseThrow(() -> new ApiNotFoundException("Certificate not found"));
 
         if(request.getStatus().equals(CertificateRequestStatus.APPROVED)) {
@@ -116,10 +116,7 @@ public class CertificateRequestService {
         }
 
         request.setStatus(CertificateRequestStatus.APPROVED);
-
-        // TODO: create and memorize certificate
-        certificateService.createCertificate(request);
-
+        certificateService.createCertificate(request, issuerId);
         return new CertificateRequestDto(certReqRepo.save(request));
     }
 

@@ -31,6 +31,7 @@ public class X500Service {
     @Autowired
     private KeyStoreService keyStoreService;
 
+
     public X509CertificateData createRootCertificate(CertificateDto certificateDto) {
         KeyPair subjectKeyPair = generateKeyPair();
         Integer subjectSerialNumber = generateSerialNumber();
@@ -60,6 +61,7 @@ public class X500Service {
         subjectCertificateDto.setSerialNumber(subjectSerialNumber); // potrebno da bude u DTO prilikom kreiranja x500name
         X509CertificateData issuerCertificateData = keyStoreService
                 .getCaCertificate(issuerCertificate.getKeyStoreAlias());
+
 
         return createX509Certificate(new CreateX509CertificateData(
                 createX500NameFromCertificate(issuerCertificate),
