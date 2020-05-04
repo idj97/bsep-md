@@ -13,9 +13,28 @@ import { DatePipe } from '@angular/common';
 })
 export class NewCertificateComponent implements OnInit {
 
-  certificateAuthority: CertificateAuthority;
-  validFromDate: Date;
-  validUntilDate: Date;
+  activeInput: number = -1;
+  private _validFromDate: Date;
+  private _validUntilDate: Date;
+
+  certificateAuthority: CertificateAuthority = new CertificateAuthority();;
+  set validFromDate(date: Date) {
+    this._validFromDate = date;
+    this.certificateAuthority.certificateDto.validFrom = this.datePipe.transform(date, 'dd-MM-yyyy');
+  }
+
+  get validFromDate() {
+    return this._validFromDate;
+  }
+
+  set validUntilDate(date: Date) {
+    this._validUntilDate = date;
+    this.certificateAuthority.certificateDto.validUntil = this.datePipe.transform(date, 'dd-MM-yyyy');
+  }
+
+  get validUntilDate() {
+    return this._validUntilDate;
+  }
 
   datesValid: boolean;
   datePipe: DatePipe;
@@ -29,33 +48,39 @@ export class NewCertificateComponent implements OnInit {
   constructor(private caService: CertificateAuthorityService) { }
 
   ngOnInit() {
-    this.certificateAuthority = new CertificateAuthority();
     this.datesValid = true;
     this.certificateAuthority.caType = 0;
     this.datePipe = new DatePipe('en-US');
   }
 
-  focusInput(event: FocusEvent) {
-    let el = event.target;
-    let parent = (<HTMLElement> el).parentElement;
-    let text = <HTMLElement> parent.getElementsByClassName('input-text-value')[0];
-
-    text.classList.add('focused');
-    text.classList.remove('blurred');
+  focusInput(event: FocusEvent, index) {
+    this.activeInput = index;
   }
 
-  blurInput(event: FocusEvent) {
-    clearTimeout(this.blurTimeout);
-    this.blurTimeout = setTimeout(() => {
-      let el = <HTMLInputElement>event.target;
+  blurInput(event: FocusEvent, index) {
+    console.log(event);
+    if (event.relatedTarget) {
+      
+      let relTarget = <HTMLElement>event.relatedTarget;
+      if (relTarget.classList.contains('dl-abdtp-date-button') ||
+      relTarget.classList.contains('dl-abdtp-right-button') ||
+      relTarget.classList.contains('dl-abdtp-left-button')) {
+        (<HTMLInputElement>event.target).focus();
+        return;
+      } 
+    }
+    
+    if (this.activeInput == index || this.isEmpty(index)) {
+      this.activeInput = -1;
+    }
+  }
 
-      if (el.value != '') return;
+  isEmpty(index: number) {
+    return (<HTMLInputElement>document.querySelectorAll('.input-holder .input-styled')[index]).value == '';
+  }
 
-      let parent = (<HTMLElement> el).parentElement;
-      let text = <HTMLElement> parent.getElementsByClassName('input-text-value')[0];
-      text.classList.remove('focused');
-      text.classList.add('blurred');
-    }, 20);
+  isActiveInput(index: number) {
+    document.querySelectorAll('input-holder .input-styled')
   }
 
   futureDatesOnly(dateButton: DateButton, viewName: string) {

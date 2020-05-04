@@ -88,6 +88,8 @@
     overflow-y: auto;
     color: black;
     font-weight: 600;
+    padding: 0 !important;
+    overflow-x: hidden;
 }
 
 .delimiter {

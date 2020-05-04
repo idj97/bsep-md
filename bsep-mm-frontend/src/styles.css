@@ -161,3 +161,36 @@ body {
     background-color: white !important;
     color: black !important;
 }
+
+.date-holder {
+    position: absolute;
+    top: 90px;
+    left: 0px;
+    background-color: #22282e;
+    color: white;
+    width: 400px;
+    z-index: 99;
+    padding: 8px;
+}
+
+.date-holder .col.dl-abdtp-date-button.dl-abdtp-day {
+    color: white !important;
+}
+
+.date-holder .col.dl-abdtp-date-button.dl-abdtp-day.dl-abdtp-active.dl-abdtp-selected {
+    background: rgb(0, 156, 156) !important;
+}
+
+.date-holder .col.dl-abdtp-date-button.dl-abdtp-day.dl-abdtp-past.dl-abdtp-disabled.aria-disabled {
+    color: gray !important;
+}
+
+.date-holder .col.dl-abdtp-date-button.dl-abdtp-day.dl-abdtp-future {
+    color: gray !important;
+}
+
+.date-holder .col-10.dl-abdtp-view-label {
+    color: rgb(54, 224, 224) !important;
+    cursor: default !important;
+    padding: 20px;
+}

@@ -1,6 +1,12 @@
 .holder .header{
-    padding: 20px;
     font-size: 26px;
+    padding: 35px 15px;
+    background: #22282e;
+    color: white;
+}
+
+.holder {
+    margin: 0 !important;
 }
 
 .input-text-value {
@@ -13,19 +19,37 @@
 }
 
 .input-holder {
-    margin-top: 2px;
-    margin-bottom: 26px;
+    background: #2e3238;
+    color: white;
+    height: 90px;
+    transition: .3s background;
+}
+
+.input-holder.focused {
+    background: #22282e;
+}
+
+.input-holder.blurred .input-text-value{
+    top: 50%;
+    font-size: 14px;
+}
+
+.input-holder.focused .input-text-value{
+    top: 18px;
+    font-size: 12px;
+    color: rgb(54, 224, 224);
 }
 
 .input-styled {
+    position: relative;
     border: none;
-    border-bottom: 2px solid black;
     padding: 10px;
     outline: none;
     background: transparent;
     font-size: 13px;
     font-weight: 700;
     width: 100%;
+    color: inherit;
 }
 
 .section-info {
@@ -35,20 +59,10 @@
     margin-bottom: 18px;
 }
 
-.focused {
-    top: -4px;
-    font-size: 12px;
-    color: darkcyan;
-}
-
-.blurred {
-    top: 50%;
-    font-size: 14px;
-    color: black;
-}
 
 .form-holder {
-    padding: 20px;
+    padding: 0 !important;
+    margin: 0 !important;
 }
 
 .wide-btn {
@@ -56,15 +70,15 @@
     margin-bottom: 2ex;
 }
 
-small {
+.input-holder small {
+    position: absolute;
+    left: 20px;
+    top: calc(50% + 28px);
+    transform: translateY(-50%);
     color: red;
     font-size: 13px;
 }
 
-.date-holder {
-    background-color: whitesmoke;
-    border-radius: 20px;
-}
 
 .centered-message {
     margin-left: 35%;

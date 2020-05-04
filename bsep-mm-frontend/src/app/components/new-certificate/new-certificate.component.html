@@ -2,106 +2,113 @@
     <div class="row holder">
     <div class="col-12 header">New Certificate</div>
         <div class="form-holder col-12 row">
-            <div class="section-info col-12">Subject data</div>
-            <div class="input-holder col-6">
-                <p class="input-text-value blurred">Common Name</p>
-                <input type="text" class="input-styled" (blur)="blurInput($event)" (focus)="focusInput($event)"
+            <div class="input-holder d-flex align-items-center col-6" [ngClass]="{blurred : activeInput != 0, focused : activeInput == 0 || !isEmpty(0)}">
+                <p class="input-text-value">Common Name</p>
+                <input type="text" class="input-styled" (blur)="blurInput($event, 0)" (focus)="focusInput($event, 0)"
                     [(ngModel)]="certificateAuthority.certificateDto.commonName" name="commonName"
                     #commonName="ngModel" required>
-                <small *ngIf="(commonName.touched || ncf.submitted) && commonName.errors?.required">
+                <small class="text-danger" *ngIf="(commonName.touched || ncf.submitted) && commonName.errors?.required">
                     Common name is required
                 </small>
             </div>
-            <div class="input-holder col-6">
+            <div class="input-holder d-flex align-items-center col-6" [ngClass]="{blurred : activeInput != 1, focused : activeInput == 1 || !isEmpty(1)}">
                 <p class="input-text-value blurred">Given Name</p>
-                <input type="text" class="input-styled" (blur)="blurInput($event)" (focus)="focusInput($event)"
+                <input type="text" class="input-styled" (blur)="blurInput($event, 1)" (focus)="focusInput($event, 1)"
                     [(ngModel)]="certificateAuthority.certificateDto.givenName" name="givenName"
                     #givenName="ngModel" required>
-                <small *ngIf="(givenName.touched || ncf.submitted) && givenName.errors?.required">
+                <small class="text-danger" *ngIf="(givenName.touched || ncf.submitted) && givenName.errors?.required">
                     Given name is required
                 </small>
             </div>
-            <div class="input-holder col-6">
+            <div class="input-holder d-flex align-items-center col-6" [ngClass]="{blurred : activeInput != 2, focused : activeInput == 2 || !isEmpty(2)}">
                 <p class="input-text-value blurred">Surname</p>
-                <input type="text" class="input-styled" (blur)="blurInput($event)" (focus)="focusInput($event)"
+                <input type="text" class="input-styled" (blur)="blurInput($event, 2)" (focus)="focusInput($event, 2)"
                     [(ngModel)]="certificateAuthority.certificateDto.surname" name="surname" 
                     #surname="ngModel" required>
-                <small *ngIf="(surname.touched || ncf.submitted) && surname.errors?.required">
+                <small class="text-danger" *ngIf="(surname.touched || ncf.submitted) && surname.errors?.required">
                     Surname name is required
                 </small>
             </div>
-            <div class="input-holder col-6">
+            <div class="input-holder d-flex align-items-center col-6" [ngClass]="{blurred : activeInput != 3, focused : activeInput == 3 || !isEmpty(3)}">
                 <p class="input-text-value blurred">Organisation</p>
-                <input type="text" class="input-styled" (blur)="blurInput($event)" (focus)="focusInput($event)"
+                <input type="text" class="input-styled" (blur)="blurInput($event, 3)" (focus)="focusInput($event, 3)"
                     [(ngModel)]="certificateAuthority.certificateDto.organisation" name="organisation"
                     #organisation="ngModel" required>
-                <small *ngIf="(organisation.touched || ncf.submitted) && organisation.errors?.required">
+                <small class="text-danger" *ngIf="(organisation.touched || ncf.submitted) && organisation.errors?.required">
                     Organisation name is required
                 </small>
             </div>
-            <div class="input-holder col-6">
+            <div class="input-holder d-flex align-items-center col-6" [ngClass]="{blurred : activeInput != 4, focused : activeInput == 4 || !isEmpty(4)}">
                 <p class="input-text-value blurred">Organisation Unit</p>
-                <input type="text" class="input-styled" (blur)="blurInput($event)" (focus)="focusInput($event)"
+                <input type="text" class="input-styled" (blur)="blurInput($event, 4)" (focus)="focusInput($event, 4)"
                     [(ngModel)]="certificateAuthority.certificateDto.organisationUnit"  name="organisationUnit"
                     #organisationUnit="ngModel" required>
-                <small *ngIf="(organisationUnit.touched || ncf.submitted) && organisationUnit.errors?.required">
+                <small class="text-danger" *ngIf="(organisationUnit.touched || ncf.submitted) && organisationUnit.errors?.required">
                     Organisation unit is required
                 </small>
             </div>
-            <div class="input-holder col-6">
+            <div class="input-holder d-flex align-items-center col-6" [ngClass]="{blurred : activeInput != 5, focused : activeInput == 5 || !isEmpty(5)}">
                 <p class="input-text-value blurred">Country</p>
-                <input type="text" class="input-styled" (blur)="blurInput($event)" (focus)="focusInput($event)" 
+                <input type="text" class="input-styled" (blur)="blurInput($event, 5)" (focus)="focusInput($event, 5)" 
                     [(ngModel)]="certificateAuthority.certificateDto.country" name="country"
                     #country="ngModel" required>
-                <small *ngIf="(country.touched || ncf.submitted) && country.errors?.required">
-                    Country unit is required
+                <small class="text-danger" *ngIf="(country.touched || ncf.submitted) && country.errors?.required">
+                    Country is required
                 </small>
             </div>
-            <div class="input-holder col-6">
+            <div class="input-holder d-flex align-items-center col-12" [ngClass]="{blurred : activeInput != 6, focused : activeInput == 6 || !isEmpty(6)}">
                 <p class="input-text-value blurred">Email</p>
-                <input type="text" class="input-styled" (blur)="blurInput($event)" (focus)="focusInput($event)"
+                <input type="text" class="input-styled" (blur)="blurInput($event, 6)" (focus)="focusInput($event, 6)"
                     [(ngModel)]="certificateAuthority.certificateDto.email" name="email"
                     #email="ngModel" required>
-                <small *ngIf="(email.touched || ncf.submitted) && email.errors?.required">
-                    Email unit is required
+                <small class="text-danger" *ngIf="(email.touched || ncf.submitted) && email.errors?.required">
+                    Email is required
                 </small>
             </div>
-            <div class="input-holder col-6"></div>
-            <div class="section-info col-12">Time data</div>
-            <div class="input-holder col-6">
-                <p>Valid from</p>
-                <div class="date-holder">
+            <div class="input-holder d-flex align-items-center col-6" [ngClass]="{blurred : activeInput != 7, focused : activeInput == 7 || !isEmpty(7)}">
+                <p class="input-text-value blurred">Valid from</p>
+                <input type="text" class="input-styled" (blur)="blurInput($event, 7)" (focus)="focusInput($event, 7)"
+                    [(ngModel)]="certificateAuthority.certificateDto.validFrom" name="validFrom"
+                    #validFrom="ngModel" required>
+                <small class="text-danger" *ngIf="(validFrom.touched || ncf.submitted) && validFrom.errors?.required">
+                    Valid from is required
+                </small>
+
+                <div class="date-holder" *ngIf="activeInput == 7">
                     <dl-date-time-picker
                         name="validFrom"
                         startView="day"
                         maxView="day"
                         minView="day"
                         [selectFilter]="futureDatesOnly"
-                        [(ngModel)]="validFromDate"
-                        #validFrom="ngModel" required>
+                        [(ngModel)]="validFromDate">
                     </dl-date-time-picker>
                 </div>
-                <small *ngIf="ncf.submitted && validFrom.errors?.required">
-                    Valid from date is required
-                </small>
+
             </div>
-            <div class="input-holder col-6">
-                <p>Valid until</p>
-                <div class="date-holder">
+            <div class="input-holder d-flex align-items-center col-6" [ngClass]="{blurred : activeInput != 8, focused : activeInput == 8 || !isEmpty(8)}">
+                <p class="input-text-value blurred">Valid Until</p>
+                <input type="text" class="input-styled" (blur)="blurInput($event, 8)" (focus)="focusInput($event, 8)"
+                    [(ngModel)]="certificateAuthority.certificateDto.validUntil" name="validUntil"
+                    #validUntil="ngModel" required>
+                <small class="text-danger" *ngIf="(validUntil.touched || ncf.submitted) && validUntil.errors?.required">
+                    Valid until is required
+                </small>
+                
+                <div class="date-holder" *ngIf="activeInput == 8">
                     <dl-date-time-picker
                         name="validUntil"
                         startView="day"
                         maxView="day"
                         minView="day"
                         [selectFilter]="futureDatesOnly"
-                        [(ngModel)]="validUntilDate"
-                        #validUntil="ngModel" required>
+                        [(ngModel)]="validUntilDate">
                     </dl-date-time-picker>
                 </div>
-                <small *ngIf="ncf.submitted && validUntil.errors?.required">
-                    Valid until date is required
-                </small>
+
             </div>
+
+
             <div class="col-12">
                 <small class="centered-message" *ngIf="!datesValid"> 
                     Valid from must be before valid until
