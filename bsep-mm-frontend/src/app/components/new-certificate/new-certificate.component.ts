@@ -17,7 +17,7 @@ export class NewCertificateComponent implements OnInit {
   private _validFromDate: Date;
 
   certificateAuthority: CertificateAuthority = new CertificateAuthority();
-  
+
   set validFromDate(date: Date) {
     this._validFromDate = date;
     this.certificateAuthority.certificateDto.validFrom = this.datePipe.transform(date, 'dd-MM-yyyy');

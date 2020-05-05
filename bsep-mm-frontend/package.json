@@ -24,10 +24,11 @@
     "@fortawesome/free-solid-svg-icons": "^5.13.0",
     "@ng-bootstrap/ng-bootstrap": "^5.2.2",
     "angular-bootstrap-datetimepicker": "^4.0.2",
-    "moment": "^2.24.0",
     "bootstrap": "^4.4.1",
     "keycloak-angular": "^7.2.0",
     "keycloak-js": "^9.0.2",
+    "moment": "^2.25.3",
+    "open-iconic": "^1.1.1",
     "rxjs": "~6.4.0",
     "tslib": "^1.10.0",
     "zone.js": "~0.9.1"
