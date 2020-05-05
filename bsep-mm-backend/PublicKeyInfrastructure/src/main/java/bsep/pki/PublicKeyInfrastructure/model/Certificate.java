@@ -42,27 +42,42 @@ public class Certificate {
     private String keyStoreAlias;
 
     @Column(nullable = false)
+    private String keyGenerationAlgorithm;
+
+    @Column(nullable = false)
+    private Integer keySize;
+
+    @Column(nullable = false)
+    private String signingAlgorithm;
+
+    @Column(nullable = false)
+    private Boolean selfSigned;
+
+    @Column(nullable = false)
+    private Boolean isCa;
+
+    @Column
     private String userId;
 
-    @Column(nullable = false)
+    @Column
     private String userEmail;
 
-    @Column(nullable = false)
+    @Column
     private String O;
 
-    @Column(nullable = false)
+    @Column
     private String C;
 
-    @Column(nullable = false)
+    @Column
     private String OU;
 
-    @Column(nullable = false)
+    @Column
     private String GivenName;
 
-    @Column(nullable = false)
+    @Column
     private String Surname;
 
-    @Column(nullable = false)
+    @Column
     private String CN;
 
     @Temporal(TemporalType.TIMESTAMP)

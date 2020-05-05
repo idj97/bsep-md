@@ -1,6 +1,5 @@
 package bsep.pki.PublicKeyInfrastructure.dto.extensions;
 
-import bsep.pki.PublicKeyInfrastructure.model.Certificate;
 import bsep.pki.PublicKeyInfrastructure.model.CertificateExtension;
 import bsep.pki.PublicKeyInfrastructure.model.ExtensionAttribute;
 import lombok.AllArgsConstructor;
@@ -11,6 +10,7 @@ import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.KeyUsage;
 
+import java.io.IOException;
 import java.util.Map;
 
 @Getter
@@ -29,7 +29,7 @@ public class KeyUsageDto extends AbstractExtensionDto {
     private Boolean decipherOnly = false;
 
     @Override
-    public Extension getBCExtension(Map<String, Object> params) {
+    public Extension getBCExtension(Map<String, Object> params) throws IOException {
         int usages = 0;
         if (digitalSignature) usages = usages | KeyUsage.digitalSignature;
         if (nonRepudiation)   usages = usages | KeyUsage.nonRepudiation;
@@ -45,7 +45,7 @@ public class KeyUsageDto extends AbstractExtensionDto {
         return new Extension(
                 Extension.keyUsage,
                 isCritical,
-                ASN1OctetString.getInstance(keyUsage));
+                keyUsage.getEncoded());
     }
 
     @Override

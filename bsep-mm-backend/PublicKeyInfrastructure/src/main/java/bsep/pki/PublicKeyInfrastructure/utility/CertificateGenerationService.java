@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateEncodingException;
@@ -165,9 +166,9 @@ public class CertificateGenerationService {
                     CRITICAL,
                     jcaX509ExtensionUtils.createAuthorityKeyIdentifier(issuerData.getPublicKey()));
 
-        } catch (CertIOException e) {
-            e.printStackTrace();
-        }
+            } catch (CertIOException e) {
+                e.printStackTrace();
+            }
     }
 
     public void setSiemAgentCertExtensions(X509v3CertificateBuilder certGen, IssuerData issuerData) {
@@ -205,6 +206,12 @@ public class CertificateGenerationService {
 
     public void setSiemCenterCertExtensions(X509v3CertificateBuilder certGen, IssuerData issuerData) {
         try {
+            ExtensionsGenerator extensionsGenerator = new ExtensionsGenerator();
+            extensionsGenerator.addExtension(Extension.basicConstraints,
+                    CRITICAL,
+                    ASN1OctetString.getInstance(new BasicConstraints(false)));
+            extensionsGenerator.generate();
+
             Extension extension = new Extension(
                     Extension.basicConstraints,
                     CRITICAL,
@@ -237,6 +244,8 @@ public class CertificateGenerationService {
                     jcaX509ExtensionUtils.createAuthorityKeyIdentifier(issuerData.getPublicKey()));
 
         } catch (CertIOException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

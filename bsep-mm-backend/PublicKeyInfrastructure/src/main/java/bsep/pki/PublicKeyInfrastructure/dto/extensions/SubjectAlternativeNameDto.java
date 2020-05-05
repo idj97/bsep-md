@@ -12,6 +12,7 @@ import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.GeneralName;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +26,7 @@ public class SubjectAlternativeNameDto extends AbstractExtensionDto {
     private List<String> ipAddresses = new ArrayList<>();
 
     @Override
-    public Extension getBCExtension(Map<String, Object> params) {
+    public Extension getBCExtension(Map<String, Object> params) throws IOException {
         ASN1EncodableVector vector = new ASN1EncodableVector();
         dnsNames.stream().forEach(name -> vector.add(new GeneralName(GeneralName.dNSName, name)));
         ipAddresses.stream().forEach(address -> vector.add(new GeneralName(GeneralName.iPAddress, address)));
@@ -34,7 +35,7 @@ public class SubjectAlternativeNameDto extends AbstractExtensionDto {
         return new Extension(
                 Extension.subjectAlternativeName,
                 isCritical,
-                ASN1OctetString.getInstance(derSequence));
+                derSequence.getEncoded());
     }
 
     @Override

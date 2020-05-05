@@ -10,6 +10,7 @@ import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.x509.BasicConstraints;
 import org.bouncycastle.asn1.x509.Extension;
 
+import java.io.IOException;
 import java.util.Map;
 
 @Getter
@@ -21,7 +22,7 @@ public class BasicConstraintsDto extends AbstractExtensionDto {
     private Integer pathLength;
 
     @Override
-    public Extension getBCExtension(Map<String, Object> params) {
+    public Extension getBCExtension(Map<String, Object> params) throws IOException {
         BasicConstraints basicConstraints;
         if (pathLength != null)  basicConstraints = new BasicConstraints(pathLength);
         else                     basicConstraints = new BasicConstraints(isCa);
@@ -29,7 +30,7 @@ public class BasicConstraintsDto extends AbstractExtensionDto {
         return new Extension(
                 Extension.basicConstraints,
                 isCritical,
-                ASN1OctetString.getInstance(basicConstraints));
+                basicConstraints.getEncoded());
     }
 
     @Override

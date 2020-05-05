@@ -11,6 +11,7 @@ import org.bouncycastle.asn1.x509.ExtendedKeyUsage;
 import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.KeyPurposeId;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.Vector;
 
@@ -27,7 +28,7 @@ public class ExtendedKeyUsageDto extends AbstractExtensionDto {
     private Boolean OCSPSigning = false;
 
     @Override
-    public Extension getBCExtension(Map<String, Object> params) {
+    public Extension getBCExtension(Map<String, Object> params) throws IOException {
         Vector<KeyPurposeId> keyPurposeIdsVector = new Vector<>();
 
         if (anyExtendedKeyUsage) keyPurposeIdsVector.add(KeyPurposeId.anyExtendedKeyUsage);
@@ -38,13 +39,17 @@ public class ExtendedKeyUsageDto extends AbstractExtensionDto {
             if (emailProtection) keyPurposeIdsVector.add(KeyPurposeId.id_kp_emailProtection);
             if (OCSPSigning)     keyPurposeIdsVector.add(KeyPurposeId.id_kp_OCSPSigning);
         }
-        KeyPurposeId[] keyPurposeIdsArray = (KeyPurposeId[]) keyPurposeIdsVector.toArray();
+        KeyPurposeId[] keyPurposeIdsArray = new KeyPurposeId[keyPurposeIdsVector.size()];
+        for (int i = 0; i < keyPurposeIdsVector.size(); i++) {
+            keyPurposeIdsArray[i] = keyPurposeIdsVector.get(i);
+        }
+
         ExtendedKeyUsage extendedKeyUsage = new ExtendedKeyUsage(keyPurposeIdsArray);
 
         return new Extension(
                 Extension.extendedKeyUsage,
                 isCritical,
-                ASN1OctetString.getInstance(extendedKeyUsage));
+                extendedKeyUsage.getEncoded());
     }
 
     @Override

@@ -19,7 +19,7 @@ public class DateService {
         try {
             return sdf.parse(dateStr);
         } catch (ParseException e) {
-            throw new ApiBadRequestException("Exception catched while parsing date in DateService.");
+            throw new ApiBadRequestException("Invalid date format.");
         }
     }
 
@@ -28,8 +28,5 @@ public class DateService {
         c.setTime(date);
         c.add(Calendar.MONTH, months);
         return c.getTime();
-        //LocalDateTime localDateTime = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-        //localDateTime = localDateTime.plusMonths((long)months);
-        //return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
     }
 }

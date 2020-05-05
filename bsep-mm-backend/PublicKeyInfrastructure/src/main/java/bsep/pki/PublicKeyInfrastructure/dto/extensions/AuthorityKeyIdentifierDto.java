@@ -3,7 +3,6 @@ package bsep.pki.PublicKeyInfrastructure.dto.extensions;
 import bsep.pki.PublicKeyInfrastructure.exception.ApiInternalServerErrorException;
 import bsep.pki.PublicKeyInfrastructure.model.CertificateExtension;
 import bsep.pki.PublicKeyInfrastructure.model.ExtensionAttribute;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,6 +12,7 @@ import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.cert.jcajce.JcaX509ExtensionUtils;
 import org.bouncycastle.util.encoders.Hex;
 
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
@@ -27,7 +27,7 @@ public class AuthorityKeyIdentifierDto extends AbstractExtensionDto {
     public Extension getBCExtension(Map<String, Object> params) {
         try {
             JcaX509ExtensionUtils extensionUtils = new JcaX509ExtensionUtils();
-            PublicKey authorityPublicKey = (PublicKey) params.get("authorityPublicKey");
+            PublicKey authorityPublicKey = (PublicKey) params.get("issuerPublicKey");
 
             AuthorityKeyIdentifier authorityKeyIdentifier = extensionUtils
                     .createAuthorityKeyIdentifier(authorityPublicKey);
@@ -35,9 +35,9 @@ public class AuthorityKeyIdentifierDto extends AbstractExtensionDto {
             return new Extension(
                     Extension.authorityKeyIdentifier,
                     isCritical,
-                    ASN1OctetString.getInstance(authorityKeyIdentifier));
+                    authorityKeyIdentifier.getEncoded());
 
-        } catch (NoSuchAlgorithmException e) {
+        } catch (NoSuchAlgorithmException | IOException e) {
             e.printStackTrace();
             throw new ApiInternalServerErrorException();
         }
@@ -45,7 +45,7 @@ public class AuthorityKeyIdentifierDto extends AbstractExtensionDto {
 
     @Override
     public CertificateExtension getExtensionEntity(Map<String, Object> params) {
-        X509Certificate subjectCert = (X509Certificate) params.get("subjectCert");
+        X509Certificate subjectCert = (X509Certificate) params.get("subjectX509Cert");
 
         CertificateExtension certificateExtension = new CertificateExtension();
         certificateExtension.setName("Authority key identifier");
@@ -57,7 +57,7 @@ public class AuthorityKeyIdentifierDto extends AbstractExtensionDto {
 
     public String getAuthorityKeyIdentifier(X509Certificate x509Certificate) {
         byte[] octets = x509Certificate.getExtensionValue(Extension.authorityKeyIdentifier.getId());
-        AuthorityKeyIdentifier authorityKeyIdentifier = AuthorityKeyIdentifier.getInstance(octets);
+        AuthorityKeyIdentifier authorityKeyIdentifier = new AuthorityKeyIdentifier(octets);
         byte[] keyIdentifier = authorityKeyIdentifier.getKeyIdentifier();
         return Hex.toHexString(keyIdentifier);
     }

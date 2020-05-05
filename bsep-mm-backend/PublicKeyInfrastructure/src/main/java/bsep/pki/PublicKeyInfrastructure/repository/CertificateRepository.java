@@ -19,13 +19,13 @@ public interface CertificateRepository extends JpaRepository<Certificate, Long> 
     List<Certificate> findByCNContainingAndIssuedForCANotNull(String commonName);
     List<Certificate> findByIssuedForCANull();
 
-    @Query("SELECT c FROM Certificate c WHERE " +
+    @Query(value = "SELECT c FROM Certificate c WHERE " +
             "c.CN LIKE %:commonName% AND " +
             "(:revoked = CASE WHEN (c.revocation IS NULL) THEN FALSE ELSE TRUE END) AND " +
             "(:isCaCert = CASE WHEN (c.issuedForCA IS NULL) THEN FALSE ELSE TRUE END) AND " +
             "((c.validFrom > :validFrom) OR (:validFrom IS NULL)) AND " +
             "((c.validUntil < :validUntil) OR (:validUntil IS NULL)) AND " +
-            "((c.certificateType = :certificateType) OR (:certificateType IS NULL))")
+            "((c.certificateType = :certificateType) OR (:certificateType IS NULL))", nativeQuery = false)
     Page<Certificate> search(
             @Param("commonName") String commonName,
             @Param("revoked") boolean revoked,

@@ -6,5 +6,6 @@ public enum CertificateType {
     SIEM_CENTER_ISSUER,
     SIEM_AGENT,
     SIEM_CENTER,
-    UNDEFINED
+    INTERMEDIATE_CA,
+    END_CA
 }

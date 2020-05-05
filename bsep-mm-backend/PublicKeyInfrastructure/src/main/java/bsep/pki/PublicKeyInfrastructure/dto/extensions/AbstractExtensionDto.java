@@ -4,9 +4,15 @@ import bsep.pki.PublicKeyInfrastructure.model.CertificateExtension;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.bouncycastle.asn1.x509.ExtendedKeyUsage;
 import org.bouncycastle.asn1.x509.Extension;
+import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.Map;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "type")
@@ -19,8 +25,10 @@ import java.util.Map;
         @Type(value = AuthorityInfoAccessDto.class,    name = "authorityInfoAccess"),
         @Type(value = SubjectAlternativeNameDto.class, name = "subjectAlternativeName")
 })
+@Getter
+@Setter
 public abstract class AbstractExtensionDto {
-    protected Boolean isCritical;
-    public abstract Extension getBCExtension(Map<String, Object> params);
+    protected Boolean isCritical = false;
+    public abstract Extension getBCExtension(Map<String, Object> params) throws IOException;
     public abstract CertificateExtension getExtensionEntity(Map<String, Object> params);
 }

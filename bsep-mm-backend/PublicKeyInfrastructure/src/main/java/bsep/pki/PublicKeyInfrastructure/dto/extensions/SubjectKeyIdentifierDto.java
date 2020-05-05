@@ -13,6 +13,7 @@ import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
 import org.bouncycastle.cert.jcajce.JcaX509ExtensionUtils;
 import org.bouncycastle.util.encoders.Hex;
 
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
@@ -35,9 +36,9 @@ public class SubjectKeyIdentifierDto extends AbstractExtensionDto {
             return new Extension(
                     Extension.subjectKeyIdentifier,
                     isCritical,
-                    ASN1OctetString.getInstance(subjectKeyIdentifier));
+                    subjectKeyIdentifier.getEncoded());
 
-        } catch (NoSuchAlgorithmException e) {
+        } catch (NoSuchAlgorithmException | IOException e) {
             e.printStackTrace();
             throw new ApiInternalServerErrorException();
         }
@@ -45,7 +46,7 @@ public class SubjectKeyIdentifierDto extends AbstractExtensionDto {
 
     @Override
     public CertificateExtension getExtensionEntity(Map<String, Object> params) {
-        X509Certificate subjectCert = (X509Certificate) params.get("subjectCert");
+        X509Certificate subjectCert = (X509Certificate) params.get("subjectX509Cert");
 
         CertificateExtension certificateExtension = new CertificateExtension();
         certificateExtension.setName("Subject key identifier");
@@ -57,13 +58,6 @@ public class SubjectKeyIdentifierDto extends AbstractExtensionDto {
 
     public String getSubjectKeyIdentifier(X509Certificate x509Certificate) {
         byte[] octets = x509Certificate.getExtensionValue(Extension.subjectKeyIdentifier.getId());
-        SubjectKeyIdentifier subjectKeyIdentifier = SubjectKeyIdentifier.getInstance(octets);
-        byte[] keyIdentifier = subjectKeyIdentifier.getKeyIdentifier();
-        return Hex.toHexString(keyIdentifier);
-    }
-
-    public String getKeyIdentifier(X509Certificate x509Certificate) {
-        byte[] octets = x509Certificate.getExtensionValue(Extension.subjectAlternativeName.getId());
         SubjectKeyIdentifier subjectKeyIdentifier = SubjectKeyIdentifier.getInstance(octets);
         byte[] keyIdentifier = subjectKeyIdentifier.getKeyIdentifier();
         return Hex.toHexString(keyIdentifier);
