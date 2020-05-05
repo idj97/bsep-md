@@ -5,6 +5,7 @@ import { CertificateAuthorityService } from 'src/app/services/certificate-author
 import { DateButton } from 'angular-bootstrap-datetimepicker';
 import { DatePipe } from '@angular/common';
 import { ToasterService } from 'src/app/services/toaster.service';
+import { faPlus, faArrowUp } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-new-certificate',
@@ -12,6 +13,19 @@ import { ToasterService } from 'src/app/services/toaster.service';
   styleUrls: ['./new-certificate.component.css']
 })
 export class NewCertificateComponent implements OnInit {
+
+  private extensionsSelected: boolean = false;
+  private additionalSelected: boolean = false;
+
+  private allSelections: any = {
+    showKeyUsages: false,
+    showExtendedKeyUsages: false,
+  };
+
+  //ICONS
+  faPlus = faPlus;
+  faArrowUp = faArrowUp;
+  //---
 
   activeInput: number = -1;
   private _validFromDate: Date;
@@ -48,12 +62,16 @@ export class NewCertificateComponent implements OnInit {
     this.datePipe = new DatePipe('en-US');
   }
 
+  test(el) {
+    console.log(el);
+    return false;
+  }
+
   focusInput(event: FocusEvent, index) {
     this.activeInput = index;
   }
 
   blurInput(event: FocusEvent, index) {
-    console.log(event);
     if (event.relatedTarget) {
       
       let relTarget = <HTMLElement>event.relatedTarget;
@@ -133,6 +151,46 @@ export class NewCertificateComponent implements OnInit {
       return 'SIEM_CENTER_ISSUER';
     }
 
+  }
+
+  toggleExtensions(): void {
+    for (let i in this.allSelections) {
+      this.allSelections[i] = false;
+    }
+
+    if (this.additionalSelected) {
+      this.extensionsSelected = false;
+      this.additionalSelected = false;
+      return;
+    }
+    this.extensionsSelected = !this.extensionsSelected;
+    this.additionalSelected = !this.additionalSelected;
+
+    
+  }
+
+  keyUsageSelected(): void {
+    this.additionalSelected = true;
+    this.extensionsSelected = false;
+    this.allSelections.showKeyUsages = true;
+  }
+
+  cancelKeyUsageSelected(): void {
+    this.additionalSelected = true;
+    this.extensionsSelected = true;
+    this.allSelections.showKeyUsages = false;
+  }
+
+  extendedKeyUsageSelected(): void {
+    this.additionalSelected = true;
+    this.extensionsSelected = false;
+    this.allSelections.showExtendedKeyUsages = true;
+  }
+
+  cancelExtendedKeyUsageSelected(): void {
+    this.additionalSelected = true;
+    this.extensionsSelected = true;
+    this.allSelections.showExtendedKeyUsages = false;
   }
 
 }

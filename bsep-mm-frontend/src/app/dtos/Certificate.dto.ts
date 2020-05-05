@@ -2,13 +2,21 @@ import { Revocation } from './Revocation.dto';
 
 export class Certificate {
     
+    algorithm: string;
+    keySize: number;
+    periodType: string;
+    signWith: number;
+    signatureAlgorithm: string;
     commonName: string;
     givenName: string;
     surname: string;
     organisation: string;
     organisationUnit: string;
+    stateName: string;
     country: string;
     email: string;
+    localityName: string;
+    domainComponent: string;
 
     validFrom: string;
     validityInMonths: number;

@@ -3,6 +3,7 @@
     padding: 35px 15px;
     background: #22282e;
     color: white;
+    letter-spacing: 1px;
 }
 
 .holder {
@@ -34,6 +35,10 @@
     color: white;
     height: 90px;
     transition: .3s background;
+}
+
+.input-holder:hover {
+    background: #3b414d;
 }
 
 .input-holder.focused {
@@ -95,3 +100,175 @@
     margin-left: 35%;
 }
 
+.section-splitter {
+    padding: 15px;
+    background: #171e25;
+    color: rgb(161, 161, 161);
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.add-extension-circle {
+    border: 2px solid white;
+    border-radius: 100%;
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    transition: .3s;
+}
+
+.add-extension-circle.selected {
+    transform: scale(0.00);
+}
+
+.add-extension-btn {
+    padding: 30px;
+    text-align: center;
+    color: white;
+    background: #22282e;
+    cursor: pointer;
+    font-size: 18px;
+    transition: .3s;
+}
+
+.add-extension-btn.selected {
+    padding: 15px;
+    background: #171e25;
+}
+
+.add-extension-btn:hover {
+    background: #151f29;
+}
+
+.add-key-usage {
+    color: white;
+    background: #23242b;
+    font-size: 14px;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden;
+    max-height: 0;
+    transition: .3s;
+}
+
+.add-key-usage.selected {
+    max-height: 330px;
+}
+
+.add-key-usage  .add-key-usage-item {
+    padding: 25px;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.add-key-usage  .add-key-usage-item:hover {
+    background: #2d333a;
+}
+
+.add-key-usage .key-usage-btn {
+    padding: 15px;
+    text-align: center;
+    color: white;
+    background: #2d333a;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.add-key-usage .key-usage-btn:hover {
+    background: #171e25;
+}
+
+.add-key-usage .section-splitter {
+    font-size: 12px;
+    border-top: 2px solid #1f2730;
+}
+
+.add-extended-key-usage {
+    color: white;
+    background: #23242b;
+    font-size: 14px;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden;
+    max-height: 0;
+    transition: .3s;
+}
+
+.add-extended-key-usage.selected {
+    max-height: 380px;
+}
+
+.add-extended-key-usage  .add-key-usage-item {
+    padding: 25px;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.add-extended-key-usage  .add-key-usage-item:hover {
+    background: #2d333a;
+}
+
+.add-extended-key-usage .key-usage-btn {
+    padding: 15px;
+    text-align: center;
+    color: white;
+    background: #2d333a;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.add-extended-key-usage .key-usage-btn:hover {
+    background: #171e25;
+}
+
+.add-extended-key-usage .section-splitter {
+    font-size: 12px;
+    border-top: 2px solid #1f2730;
+}
+
+
+
+
+
+
+
+
+.add-extension-list {
+    color: white;
+    background: #23242b;
+    font-size: 14px;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden;
+    max-height: 0px;
+    transition: .3s;
+}
+
+.add-extension-list.selected {
+    max-height: 300px;
+}
+
+.add-extension-list  .extension-list-item {
+    padding: 25px;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.add-extension-list  .extension-list-item:hover {
+    background: #2d333a;
+}
+
+
+.submit-certificate {
+    padding: 30px;
+    text-align: center;
+    color: white;
+    background: #22282e;
+    cursor: pointer;
+    font-size: 14px;
+    transition: .3s;
+}
+
+.submit-certificate:hover {
+    background: #151f29;
+}
