@@ -17,13 +17,13 @@ import java.util.Map;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
-        @Type(value = BasicConstraintsDto.class,       name = "basicConstraints"),
-        @Type(value = SubjectKeyIdentifierDto.class,   name = "subjectKeyIdentifier"),
-        @Type(value = AuthorityKeyIdentifierDto.class, name = "authorityKeyIdentifier"),
-        @Type(value = KeyUsageDto.class,               name = "keyUsage"),
-        @Type(value = ExtendedKeyUsage.class,          name = "extendedKeyUsage"),
-        @Type(value = AuthorityInfoAccessDto.class,    name = "authorityInfoAccess"),
-        @Type(value = SubjectAlternativeNameDto.class, name = "subjectAlternativeName")
+        @Type(value = BasicConstraintsDto.class,       name = "BASIC_CONSTRAINTS"),
+        @Type(value = SubjectKeyIdentifierDto.class,   name = "SUBJECT_KEY_IDENTIFIER"),
+        @Type(value = AuthorityKeyIdentifierDto.class, name = "AUTHORITY_KEY_IDENTIFIER"),
+        @Type(value = KeyUsageDto.class,               name = "KEY_USAGE"),
+        @Type(value = ExtendedKeyUsage.class,          name = "EXTENDED_KEY_USAGE"),
+        @Type(value = AuthorityInfoAccessDto.class,    name = "AUTHORITY_INFO_ACCESS"),
+        @Type(value = SubjectAlternativeNameDto.class, name = "SUBJECT_ALTERNATIVE_NAME")
 })
 @Getter
 @Setter
