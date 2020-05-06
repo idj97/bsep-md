@@ -1,5 +1,6 @@
 package bsep.pki.PublicKeyInfrastructure.service;
 
+import bsep.pki.PublicKeyInfrastructure.config.AlgorithmsConfig;
 import bsep.pki.PublicKeyInfrastructure.data.X509CertificateWithKeys;
 import bsep.pki.PublicKeyInfrastructure.dto.CertificateDto;
 import bsep.pki.PublicKeyInfrastructure.dto.CreateCertificateDto;
@@ -16,27 +17,22 @@ import bsep.pki.PublicKeyInfrastructure.utility.*;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.Extension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
-import java.sql.Array;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(propagation = Propagation.REQUIRED)
 public class CertService {
-
-    @Value("#{'${app.secureKeyGenerationAlgorithms}'.split(',')}")
-    private List<String> secureKeyGenerationAlgorithms;
-
-    @Value("#{'${app.secureSigningAlgorithms}'.split(',')}")
-    private List<String> secureSigningAlgorithms;
-
     @Autowired
     private UriService uriService;
 
@@ -47,9 +43,6 @@ public class CertService {
     private X500Service x500Service;
 
     @Autowired
-    private KeyService keyService;
-
-    @Autowired
     private KeyStoreService keyStoreService;
 
     @Autowired
@@ -58,7 +51,7 @@ public class CertService {
     @Autowired
     private CertificateRequestRepository csrRepository;
 
-    public void createCertificate(CreateCertificateDto dto) {
+    public CertificateDto createCertificate(CreateCertificateDto dto) {
         verifyCreateCertificate(dto);
 
         // create cert, chain and key pair
@@ -74,7 +67,8 @@ public class CertService {
                 dto.getSerialNumber());
 
         // save entity
-        certificateRepository.save(certificateEntity);
+        certificateEntity = certificateRepository.save(certificateEntity);
+        return new CertificateDto(certificateEntity);
     }
 
     public X509CertificateWithKeys createX509Certificate(CreateCertificateDto dto) {
@@ -89,7 +83,7 @@ public class CertService {
         PublicKey subjectPublicKey;
         PrivateKey subjectPrivateKey;
         if (dto.getCsrId() == null) {
-            KeyPair subjectKeyPair = keyService.generateKeyPair(dto.getKeyGenerationAlgorithm(), dto.getKeySize());
+            KeyPair subjectKeyPair = x500Service.generateKeyPair(dto.getKeyGenerationAlgorithm(), dto.getKeySize());
             subjectPublicKey = subjectKeyPair.getPublic();
             subjectPrivateKey = subjectKeyPair.getPrivate();
         } else {
@@ -153,10 +147,8 @@ public class CertService {
         Map<String , Object> params = new HashMap<>();
         params.put("subjectX509Cert", subjectX509Cert);
         params.put("ocspResponderUris", uriService.ocspResponderUris);
-        if (dto.getSelfSigned())
-            params.put("caIssuersUris", Arrays.asList());
-        else
-            params.put("caIssuersUris", Arrays.asList(uriService.getCertificateAddress(dto.getIssuingCaSerialNumber())));
+        if (dto.getSelfSigned()) params.put("caIssuersUris", Arrays.asList());
+        else                     params.put("caIssuersUris", Arrays.asList(uriService.getCertificateAddress(dto.getIssuingCaSerialNumber())));
 
         cert.getExtensions().addAll(dto.getExtensions().stream().map(e -> e.getExtensionEntity(params)).collect(Collectors.toList()));
 
@@ -167,32 +159,32 @@ public class CertService {
             csr.setStatus(CertificateRequestStatus.APPROVED);
         }
 
-        boolean isCa = dto.getExtensions()
-                .stream()
-                .anyMatch(e -> {
-                    if (e instanceof BasicConstraintsDto) {
-                        BasicConstraintsDto bc = (BasicConstraintsDto) e;
-                        if (bc.getIsCa())
-                            return true;
-                        return false;
-                    }
-                    return false;
-                });
+        Boolean isCa = false;
+        int pathLength = subjectX509Cert.getBasicConstraints();
+        if (pathLength != -1) {
+            isCa = true;
+        }
+
         cert.setIsCa(isCa);
+        cert.setPathLen(pathLength);
         return cert;
     }
 
     public void verifyCreateCertificate(CreateCertificateDto dto) {
-        if (!secureKeyGenerationAlgorithms.contains(dto.getKeyGenerationAlgorithm())) {
+        if (!AlgorithmsConfig.secureKeyGenerationAlgorithms.contains(dto.getKeyGenerationAlgorithm())) {
             throw new ApiBadRequestException("Invalid key algorithm");
         }
 
-        if (!secureSigningAlgorithms.contains(dto.getSignatureAlgorithm())) {
+        if (!AlgorithmsConfig.secureSigningAlgorithms.contains(dto.getSignatureAlgorithm())) {
             throw new ApiBadRequestException("Invalid signing algorithm");
         }
 
         if (certificateRepository.findBySerialNumber(dto.getSerialNumber()).isPresent()) {
-            throw new ApiBadRequestException("Invalid subject serial number");
+            throw new ApiBadRequestException("Serial number not available");
+        }
+
+        if (certificateRepository.findByCN(dto.getName().getCN()).isPresent()) {
+            throw new ApiBadRequestException("Common name not available");
         }
 
         Optional<Certificate> optionalCertificate = certificateRepository.findBySerialNumber(dto.getIssuingCaSerialNumber());
@@ -230,6 +222,10 @@ public class CertService {
         }
     }
 
-
-
+    public List<CertificateDto> getCaCertificates() {
+        Sort sort = Sort.by(Sort.Direction.ASC, "dateCreated");
+        return certificateRepository.findValidCaCertificates(sort).stream()
+                .map(CertificateDto::new)
+                .collect(Collectors.toList());
+    }
 }

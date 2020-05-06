@@ -11,6 +11,7 @@ import lombok.Setter;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+//TODO: DELETE (probably)
 @Getter
 @Setter
 @NoArgsConstructor

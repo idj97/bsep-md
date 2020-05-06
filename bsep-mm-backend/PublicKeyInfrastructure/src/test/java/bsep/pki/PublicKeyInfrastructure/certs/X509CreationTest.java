@@ -56,7 +56,7 @@ public class X509CreationTest {
         CreateCertificateDto createCertificateDto = new CreateCertificateDto(
                 "RSA",
                 2048,
-                "SHA512WITHRSAENCRYPTION",
+                "SHA256withRSA",
                 "04-05-2020 00:00",
                 "05-05-2021 00:00",
                 true,
@@ -95,9 +95,9 @@ public class X509CreationTest {
         CreateCertificateDto createCertificateDto = new CreateCertificateDto(
                 "RSA",
                 2048,
-                "SHA512WITHRSAENCRYPTION",
-                "04-05-2020 00:00",
-                "05-05-2021 00:00",
+                "SHA256withRSA",
+                "04-05-2010 00:00",
+                "05-05-2011 00:00",
                 false,
                 "2",
                 nameDto,
@@ -135,7 +135,7 @@ public class X509CreationTest {
         CreateCertificateDto createCertificateDto = new CreateCertificateDto(
                 "RSA",
                 2048,
-                "SHA512WITHRSAENCRYPTION",
+                "SHA256withRSA",
                 "04-05-2020 00:00",
                 "05-05-2021 00:00",
                 false,
@@ -146,6 +146,9 @@ public class X509CreationTest {
                 null
         );
         certService.createCertificate(createCertificateDto);
+
+        Assert.assertEquals(2, certService.getCaCertificates().size());
+
     }
 
     @Test
@@ -176,7 +179,7 @@ public class X509CreationTest {
         CreateCertificateDto createCertificateDto = new CreateCertificateDto(
                 "RSA",
                 2048,
-                "SHA512WITHRSAENCRYPTION",
+                "SHA256withRSA",
                 "04-05-2020 00:00",
                 "05-05-2019 00:00",
                 false,

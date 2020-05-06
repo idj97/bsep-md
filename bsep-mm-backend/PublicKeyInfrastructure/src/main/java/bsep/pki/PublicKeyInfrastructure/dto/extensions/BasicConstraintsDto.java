@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.x509.BasicConstraints;
 import org.bouncycastle.asn1.x509.Extension;
 
@@ -19,13 +18,20 @@ import java.util.Map;
 @NoArgsConstructor
 public class BasicConstraintsDto extends AbstractExtensionDto {
     private Boolean isCa;
-    private Integer pathLength;
+    private String pathLength;
 
     @Override
     public Extension getBCExtension(Map<String, Object> params) throws IOException {
         BasicConstraints basicConstraints;
-        if (pathLength != null)  basicConstraints = new BasicConstraints(pathLength);
-        else                     basicConstraints = new BasicConstraints(isCa);
+        if (isCa) {
+            if (pathLength == null || pathLength.equals("")) {
+                basicConstraints = new BasicConstraints(true);
+            } else {
+                basicConstraints = new BasicConstraints(Integer.parseInt(pathLength));
+            }
+        } else {
+            basicConstraints = new BasicConstraints(false);
+        }
 
         return new Extension(
                 Extension.basicConstraints,

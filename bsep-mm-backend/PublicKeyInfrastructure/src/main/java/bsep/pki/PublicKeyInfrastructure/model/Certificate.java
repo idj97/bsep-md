@@ -56,6 +56,8 @@ public class Certificate {
     @Column(nullable = false)
     private Boolean isCa;
 
+    private Integer pathLen;
+
     @Column
     private String userId;
 

@@ -46,6 +46,7 @@ public class X500Service {
     @Autowired
     private KeyStoreService keyStoreService;
 
+    //TODO: DELETE
     public X509CertificateData createRootCertificate(CertificateDto certificateDto) {
         KeyPair subjectKeyPair = generateKeyPair();
         Integer subjectSerialNumber = generateSerialNumber();
@@ -66,6 +67,7 @@ public class X500Service {
         ));
     }
 
+    //TODO: DELETE
     public X509CertificateData createCertificate(
             CertificateDto subjectCertificateDto,
             Certificate issuerCertificate)
@@ -91,6 +93,7 @@ public class X500Service {
         ));
     }
 
+    //TODO: DELETE
     public X509CertificateData createX509Certificate(CreateX509CertificateData data)
     {
         // popuni subject podatke
@@ -135,6 +138,7 @@ public class X500Service {
                 data.getSubjectSerialNumber().toString());
     }
 
+    //TODO: DELETE
     public X500Name createX500NameFromCertificate(Certificate certificate) {
         X500NameBuilder builder = new X500NameBuilder(BCStyle.INSTANCE);
         builder.addRDN(BCStyle.CN, certificate.getCN());
@@ -149,6 +153,7 @@ public class X500Service {
         return subjectX500Name;
     }
 
+    //TODO: DELETE
     public X500Name createX500NameFromCertificateDto(CertificateDto certificateDto) {
         X500NameBuilder builder = new X500NameBuilder(BCStyle.INSTANCE);
         builder.addRDN(BCStyle.CN, certificateDto.getCommonName());
@@ -163,6 +168,7 @@ public class X500Service {
         return subjectX500Name;
     }
 
+    //TODO: DELETE
     private KeyPair generateKeyPair() {
         try {
             KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
@@ -173,6 +179,18 @@ public class X500Service {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public KeyPair generateKeyPair(String algorithm, int keySize) {
+        try {
+            KeyPairGenerator keyGen = KeyPairGenerator.getInstance(algorithm);
+            SecureRandom random = SecureRandom.getInstance("SHA1PRNG", "SUN");
+            keyGen.initialize(keySize, random);
+            return keyGen.generateKeyPair();
+        } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
+            e.printStackTrace();
+        }
+        throw new ApiInternalServerErrorException("Error while generating key pair");
     }
 
     public Integer generateSerialNumber() {
@@ -255,6 +273,7 @@ public class X500Service {
         throw new ApiInternalServerErrorException();
     }
 
+    //TODO: DELETE
     public void saveX509Certificate(X509CertificateData x509CertificateData) {
         keyStoreService.saveEntry(
                 x509CertificateData.getX509CertificateChain(),

@@ -112,7 +112,7 @@ public class KeyStoreService {
         throw new ApiInternalServerErrorException("Error while getting key from keystore");
     }
 
-
+    //TODO: DELETE
     public X509CertificateData getCertificate(String alias) {
         try {
             KeyStore keyStore = KeyStore.getInstance(new File(keyStoreName), keyStorePassword.toCharArray());
@@ -139,6 +139,7 @@ public class KeyStoreService {
         return null;
     }
 
+    //TODO: DELETE (probably)
     public X509CertificateData getCaCertificate(String alias) {
         try {
             KeyStore keyStore = KeyStore.getInstance(new File(keyStoreName), keyStorePassword.toCharArray());

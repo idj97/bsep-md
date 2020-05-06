@@ -53,6 +53,7 @@ public class StartupService {
         Security.addProvider(new BouncyCastleProvider());
     }
 
+    // TODO: comment out
     public void initialize() {
         if (initApp) {
             keystoreService.tryCreateKeyStore();

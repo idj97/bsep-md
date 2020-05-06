@@ -10,6 +10,7 @@ import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+//TODO: DELETE (probably)
 @Entity
 @Getter
 @Setter
