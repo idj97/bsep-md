@@ -5,7 +5,7 @@ import { CertificateAuthorityService } from 'src/app/services/certificate-author
 import { DateButton } from 'angular-bootstrap-datetimepicker';
 import { DatePipe } from '@angular/common';
 import { ToasterService } from 'src/app/services/toaster.service';
-import { faPlus, faArrowUp } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faArrowUp, faCircle, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-new-certificate',
@@ -20,11 +20,46 @@ export class NewCertificateComponent implements OnInit {
   private allSelections: any = {
     showKeyUsages: false,
     showExtendedKeyUsages: false,
+    showBasicConstraints: false,
   };
+
+  private selectedExtensions: any[] = [];
+
+  private tempData: any = {
+    keyUsage: [],
+    extendedKeyUsage: [],
+    basicConstraints: {
+      isCA: false,
+      pathLen: 0,
+    },
+    subjectAlternativeName: [
+      {
+        value: '',
+        type: 'ip',
+      },
+    ],
+  }
+
+  private savedData: any = {
+    keyUsage: [],
+    extendedKeyUsage: [],
+    basicConstraints: {
+      isCA: false,
+      pathLen: 0,
+    },
+  };
+
+  //CONSTS
+  EXTENDED_KEY_USAGE = 'EXTENDED_KEY_USAGE';
+  KEY_USAGE = 'KEY_USAGE';
+  BASIC_CONSTRAINTS = 'BASIC_CONSTRAINTS';
+
 
   //ICONS
   faPlus = faPlus;
   faArrowUp = faArrowUp;
+  faCircle = faCircle;
+  faTimes = faTimes;
   //---
 
   activeInput: number = -1;
@@ -88,8 +123,9 @@ export class NewCertificateComponent implements OnInit {
     }
   }
 
-  isEmpty(index: number) {
-    return (<HTMLInputElement>document.querySelectorAll('.input-holder .input-styled')[index]).value == '';
+  isEmpty(index: any) {
+    let element = (<HTMLInputElement>document.querySelector('.input-holder .input-styled[data-index="'+ index +'"]'));
+    return element.value == '';
   }
 
   isActiveInput(index: number) {
@@ -169,28 +205,219 @@ export class NewCertificateComponent implements OnInit {
     
   }
 
-  keyUsageSelected(): void {
-    this.additionalSelected = true;
-    this.extensionsSelected = false;
-    this.allSelections.showKeyUsages = true;
+  //BASIC CONSTRAINTS
+
+  toggleIsCA(): void {
+    this.tempData.basicConstraints.isCA = !this.tempData.basicConstraints.isCA;
   }
 
-  cancelKeyUsageSelected(): void {
+  closeBasicConstraintsSelected(): void {
+    this.additionalSelected = true;
+    this.extensionsSelected = true;
+    this.allSelections.showBasicConstraints = false;
+  }
+
+  openBasicConstraintsSelected(): void {
+    this.additionalSelected = true;
+    this.extensionsSelected = false;
+    this.allSelections.showBasicConstraints = true;
+  }
+
+  basicConstraintsSelected(): void {
+    if (this.containsType(this.BASIC_CONSTRAINTS)) return;
+    this.openBasicConstraintsSelected();
+  }
+
+  cancelBasicConstraintsSelected(): void {
+    this.tempData.basicConstraints = JSON.parse(JSON.stringify(this.savedData.basicConstraints));
+    this.closeBasicConstraintsSelected();
+  }
+
+  saveBasicConstraintsSelected(): void {
+    this.closeBasicConstraintsSelected();
+    if (!this.containsType(this.BASIC_CONSTRAINTS)) {
+      this.selectedExtensions.push({
+        type: this.BASIC_CONSTRAINTS,
+        name: 'Basic Constraints',
+        critical: false,
+      });
+    }
+    this.savedData.basicConstraints = JSON.parse(JSON.stringify(this.tempData.basicConstraints));
+  }
+
+
+  //KEY USAGE
+
+  closeKeyUsageSelected(): void {
     this.additionalSelected = true;
     this.extensionsSelected = true;
     this.allSelections.showKeyUsages = false;
   }
 
-  extendedKeyUsageSelected(): void {
+  openKeyUsageSelected(): void {
+    this.additionalSelected = true;
+    this.extensionsSelected = false;
+    this.allSelections.showKeyUsages = true;
+  }
+
+  keyUsageSelected(): void {
+    if (this.containsType(this.KEY_USAGE)) return;
+    this.openKeyUsageSelected();
+  }
+
+  cancelKeyUsageSelected(): void {
+    this.tempData.keyUsage = JSON.parse(JSON.stringify(this.savedData.keyUsage));
+    this.closeKeyUsageSelected();
+  }
+
+  saveKeyUsageSelected(): void {
+    this.closeKeyUsageSelected();
+    if (!this.containsType(this.KEY_USAGE)) {
+      this.selectedExtensions.push({
+        type: this.KEY_USAGE,
+        name: 'Key Usage',
+        critical: false,
+      });
+    }
+    this.savedData.keyUsage = JSON.parse(JSON.stringify(this.tempData.keyUsage));
+  }
+
+  toggleKeyUsageSelection(event: Event): void {
+    let el = <HTMLElement>event.currentTarget;
+    if (this.tempData.keyUsage.includes(el.dataset.usage)) {
+      this.tempData.keyUsage.splice(this.tempData.keyUsage.findIndex(x => x == el.dataset.usage), 1);
+    }
+    else {
+      this.tempData.keyUsage.push(el.dataset.usage);
+    }
+  }
+
+
+
+
+
+  //EXTENDED KEY USAGE
+
+  closeExtendedKeyUsageSelected(): void {
+    this.additionalSelected = true;
+    this.extensionsSelected = true;
+    this.allSelections.showExtendedKeyUsages = false;
+  }
+
+  openExtendedKeyUsageSelected(): void {
     this.additionalSelected = true;
     this.extensionsSelected = false;
     this.allSelections.showExtendedKeyUsages = true;
   }
 
+
+  extendedKeyUsageSelected(): void {
+    if (this.containsType(this.EXTENDED_KEY_USAGE)) return;
+    this.openExtendedKeyUsageSelected();
+  }
+
   cancelExtendedKeyUsageSelected(): void {
-    this.additionalSelected = true;
-    this.extensionsSelected = true;
-    this.allSelections.showExtendedKeyUsages = false;
+    this.tempData.extendedKeyUsage = JSON.parse(JSON.stringify(this.savedData.extendedKeyUsage));
+    this.closeExtendedKeyUsageSelected();
+  }
+
+  saveExtendedKeyUsageSelected(): void {
+    this.closeExtendedKeyUsageSelected();
+    if (!this.containsType(this.EXTENDED_KEY_USAGE)) {
+      this.selectedExtensions.push({
+        type: this.EXTENDED_KEY_USAGE,
+        name: 'Extended Key Usage',
+        critical: false,
+      });
+    }
+    this.savedData.extendedKeyUsage = JSON.parse(JSON.stringify(this.tempData.extendedKeyUsage));
+  }
+
+  toggleExtendedKeyUsageSelection(event: Event): void {
+    let el = <HTMLElement>event.currentTarget;
+    if (this.tempData.extendedKeyUsage.includes(el.dataset.usage)) {
+      this.tempData.extendedKeyUsage.splice(this.tempData.extendedKeyUsage.findIndex(x => x == el.dataset.usage), 1);
+    }
+    else {
+      this.tempData.extendedKeyUsage.push(el.dataset.usage);
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+  containsType(type: string): boolean {
+    if (this.selectedExtensions.findIndex(x => x.type == type) == -1) return false;
+    return true;
+  }
+
+  getByType(type: string): any {
+    return this.selectedExtensions[this.selectedExtensions.findIndex(x => x.type == type)];
+  }
+
+  closeAll(): void {
+    this.closeExtendedKeyUsageSelected();
+    this.closeKeyUsageSelected();
+    this.closeBasicConstraintsSelected();
+  }
+
+  editExtension(event): void {
+    let parent = <HTMLElement> event.currentTarget.parentNode;
+    let extension = this.getByType(parent.dataset.type);
+    this.closeAll();
+    if (extension.type == this.KEY_USAGE) {
+      this.tempData.keyUsage = JSON.parse(JSON.stringify(this.savedData.keyUsage));
+      this.openKeyUsageSelected();
+    }
+    else if (extension.type == this.EXTENDED_KEY_USAGE) {
+      this.tempData.extendedKeyUsage = JSON.parse(JSON.stringify(this.savedData.extendedKeyUsage));
+      this.openExtendedKeyUsageSelected();
+    }
+    else if (extension.type == this.BASIC_CONSTRAINTS) {
+      this.tempData.basicConstraints = JSON.parse(JSON.stringify(this.savedData.basicConstraints));
+      this.openBasicConstraintsSelected();
+    }
+  }
+
+  markAsCritical(event): void {
+    let parent = event.currentTarget.parentNode;
+    let extension = this.getByType(parent.dataset.type);
+    extension.critical = !extension.critical;
+  }
+
+  removeExtension(event): void {
+    let parent = <HTMLElement> event.currentTarget.parentNode;
+    let index = this.selectedExtensions.findIndex(x => x.type === parent.dataset.type);
+    let extension = this.selectedExtensions[index];
+    if (extension.type === this.KEY_USAGE) {
+      this.savedData.keyUsage = [];
+      this.tempData.keyUsage = [];
+      this.selectedExtensions.splice(index, 1);
+    }
+    else if (extension.type === this.EXTENDED_KEY_USAGE) {
+      this.savedData.extendedKeyUsage = [];
+      this.tempData.extendedKeyUsage = [];
+      this.selectedExtensions.splice(index, 1);
+    }
+    if (extension.type === this.BASIC_CONSTRAINTS) {
+      this.savedData.basicConstraints = {
+        isCA: false,
+        pathLen: 0,
+      };
+      this.tempData.basicConstraints = {
+        isCA: false,
+        pathLen: 0,
+      };
+      this.selectedExtensions.splice(index, 1);
+    }
   }
 
 }

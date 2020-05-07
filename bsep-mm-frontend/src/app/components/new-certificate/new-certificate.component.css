@@ -56,6 +56,10 @@
     color: rgb(54, 224, 224);
 }
 
+.input-holder.disabled {
+    opacity: .5;
+}
+
 .input-styled {
     position: relative;
     border: none;
@@ -140,6 +144,39 @@
     background: #151f29;
 }
 
+.add-subject-alternative-name {
+    color: white;
+    background: #23242b;
+    font-size: 14px;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden;
+    
+    transition: .3s;
+}
+
+.add-subject-alternative-name.selected {
+    max-height: 330px;
+}
+
+.add-subject-alternative-name .section-splitter {
+    font-size: 12px;
+    border-top: 2px solid #1f2730;
+}
+
+.add-subject-alternative-name .key-usage-btn {
+    padding: 15px;
+    text-align: center;
+    color: white;
+    background: #2d333a;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.add-subject-alternative-name .key-usage-btn:hover {
+    background: #171e25;
+}
+
 .add-key-usage {
     color: white;
     background: #23242b;
@@ -183,6 +220,49 @@
     border-top: 2px solid #1f2730;
 }
 
+
+
+
+
+
+.add-basic-constraints {
+    color: white;
+    background: #23242b;
+    font-size: 14px;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden;
+    max-height: 0;
+    transition: .3s;
+}
+
+.add-basic-constraints .section-splitter {
+    font-size: 12px;
+    border-top: 2px solid #1f2730;
+}
+
+.add-basic-constraints.selected {
+    max-height: 290px;
+}
+
+.add-basic-constraints .key-usage-btn {
+    padding: 15px;
+    text-align: center;
+    color: white;
+    background: #2d333a;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.add-basic-constraints .key-usage-btn:hover {
+    background: #171e25;
+}
+
+
+
+
+
+
 .add-extended-key-usage {
     color: white;
     background: #23242b;
@@ -195,7 +275,7 @@
 }
 
 .add-extended-key-usage.selected {
-    max-height: 380px;
+    max-height: 390px;
 }
 
 .add-extended-key-usage  .add-key-usage-item {
@@ -228,6 +308,13 @@
 
 
 
+.add-key-usage-item.selected {
+    color: rgb(47, 217, 223);
+    background: #171e25;
+}
+
+
+
 
 
 
@@ -244,8 +331,12 @@
     transition: .3s;
 }
 
+.add-extension-list .section-splitter {
+    font-size: 12px;
+}
+
 .add-extension-list.selected {
-    max-height: 300px;
+    max-height: 350px;
 }
 
 .add-extension-list  .extension-list-item {
@@ -256,6 +347,15 @@
 
 .add-extension-list  .extension-list-item:hover {
     background: #2d333a;
+}
+
+.add-extension-list .extension-list-item.selected {
+    color: gray;
+    cursor: default;
+}
+
+.add-extension-list .extension-list-item.selected:hover {
+    background: #23242b;
 }
 
 
@@ -271,4 +371,61 @@
 
 .submit-certificate:hover {
     background: #151f29;
+}
+
+
+
+
+
+.extensions-holder {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.extensions-holder > div {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #151f29;
+    color: white;
+    cursor: pointer;
+}
+
+.extensions-holder > div > div {
+    height: 70px;
+}
+
+.extensions-holder > div:hover {
+    background: #212b35;
+}
+
+.extensions-holder .critical-btn {
+    background: #1e2124;
+}
+
+.extensions-holder .critical-btn:hover {
+    background: #192735;
+}
+
+.extensions-holder .critical-btn.selected {
+    background: #ffffff;
+    color: black;
+}
+
+.extensions-holder .close-btn {
+    background: #202122;
+    font-size: 18px;
+}
+.extensions-holder .close-btn:hover {
+    background: #dc3545;
+}
+
+
+.input-holder.is-ca {
+    cursor: pointer;
+
+}
+
+.input-holder.is-ca.selected {
+    background: white;
+    color: black;
 }

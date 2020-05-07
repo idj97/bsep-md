@@ -296,48 +296,166 @@
                 Extensions
             </div>
 
+            <div class="row col-12 extensions-holder">
+                <div class="row col-12" *ngFor="let ex of selectedExtensions" [attr.data-type]="ex.type">
+                    <div class="col-8 d-flex align-items-center" (click)="editExtension($event)">{{ex.name}}</div>
+                    <div class="col-2 d-flex align-items-center justify-content-center critical-btn" (click)="markAsCritical($event)" [ngClass]="{selected : ex.critical}">Is Critical</div>
+                    <div class="col-2 d-flex align-items-center justify-content-center close-btn" (click)="removeExtension($event)"><fa-icon [icon]="faTimes" class="navigation-icon"></fa-icon></div>
+                </div>
+            </div>
+
+            <div class="col-12 row add-subject-alternative-name" [ngClass]="{selected : allSelections.showBasicConstraints}">
+                <div class="col-12 section-splitter">
+                    Edit Subject Alternative Name
+                </div>
+                <div class="col-12 row" style="margin: 0 !important;padding: 0 !important;" *ngFor="let val of tempData.subjectAlternativeName; let i = index">
+                    <div class="input-holder d-flex align-items-center col-6" 
+                    [ngClass]="{blurred : activeInput != 's' + i, 
+                        focused : activeInput == 's' + i || 
+                        val.value != ''}">
+                        <p class="input-text-value blurred">Value</p>
+                        <input type="text" class="input-styled"
+                        (blur)="blurInput($event, 's' + i)" 
+                        (focus)="focusInput($event, 's' + i)"
+                            [(ngModel)]="val.value" name="value">
+                    </div>
+                </div>
+                
+
+                <div class="col-6 key-usage-btn" (click)="cancelSubjectAlternativeNameSelected()">Cancel</div>
+                <div class="col-6 key-usage-btn" (click)="saveSubjectAlternativeNameSelected()">Save</div>
+            </div>
+
+            <div class="col-12 row add-basic-constraints" [ngClass]="{selected : allSelections.showBasicConstraints}">
+                <div class="col-12 section-splitter">
+                    Edit Basic Constraints
+                </div>
+
+                <div class="input-holder is-ca d-flex align-items-center col-6" 
+                [ngClass]="{selected : tempData.basicConstraints.isCA}"
+                (click)="toggleIsCA($event)">
+                    Is Certificate Authority
+                </div>
+                
+                <div class="input-holder d-flex align-items-center col-6" 
+                [ngClass]="{blurred : activeInput != pathLength.valueAccessor._elementRef.nativeElement.dataset.index, 
+                    focused : activeInput == pathLength.valueAccessor._elementRef.nativeElement.dataset.index || 
+                    !isEmpty(pathLength.valueAccessor._elementRef.nativeElement.dataset.index),
+                disabled : !tempData.basicConstraints.isCA}">
+                    <p class="input-text-value blurred">Path Length</p>
+                    <input type="text" class="input-styled" [disabled]="!tempData.basicConstraints.isCA"
+                    (blur)="blurInput($event, pathLength.valueAccessor._elementRef.nativeElement.dataset.index)" 
+                    (focus)="focusInput($event, pathLength.valueAccessor._elementRef.nativeElement.dataset.index)"
+                        [(ngModel)]="tempData.basicConstraints.pathLen" name="pathLength"
+                        #pathLength="ngModel" required data-index="18">
+
+                </div>
+
+                <div class="col-6 key-usage-btn" (click)="cancelBasicConstraintsSelected()">Cancel</div>
+                <div class="col-6 key-usage-btn" (click)="saveBasicConstraintsSelected()">Save</div>
+            </div>
+
             <div class="col-12 row add-extended-key-usage" [ngClass]="{selected : allSelections.showExtendedKeyUsages}">
                 <div class="col-12 section-splitter">
                     Select Extended Key Usage
                 </div>
-                <div class="col-4 add-key-usage-item">Adobe PDF Signing</div>
-                <div class="col-4 add-key-usage-item">Document Signing</div>
-                <div class="col-4 add-key-usage-item">IP Security End System</div>
-                <div class="col-4 add-key-usage-item">Decipher Only</div>
-                <div class="col-4 add-key-usage-item">OCSP Signing</div>
-                <div class="col-4 add-key-usage-item">TLS Web Client Authentication</div>
-                <div class="col-4 add-key-usage-item">Any Extended Key Usage</div>
-                <div class="col-4 add-key-usage-item">Encrypted File System</div>
-                <div class="col-4 add-key-usage-item">IP Security Tunnel Termination</div>
-                <div class="col-4 add-key-usage-item">Smartcard Logon</div>
-                <div class="col-4 add-key-usage-item">TLS Web Server Authentication</div>
+                <div #ekAnyExtendedUsage class="col-4 add-key-usage-item" data-usage="ANY_EXTENDED_USAGE"
+                [ngClass]="{selected: tempData.extendedKeyUsage.includes(ekAnyExtendedUsage.dataset.usage)}"
+                (click)="toggleExtendedKeyUsageSelection($event)">Any Extended Usage &nbsp;&nbsp;&nbsp;
+                <fa-icon [icon]="faCircle" class="navigation-icon" 
+                *ngIf="tempData.extendedKeyUsage.includes(ekAnyExtendedUsage.dataset.usage)"></fa-icon></div>
+                <div #ekServerAuth class="col-4 add-key-usage-item" data-usage="SERVER_AUTHENTICATION"
+                [ngClass]="{selected: tempData.extendedKeyUsage.includes(ekServerAuth.dataset.usage)}"
+                (click)="toggleExtendedKeyUsageSelection($event)">TLS Web Server Authentication &nbsp;&nbsp;&nbsp;
+                <fa-icon [icon]="faCircle" class="navigation-icon" 
+                *ngIf="tempData.extendedKeyUsage.includes(ekServerAuth.dataset.usage)"></fa-icon></div>
+                <div #ekClientAuth class="col-4 add-key-usage-item" data-usage="CLIENT_AUTHENTICATION"
+                [ngClass]="{selected: tempData.extendedKeyUsage.includes(ekClientAuth.dataset.usage)}"
+                (click)="toggleExtendedKeyUsageSelection($event)">TLS Web Client Authentication &nbsp;&nbsp;&nbsp;
+                <fa-icon [icon]="faCircle" class="navigation-icon" 
+                *ngIf="tempData.extendedKeyUsage.includes(ekClientAuth.dataset.usage)"></fa-icon></div>
+                <div #ekCodeSigning class="col-4 add-key-usage-item" data-usage="CODE_SIGNING"
+                [ngClass]="{selected: tempData.extendedKeyUsage.includes(ekCodeSigning.dataset.usage)}"
+                (click)="toggleExtendedKeyUsageSelection($event)">Code Signing &nbsp;&nbsp;&nbsp;
+                <fa-icon [icon]="faCircle" class="navigation-icon" 
+                *ngIf="tempData.extendedKeyUsage.includes(ekCodeSigning.dataset.usage)"></fa-icon></div>
+                <div #ekEmailProtection class="col-4 add-key-usage-item" data-usage="EMAIL_PROTECTION"
+                [ngClass]="{selected: tempData.extendedKeyUsage.includes(ekEmailProtection.dataset.usage)}"
+                (click)="toggleExtendedKeyUsageSelection($event)">Email Protection &nbsp;&nbsp;&nbsp;
+                <fa-icon [icon]="faCircle" class="navigation-icon" 
+                *ngIf="tempData.extendedKeyUsage.includes(ekEmailProtection.dataset.usage)"></fa-icon></div>
+                <div #ekOCSPSigning class="col-4 add-key-usage-item" data-usage="OCSP_SIGNING"
+                [ngClass]="{selected: tempData.extendedKeyUsage.includes(ekOCSPSigning.dataset.usage)}"
+                (click)="toggleExtendedKeyUsageSelection($event)">OCSP Signing &nbsp;&nbsp;&nbsp;
+                <fa-icon [icon]="faCircle" class="navigation-icon" 
+                *ngIf="tempData.extendedKeyUsage.includes(ekOCSPSigning.dataset.usage)"></fa-icon></div>
                 <div class="col-6 key-usage-btn" (click)="cancelExtendedKeyUsageSelected()">Cancel</div>
-                <div class="col-6 key-usage-btn">Save</div>
+                <div class="col-6 key-usage-btn" (click)="saveExtendedKeyUsageSelected()">Save</div>
             </div>
 
             <div class="col-12 row add-key-usage" [ngClass]="{selected : allSelections.showKeyUsages}">
                 <div class="col-12 section-splitter">
                     Select Key Usage
                 </div>
-                <div class="col-4 add-key-usage-item">Certificate Signing</div>
-                <div class="col-4 add-key-usage-item">CRL Sign</div>
-                <div class="col-4 add-key-usage-item">Data Encipherment</div>
-                <div class="col-4 add-key-usage-item">Decipher Only</div>
-                <div class="col-4 add-key-usage-item">Digital Signature</div>
-                <div class="col-4 add-key-usage-item">Encipher Only</div>
-                <div class="col-4 add-key-usage-item">Key Agreement</div>
-                <div class="col-4 add-key-usage-item">Key Encipherment</div>
-                <div class="col-4 add-key-usage-item">Non Repudiation</div>
+                <div #kCertificateSigning class="col-4 add-key-usage-item" data-usage="CERTIFICATE_SIGNING"
+                [ngClass]="{selected: tempData.keyUsage.includes(kCertificateSigning.dataset.usage)}"
+                (click)="toggleKeyUsageSelection($event)">Certificate Signing &nbsp;&nbsp;&nbsp;
+                <fa-icon [icon]="faCircle" class="navigation-icon" 
+                *ngIf="tempData.keyUsage.includes(kCertificateSigning.dataset.usage)"></fa-icon></div>
+                <div #kCRLSign class="col-4 add-key-usage-item" data-usage="CRL_SIGN"
+                [ngClass]="{selected: tempData.keyUsage.includes(kCRLSign.dataset.usage)}"
+                (click)="toggleKeyUsageSelection($event)">CRL Sign &nbsp;&nbsp;&nbsp;
+                <fa-icon [icon]="faCircle" class="navigation-icon" 
+                *ngIf="tempData.keyUsage.includes(kCRLSign.dataset.usage)"></fa-icon></div>
+                <div #kDataEncipherment class="col-4 add-key-usage-item" data-usage="DATA_ENCIPHERMENT"
+                [ngClass]="{selected: tempData.keyUsage.includes(kDataEncipherment.dataset.usage)}"
+                (click)="toggleKeyUsageSelection($event)">Data Encipherment &nbsp;&nbsp;&nbsp;
+                <fa-icon [icon]="faCircle" class="navigation-icon" 
+                *ngIf="tempData.keyUsage.includes(kDataEncipherment.dataset.usage)"></fa-icon></div>
+                <div #kDecipherOnly class="col-4 add-key-usage-item" data-usage="DECIPHER_ONLY"
+                [ngClass]="{selected: tempData.keyUsage.includes(kDecipherOnly.dataset.usage)}"
+                (click)="toggleKeyUsageSelection($event)">Decipher Only &nbsp;&nbsp;&nbsp;
+                <fa-icon [icon]="faCircle" class="navigation-icon" 
+                *ngIf="tempData.keyUsage.includes(kDecipherOnly.dataset.usage)"></fa-icon></div>
+                <div #kDigitalSignature class="col-4 add-key-usage-item" data-usage="DIGITAL_SIGNATURE"
+                [ngClass]="{selected: tempData.keyUsage.includes(kDigitalSignature.dataset.usage)}"
+                (click)="toggleKeyUsageSelection($event)">Digital Signature &nbsp;&nbsp;&nbsp;
+                <fa-icon [icon]="faCircle" class="navigation-icon" 
+                *ngIf="tempData.keyUsage.includes(kDigitalSignature.dataset.usage)"></fa-icon></div>
+                <div #kEncipherOnly class="col-4 add-key-usage-item" data-usage="ENCIPHER_ONLY"
+                [ngClass]="{selected: tempData.keyUsage.includes(kEncipherOnly.dataset.usage)}"
+                (click)="toggleKeyUsageSelection($event)">Encipher Only &nbsp;&nbsp;&nbsp;
+                <fa-icon [icon]="faCircle" class="navigation-icon" 
+                *ngIf="tempData.keyUsage.includes(kEncipherOnly.dataset.usage)"></fa-icon></div>
+                <div #kKeyAgreement class="col-4 add-key-usage-item" data-usage="KEY_AGREEMENT"
+                [ngClass]="{selected: tempData.keyUsage.includes(kKeyAgreement.dataset.usage)}"
+                (click)="toggleKeyUsageSelection($event)">Key Agreement &nbsp;&nbsp;&nbsp;
+                <fa-icon [icon]="faCircle" class="navigation-icon" 
+                *ngIf="tempData.keyUsage.includes(kKeyAgreement.dataset.usage)"></fa-icon></div>
+                <div #kKeyEncipherment class="col-4 add-key-usage-item" data-usage="KEY_ENCIPHERMENT"
+                [ngClass]="{selected: tempData.keyUsage.includes(kKeyEncipherment.dataset.usage)}"
+                (click)="toggleKeyUsageSelection($event)">Key Encipherment &nbsp;&nbsp;&nbsp;
+                <fa-icon [icon]="faCircle" class="navigation-icon" 
+                *ngIf="tempData.keyUsage.includes(kKeyEncipherment.dataset.usage)"></fa-icon></div>
+                <div #kNonRepudiation class="col-4 add-key-usage-item" data-usage="NON_REPUDIATION"
+                [ngClass]="{selected: tempData.keyUsage.includes(kNonRepudiation.dataset.usage)}"
+                (click)="toggleKeyUsageSelection($event)">Non Repudiation &nbsp;&nbsp;&nbsp;
+                <fa-icon [icon]="faCircle" class="navigation-icon" 
+                *ngIf="tempData.keyUsage.includes(kNonRepudiation.dataset.usage)"></fa-icon></div>
+
                 <div class="col-6 key-usage-btn" (click)="cancelKeyUsageSelected()">Cancel</div>
-                <div class="col-6 key-usage-btn">Save</div>
+                <div class="col-6 key-usage-btn" (click)="saveKeyUsageSelected()">Save</div>
             </div>
 
             <div class="col-12 row add-extension-list" [ngClass]="{selected : extensionsSelected}">
-                <div class="col-6 extension-list-item">Basic Constraint</div>
+                <div class="col-12 section-splitter">
+                    New Extension
+                </div>
+                <div class="col-6 extension-list-item" (click)="basicConstraintsSelected()" [ngClass]="{selected : containsType('BASIC_CONSTRAINTS')}">Basic Constraints</div>
                 <div class="col-6 extension-list-item">Subject Key Identifier</div>
                 <div class="col-6 extension-list-item">Authority Key Identifier</div>
-                <div class="col-6 extension-list-item" (click)="keyUsageSelected()">Key Usage</div>
-                <div class="col-6 extension-list-item" (click)="extendedKeyUsageSelected()">Extended Key Usage</div>
+                <div class="col-6 extension-list-item" (click)="keyUsageSelected()" [ngClass]="{selected : containsType('KEY_USAGE')}">Key Usage</div>
+                <div class="col-6 extension-list-item" (click)="extendedKeyUsageSelected()" [ngClass]="{selected : containsType('EXTENDED_KEY_USAGE')}">Extended Key Usage</div>
                 <div class="col-6 extension-list-item">Authority Info Access</div>
                 <div class="col-6 extension-list-item">Subject Alternative Name</div>
             </div>
