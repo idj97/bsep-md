@@ -2,23 +2,28 @@
     <div class="row holder">
     <div class="col-12 header">New Certificate</div>
         <div class="form-holder col-12 row">
+            
+            
             <div class="col-12 section-splitter">
                 Algorithm selection
             </div>
-            <div class="input-holder d-flex align-items-center col-6" 
-            [ngClass]="{blurred : activeInput != algorithm.valueAccessor._elementRef.nativeElement.dataset.index, 
-                focused : activeInput == algorithm.valueAccessor._elementRef.nativeElement.dataset.index || 
-                !isEmpty(algorithm.valueAccessor._elementRef.nativeElement.dataset.index)}">
+            <div class="select-holder col-6"
+                [ngClass]="{blurred : !selects.algorithm.focused, 
+                focused : selects.algorithm.focused || 
+                selects.algorithm.value !== null}">
+
                 <p class="input-text-value">Algorithm</p>
-                <input type="text" class="input-styled" 
-                (blur)="blurInput($event, algorithm.valueAccessor._elementRef.nativeElement.dataset.index)" 
-                (focus)="focusInput($event, algorithm.valueAccessor._elementRef.nativeElement.dataset.index)"
-                    [(ngModel)]="certificateAuthority.certificateDto.algorithm" name="algorithm"
-                    #algorithm="ngModel" required data-index="0">
-                <small class="text-danger" *ngIf="(algorithm.touched || ncf.submitted) && algorithm.errors?.required">
-                    Algorithm is required
-                </small>
+                <ng-select class="custom"
+                    (blur)="blurSelect($event, selects.algorithm)" 
+                    (focus)="focusSelect($event, selects.algorithm)"
+                    [(ngModel)]="selects.algorithm.value" name="algorithm"
+                    #algorithm="ngModel"
+                    [searchable]="true"
+                    [clearable]="false"
+                    [items]="selects.algorithm.items">
+                </ng-select>
             </div>
+            
 
             <div class="input-holder d-flex align-items-center col-6" 
             [ngClass]="{blurred : activeInput != keySize.valueAccessor._elementRef.nativeElement.dataset.index, 
@@ -58,7 +63,7 @@
             [ngClass]="{blurred : activeInput != validFrom.valueAccessor._elementRef.nativeElement.dataset.index, 
                 focused : activeInput == validFrom.valueAccessor._elementRef.nativeElement.dataset.index || 
                 !isEmpty(validFrom.valueAccessor._elementRef.nativeElement.dataset.index)}">
-                <p class="input-text-value blurred">Valid from</p>
+                <p class="input-text-value blurred">Valid From</p>
                 <input type="text" class="input-styled" 
                 (blur)="blurInput($event, validFrom.valueAccessor._elementRef.nativeElement.dataset.index)" 
                 (focus)="focusInput($event, validFrom.valueAccessor._elementRef.nativeElement.dataset.index)"
@@ -82,52 +87,69 @@
 
             </div>
 
-            <div class="input-holder d-flex align-items-center col-6" 
+            <div class="input-holder d-flex align-items-center col-2" 
             [ngClass]="{blurred : activeInput != validFor.valueAccessor._elementRef.nativeElement.dataset.index, 
                 focused : activeInput == validFor.valueAccessor._elementRef.nativeElement.dataset.index || 
                 !isEmpty(validFor.valueAccessor._elementRef.nativeElement.dataset.index)}">
-                <p class="input-text-value blurred">Valid for</p>
+                <p class="input-text-value blurred">Valid For</p>
                 <input type="text" class="input-styled" 
                 (blur)="blurInput($event, validFor.valueAccessor._elementRef.nativeElement.dataset.index)" 
-                (focus)="focusInput($event, validFor.valueAccessor._elementRef.nativeElement.dataset.index)" 
-                    [(ngModel)]="certificateAuthority.certificateDto.validFor" name="validFor"
+                (focus)="focusInput($event, validFor.valueAccessor._elementRef.nativeElement.dataset.index)"
+                (keyup)="updateValidUntil()"
+                    [(ngModel)]="validForDate" name="validFor"
                     #validFor="ngModel" required data-index="4">
                 <small class="text-danger" *ngIf="(validFor.touched || ncf.submitted) && validFor.errors?.required">
                     Valid for is required
                 </small>
             </div>
 
-            <div class="input-holder d-flex align-items-center col-6" 
-            [ngClass]="{blurred : activeInput != periodType.valueAccessor._elementRef.nativeElement.dataset.index, 
-                focused : activeInput == periodType.valueAccessor._elementRef.nativeElement.dataset.index || 
-                !isEmpty(periodType.valueAccessor._elementRef.nativeElement.dataset.index)}">
-                <p class="input-text-value blurred">Period type</p>
-                <input type="text" class="input-styled" 
-                (blur)="blurInput($event, periodType.valueAccessor._elementRef.nativeElement.dataset.index)" 
-                (focus)="focusInput($event, periodType.valueAccessor._elementRef.nativeElement.dataset.index)" 
-                    [(ngModel)]="certificateAuthority.certificateDto.periodType" name="periodType"
-                    #periodType="ngModel" required data-index="5">
-                <small class="text-danger" *ngIf="(periodType.touched || ncf.submitted) && periodType.errors?.required">
-                    Period type is required
-                </small>
+            <div class="input-holder label d-flex align-items-center col-4">
+                Valid Until: &nbsp;&nbsp; {{validUntilText}}
             </div>
 
-            <div class="input-holder d-flex align-items-center col-6" 
-            [ngClass]="{blurred : activeInput != signWith.valueAccessor._elementRef.nativeElement.dataset.index, 
-                focused : activeInput == signWith.valueAccessor._elementRef.nativeElement.dataset.index || 
-                !isEmpty(signWith.valueAccessor._elementRef.nativeElement.dataset.index)}">
-                <p class="input-text-value blurred">Sign with</p>
-                <input type="text" class="input-styled" 
-                (blur)="blurInput($event, signWith.valueAccessor._elementRef.nativeElement.dataset.index)" 
-                (focus)="focusInput($event, signWith.valueAccessor._elementRef.nativeElement.dataset.index)" 
-                    [(ngModel)]="certificateAuthority.certificateDto.signWith" name="signWith"
-                    #signWith="ngModel" required data-index="6">
-                <small class="text-danger" *ngIf="(signWith.touched || ncf.submitted) && signWith.errors?.required">
-                    Sign with is required
-                </small>
+            <div class="select-holder col-6"
+                [ngClass]="{blurred : !selects.periodType.focused, 
+                focused : selects.periodType.focused || 
+                selects.periodType.value !== null}">
+
+                <p class="input-text-value">Period Type</p>
+                <ng-select class="custom"
+                    (blur)="blurSelect($event, selects.periodType)" 
+                    (focus)="focusSelect($event, selects.periodType)"
+                    [(ngModel)]="selects.periodType.value" name="periodType"
+                    #periodType="ngModel"
+                    (change)="updateValidUntil()"
+                    [searchable]="true"
+                    [clearable]="false"
+                    [items]="selects.periodType.items">
+                </ng-select>
             </div>
 
-            <div class="input-holder d-flex align-items-center col-6" 
+            <div class="select-holder col-3"
+                [ngClass]="{blurred : !selects.signWith.focused, 
+                focused : selects.signWith.focused || 
+                selects.signWith.value !== null,
+                disabled : isSelfSigned}">
+
+                <p class="input-text-value">Sign With</p>
+                <ng-select class="custom"
+                    (blur)="blurSelect($event, selects.signWith)" 
+                    (focus)="focusSelect($event, selects.signWith)"
+                    [(ngModel)]="selects.signWith.value" name="signWith"
+                    #signWith="ngModel"
+                    [disabled]="isSelfSigned"
+                    [searchable]="true"
+                    [clearable]="true"
+                    [items]="selects.signWith.items">
+                </ng-select>
+            </div>
+
+            <div class="input-holder self-signed d-flex align-items-center justify-content-center col-3" 
+            [ngClass]="{selected : isSelfSigned}" (click)="toggleSelfSigned()">
+                Is Self Signed
+            </div>
+
+            <div class="input-holder d-flex align-items-center col-3" 
             [ngClass]="{blurred : activeInput != serialNumber.valueAccessor._elementRef.nativeElement.dataset.index, 
                 focused : activeInput == serialNumber.valueAccessor._elementRef.nativeElement.dataset.index || 
                 !isEmpty(serialNumber.valueAccessor._elementRef.nativeElement.dataset.index)}">
@@ -140,6 +162,10 @@
                 <small class="text-danger" *ngIf="(serialNumber.touched || ncf.submitted) && serialNumber.errors?.required">
                     Serial number is required
                 </small>
+            </div>
+
+            <div class="input-holder generate-btn d-flex align-items-center justify-content-center col-3">
+                Generate
             </div>
 
             <div class="col-12 section-splitter">
@@ -297,14 +323,17 @@
             </div>
 
             <div class="row col-12 extensions-holder">
-                <div class="row col-12" *ngFor="let ex of selectedExtensions" [attr.data-type]="ex.type">
+                <div class="row col-12" *ngFor="let ex of selectedExtensions" [attr.data-type]="ex.type"
+                [ngClass]="{pointer : ex.type != SUBJECT_KEY_IDENTIFIER && ex.type != AUTHORITY_KEY_IDENTIFIER && ex.type != AUTHORITY_INFO_ACCESS,
+                    'not-editable' : ex.type == SUBJECT_KEY_IDENTIFIER || ex.type == AUTHORITY_KEY_IDENTIFIER || ex.type == AUTHORITY_INFO_ACCESS}">
+
                     <div class="col-8 d-flex align-items-center" (click)="editExtension($event)">{{ex.name}}</div>
-                    <div class="col-2 d-flex align-items-center justify-content-center critical-btn" (click)="markAsCritical($event)" [ngClass]="{selected : ex.critical}">Is Critical</div>
-                    <div class="col-2 d-flex align-items-center justify-content-center close-btn" (click)="removeExtension($event)"><fa-icon [icon]="faTimes" class="navigation-icon"></fa-icon></div>
+                    <div class="col-2 d-flex align-items-center pointer justify-content-center critical-btn" (click)="markAsCritical($event)" [ngClass]="{selected : ex.critical}">Is Critical</div>
+                    <div class="col-2 d-flex align-items-center pointer justify-content-center close-btn" (click)="removeExtension($event)"><fa-icon [icon]="faTimes" class="navigation-icon"></fa-icon></div>
                 </div>
             </div>
 
-            <div class="col-12 row add-subject-alternative-name" [ngClass]="{selected : allSelections.showBasicConstraints}">
+            <div class="col-12 row add-subject-alternative-name" [ngStyle]="{'max-height.px': sanHeight}">
                 <div class="col-12 section-splitter">
                     Edit Subject Alternative Name
                 </div>
@@ -317,11 +346,32 @@
                         <input type="text" class="input-styled"
                         (blur)="blurInput($event, 's' + i)" 
                         (focus)="focusInput($event, 's' + i)"
-                            [(ngModel)]="val.value" name="value">
+                            [(ngModel)]="tempData.subjectAlternativeName[i].value" name="value{{i}}">
                     </div>
+                    <div class="select-holder col-4"
+                        [ngClass]="{blurred : !val.focused, 
+                        focused : val.focused || 
+                        val.typeValue !== null}">
+
+                        <p class="input-text-value">Type</p>
+                        <ng-select class="custom"
+                            (blur)="blurSelect($event, tempData.subjectAlternativeName[i])" 
+                            (focus)="focusSelect($event, tempData.subjectAlternativeName[i])"
+                            [(ngModel)]="tempData.subjectAlternativeName[i].typeValue" name="type{{i}}"
+                            [searchable]="true"
+                            [clearable]="false"
+                            [items]="val.type">
+                        </ng-select>
+                    </div>
+            
+
+                    <div class="col-2 d-flex align-items-center justify-content-center close-btn" (click)="removeSubjectAlternativeName(i)">
+                        <fa-icon [icon]="faTimes" class="navigation-icon"></fa-icon>
+                    </div>
+
                 </div>
                 
-
+                <div class="col-12 add-new-subject" (click)="addNewSubjectAlternativeName()">Add New</div>
                 <div class="col-6 key-usage-btn" (click)="cancelSubjectAlternativeNameSelected()">Cancel</div>
                 <div class="col-6 key-usage-btn" (click)="saveSubjectAlternativeNameSelected()">Save</div>
             </div>
@@ -451,13 +501,13 @@
                 <div class="col-12 section-splitter">
                     New Extension
                 </div>
-                <div class="col-6 extension-list-item" (click)="basicConstraintsSelected()" [ngClass]="{selected : containsType('BASIC_CONSTRAINTS')}">Basic Constraints</div>
-                <div class="col-6 extension-list-item">Subject Key Identifier</div>
-                <div class="col-6 extension-list-item">Authority Key Identifier</div>
+                <div class="col-6 extension-list-item " (click)="basicConstraintsSelected()" [ngClass]="{selected : containsType('BASIC_CONSTRAINTS')}">Basic Constraints</div>
+                <div class="col-6 extension-list-item" (click)="saveSubjectKeyIdentifierSelected()" [ngClass]="{selected : containsType('SUBJECT_KEY_IDENTIFIER')}">Subject Key Identifier</div>
+                <div class="col-6 extension-list-item" (click)="saveAuthorityKeyIdentifierSelected()" [ngClass]="{selected : containsType('AUTHORITY_KEY_IDENTIFIER')}">Authority Key Identifier</div>
                 <div class="col-6 extension-list-item" (click)="keyUsageSelected()" [ngClass]="{selected : containsType('KEY_USAGE')}">Key Usage</div>
                 <div class="col-6 extension-list-item" (click)="extendedKeyUsageSelected()" [ngClass]="{selected : containsType('EXTENDED_KEY_USAGE')}">Extended Key Usage</div>
-                <div class="col-6 extension-list-item">Authority Info Access</div>
-                <div class="col-6 extension-list-item">Subject Alternative Name</div>
+                <div class="col-6 extension-list-item" (click)="saveAuthorityInfoAccessSelected()" [ngClass]="{selected : containsType('AUTHORITY_INFO_ACCESS')}">Authority Info Access</div>
+                <div class="col-6 extension-list-item" (click)="subjectAlternativeNameSelected()" [ngClass]="{selected : containsType('SUBJECT_ALTERNATIVE_NAME')}">Subject Alternative Name</div>
             </div>
 
             <div class="col-12 add-extension-btn d-flex align-items-center justify-content-center"

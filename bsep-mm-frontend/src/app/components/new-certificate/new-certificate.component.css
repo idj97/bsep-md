@@ -30,6 +30,117 @@
     transition: .3s;
 }
 
+.ng-select.custom {
+    outline: none !important;
+    height: 90px;
+    width: 100%;
+    padding: 0px 20px;
+}
+
+.ng-select.custom ::ng-deep .ng-value {
+    font-weight: 700;
+}
+
+.ng-select.custom ::ng-deep .ng-select-container {
+    background: transparent;
+    border: none;
+    outline: none !important;
+    height: 90px;
+}
+
+.ng-select.custom ::ng-deep .ng-input {
+    outline: none !important;
+}
+
+.ng-select.custom ::ng-deep .ng-input > input {
+    height: 77px;
+    color: white;
+    font-family: Montserrat;
+    font-weight: 700;
+    font-size: 13px;
+    outline: none !important;
+}
+
+.ng-select.custom ::ng-deep .ng-value-container {
+    outline: none !important;
+}
+
+.ng-select.custom ::ng-deep .ng-placeholder {
+    outline: none !important;
+}
+
+.ng-select.custom ::ng-deep .ng-value-label {
+    color: white;
+}
+
+.ng-select.custom ::ng-deep .ng-option {
+    padding: 20px !important;
+    background: #2e3238;
+    color: white;
+}
+
+.ng-select.custom ::ng-deep .ng-dropdown-panel-items {
+    box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.5);
+}
+
+.ng-select.custom ::ng-deep .ng-option.ng-option-marked {
+    background: #35383d;
+}
+
+.ng-select.custom ::ng-deep .ng-option.ng-option-marked.ng-option-selected {
+    color: white;
+}
+
+.ng-select.custom ::ng-deep .ng-dropdown-panel {
+    border: none !important;
+    border-radius: none !important;
+}
+
+.ng-select.custom ::ng-deep .ng-value {
+    outline: none !important;
+}
+
+
+.select-holder {
+    background: #2e3238;
+    color: white;
+    height: 90px;
+    transition: .3s background;
+    padding: 0 !important;
+}
+
+.select-holder.disabled {
+    background: #191b1f;
+    opacity: .95;
+}
+
+.select-holder.disabled:hover {
+    background: #191b1f;
+    opacity: .95;
+}
+
+.select-holder.focused {
+    background: #22282e;
+}
+
+.select-holder:hover {
+    background: #3b414d;
+}
+
+.select-holder.blurred .input-text-value{
+    top: 50%;
+    font-size: 14px;
+}
+
+.select-holder.focused .input-text-value{
+    top: 18px;
+    font-size: 12px;
+    color: rgb(54, 224, 224);
+}
+
+
+
+
 .input-holder {
     background: #2e3238;
     color: white;
@@ -58,6 +169,16 @@
 
 .input-holder.disabled {
     opacity: .5;
+}
+
+.input-holder.label {
+    background: #191b1f;
+    opacity: .95;
+}
+
+.input-holder.label:hover {
+    background: #191b1f;
+    opacity: .95;
 }
 
 .input-styled {
@@ -151,7 +272,7 @@
     margin: 0 !important;
     padding: 0 !important;
     overflow: hidden;
-    
+    max-height: 0;
     transition: .3s;
 }
 
@@ -176,6 +297,43 @@
 .add-subject-alternative-name .key-usage-btn:hover {
     background: #171e25;
 }
+
+.pointer {
+    cursor: pointer;
+}
+
+.add-subject-alternative-name .add-new-subject {
+    padding: 15px;
+    text-align: center;
+    color: white;
+    background: #1e252c;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.add-subject-alternative-name .add-new-subject:hover {
+    background: #171e25;
+}
+
+.add-subject-alternative-name .close-btn {
+    background: #202122;
+    cursor: pointer;
+    font-size: 18px;
+}
+.add-subject-alternative-name .close-btn:hover {
+    background: #dc3545;
+}
+
+
+
+
+
+
+
+
+
+
+
 
 .add-key-usage {
     color: white;
@@ -387,7 +545,10 @@
     padding: 0 !important;
     background: #151f29;
     color: white;
-    cursor: pointer;
+}
+
+.not-editable {
+    background: #2a3036 !important;
 }
 
 .extensions-holder > div > div {
@@ -426,6 +587,41 @@
 }
 
 .input-holder.is-ca.selected {
+    background: white;
+    color: black;
+}
+
+
+.input-holder.generate-btn {
+    font-size: 14px;
+    font-weight: 700;
+    background: #11181f;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.input-holder.generate-btn:hover {
+    background: white;
+    color: black;
+}
+
+
+.input-holder.self-signed {
+    font-size: 14px;
+    font-weight: 700;
+    background: #11181f;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.input-holder.self-signed:hover {
+    font-size: 14px;
+    font-weight: 700;
+    background: #1b242e;
+    cursor: pointer;
+}
+
+.input-holder.self-signed.selected {
     background: white;
     color: black;
 }

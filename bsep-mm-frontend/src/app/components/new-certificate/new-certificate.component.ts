@@ -14,13 +14,88 @@ import { faPlus, faArrowUp, faCircle, faTimes } from '@fortawesome/free-solid-sv
 })
 export class NewCertificateComponent implements OnInit {
 
+  private isSelfSigned: boolean = false;
+  private validForDate: any = '0';
+  private validUntil = null;
+
+  get validUntilText() {
+    if (!this.validUntil) return null;
+    return this.datePipe.transform(this.validUntil, 'dd-MM-yyyy');
+  }
+  
+  private selects = {
+    algorithm: {
+      value: null,
+      items: [
+        {
+          value: 'RSA',
+          label: 'RSA',
+        },
+        {
+          value: 'DSA',
+          label: 'DSA',
+        },
+      ],
+      focused: false,
+    },
+    signatureAlgorithm: {
+      value: null,
+      items: [
+        {
+          value: 'Dummy',
+          label: 'Dummy',
+        },
+      ],
+      focused: false,
+    },
+    signWith: {
+      value: null,
+      items: [
+        {
+          value: 'Dummy',
+          label: 'Dummy',
+        }
+      ],
+      focused: false,
+    },
+    periodType: {
+      value: null,
+      items: [
+        {
+          value: 'DAYS',
+          label: 'Days',
+        },
+        {
+          value: 'MONTHS',
+          label: 'Months',
+        },
+        {
+          value: 'YEARS',
+          label: 'Years',
+        },
+      ],
+      focused: false,
+    }
+  }
+
+  
+
   private extensionsSelected: boolean = false;
   private additionalSelected: boolean = false;
+
+  get sanHeight() {
+    if (!this.allSelections.showSubjectAlternativeName) return 0;
+    if (this.allSelections.showSubjectAlternativeName) {
+      let val = this.tempData.subjectAlternativeName.length * 90 + 150;
+      return val;
+    }
+  }
 
   private allSelections: any = {
     showKeyUsages: false,
     showExtendedKeyUsages: false,
     showBasicConstraints: false,
+    showSubjectAlternativeName: false,
   };
 
   private selectedExtensions: any[] = [];
@@ -34,8 +109,17 @@ export class NewCertificateComponent implements OnInit {
     },
     subjectAlternativeName: [
       {
+        focused: false,
         value: '',
-        type: 'ip',
+        typeValue: null,
+        type: [{
+          value: 'IP',
+          label: 'IP',
+        },
+        {
+          value: 'DNS',
+          label: 'DNS',
+        }],
       },
     ],
   }
@@ -47,12 +131,32 @@ export class NewCertificateComponent implements OnInit {
       isCA: false,
       pathLen: 0,
     },
+    subjectAlternativeName: [
+      {
+        focused: false,
+        value: '',
+        typeValue: null,
+        type: [{
+          value: 'IP',
+          label: 'IP',
+        },
+        {
+          value: 'DNS',
+          label: 'DNS',
+        }],
+      },
+    ],
   };
 
   //CONSTS
   EXTENDED_KEY_USAGE = 'EXTENDED_KEY_USAGE';
   KEY_USAGE = 'KEY_USAGE';
   BASIC_CONSTRAINTS = 'BASIC_CONSTRAINTS';
+  SUBJECT_ALTERNATIVE_NAME = 'SUBJECT_ALTERNATIVE_NAME';
+
+  SUBJECT_KEY_IDENTIFIER = 'SUBJECT_KEY_IDENTIFIER';
+  AUTHORITY_KEY_IDENTIFIER = 'AUTHORITY_KEY_IDENTIFIER';
+  AUTHORITY_INFO_ACCESS = 'AUTHORITY_INFO_ACCESS';
 
 
   //ICONS
@@ -70,12 +174,12 @@ export class NewCertificateComponent implements OnInit {
   set validFromDate(date: Date) {
     this._validFromDate = date;
     this.certificateAuthority.certificateDto.validFrom = this.datePipe.transform(date, 'dd-MM-yyyy');
+    this.updateValidUntil();
   }
 
   get validFromDate() {
     return this._validFromDate;
   }
-
 
   datePipe: DatePipe;
   @ViewChild("ncf", {static: false}) newCertificateForm: any;
@@ -92,14 +196,57 @@ export class NewCertificateComponent implements OnInit {
     ) { }
 
   ngOnInit() {
+    this.datePipe = new DatePipe('en-US');
     this.submitting = false;
     this.setDefaultFormValues();
-    this.datePipe = new DatePipe('en-US');
+
+    this.setUpSelects();
+    this.updateValidUntil();
+    
+  }
+
+  setUpSelects(): void {
+    this.selects.algorithm.value = this.selects.algorithm.items[0];
+    this.selects.periodType.value = this.selects.periodType.items[0];
+    this.tempData.subjectAlternativeName[0].typeValue = this.tempData.subjectAlternativeName[0].type[0];
   }
 
   test(el) {
     console.log(el);
     return false;
+  }
+  
+  updateValidUntil() {
+    if (!this.validFromDate ||
+      isNaN(this.validForDate) ||
+      this.validForDate == '' ||
+      !this.selects.periodType.value) return;
+    let val = this.selects.periodType.value.value
+    let date = new Date();
+    date.setTime(this.validFromDate.getTime());
+    if (val == 'DAYS') {
+      date.setDate(date.getDate() + parseInt(this.validForDate));
+    }
+    else if (val == 'MONTHS') {
+      date.setMonth(date.getMonth() + parseInt(this.validForDate));
+    }
+    else if (val == 'YEARS') {
+      date.setFullYear(date.getFullYear() + parseInt(this.validForDate));
+    }
+    
+    this.validUntil = date;
+  }
+
+  toggleSelfSigned() {
+    this.isSelfSigned = !this.isSelfSigned;
+  }
+
+  focusSelect(event, obj) {
+    obj.focused = true;
+  }
+
+  blurSelect(event, obj) {
+    obj.focused = false;
   }
 
   focusInput(event: FocusEvent, index) {
@@ -125,6 +272,9 @@ export class NewCertificateComponent implements OnInit {
 
   isEmpty(index: any) {
     let element = (<HTMLInputElement>document.querySelector('.input-holder .input-styled[data-index="'+ index +'"]'));
+    if (!element) {
+      element = (<HTMLInputElement>document.querySelector('.input-holder .custom[data-index="'+ index +'"]'));
+    }
     return element.value == '';
   }
 
@@ -166,6 +316,7 @@ export class NewCertificateComponent implements OnInit {
     this.certificateAuthority.certificateDto.certificateType = 'SIEM_AGENT_ISSUER';
     this.certificateAuthority.caType = 1;
     this.certificateAuthority.certificateDto.validityInMonths = 6;
+    this.validFromDate = new Date();
   }
 
   caTypeChanged(event: any) {
@@ -346,9 +497,96 @@ export class NewCertificateComponent implements OnInit {
 
 
 
+  //SUBJECT ALTERNATIVE NAME
+
+  closeSubjectAlternativeNameSelected(): void {
+    this.additionalSelected = true;
+    this.extensionsSelected = true;
+    this.allSelections.showSubjectAlternativeName = false;
+  }
+
+  openSubjectAlternativeNameSelected(): void {
+    this.additionalSelected = true;
+    this.extensionsSelected = false;
+    this.allSelections.showSubjectAlternativeName = true;
+  }
+
+  subjectAlternativeNameSelected(): void {
+    if (this.containsType(this.SUBJECT_ALTERNATIVE_NAME)) return;
+    this.openSubjectAlternativeNameSelected();
+  }
+
+
+  addNewSubjectAlternativeName(): void {
+    let item = {
+      focused: false,
+      value: '',
+      typeValue: null,
+      type: [{
+        value: 'IP',
+        label: 'IP',
+      },
+      {
+        value: 'DNS',
+        label: 'DNS',
+      }],
+    };
+    item.typeValue = item.type[0];
+    this.tempData.subjectAlternativeName.push(item);
+  }
+
+  removeSubjectAlternativeName(index: number): void {
+    this.tempData.subjectAlternativeName.splice(index, 1);
+  }
+
+  cancelSubjectAlternativeNameSelected(): void {
+    this.tempData.subjectAlternativeName = JSON.parse(JSON.stringify(this.savedData.subjectAlternativeName));
+    this.closeSubjectAlternativeNameSelected();
+  }
+
+  saveSubjectAlternativeNameSelected(): void {
+    this.closeSubjectAlternativeNameSelected();
+    if (!this.containsType(this.SUBJECT_ALTERNATIVE_NAME)) {
+      this.selectedExtensions.push({
+        type: this.SUBJECT_ALTERNATIVE_NAME,
+        name: 'Subject Alternative Name',
+        critical: false,
+      });
+    }
+    this.savedData.subjectAlternativeName = JSON.parse(JSON.stringify(this.tempData.subjectAlternativeName));
+  }
 
 
 
+  saveSubjectKeyIdentifierSelected(): void {
+    if (!this.containsType(this.SUBJECT_KEY_IDENTIFIER)) {
+      this.selectedExtensions.push({
+        type: this.SUBJECT_KEY_IDENTIFIER,
+        name: 'Subject Key Identifier',
+        critical: false,
+      });
+    }
+  }
+
+  saveAuthorityKeyIdentifierSelected(): void {
+    if (!this.containsType(this.AUTHORITY_KEY_IDENTIFIER)) {
+      this.selectedExtensions.push({
+        type: this.AUTHORITY_KEY_IDENTIFIER,
+        name: 'Authority Key Identifier',
+        critical: false,
+      });
+    }
+  }
+
+  saveAuthorityInfoAccessSelected(): void {
+    if (!this.containsType(this.AUTHORITY_INFO_ACCESS)) {
+      this.selectedExtensions.push({
+        type: this.AUTHORITY_INFO_ACCESS,
+        name: 'Authority Info Access',
+        critical: false,
+      });
+    }
+  }
 
 
 
@@ -367,6 +605,7 @@ export class NewCertificateComponent implements OnInit {
     this.closeExtendedKeyUsageSelected();
     this.closeKeyUsageSelected();
     this.closeBasicConstraintsSelected();
+    this.closeSubjectAlternativeNameSelected();
   }
 
   editExtension(event): void {
@@ -384,6 +623,10 @@ export class NewCertificateComponent implements OnInit {
     else if (extension.type == this.BASIC_CONSTRAINTS) {
       this.tempData.basicConstraints = JSON.parse(JSON.stringify(this.savedData.basicConstraints));
       this.openBasicConstraintsSelected();
+    }
+    else if (extension.type == this.SUBJECT_ALTERNATIVE_NAME) {
+      this.tempData.subjectAlternativeName = JSON.parse(JSON.stringify(this.savedData.subjectAlternativeName));
+      this.openSubjectAlternativeNameSelected();
     }
   }
 
@@ -407,7 +650,7 @@ export class NewCertificateComponent implements OnInit {
       this.tempData.extendedKeyUsage = [];
       this.selectedExtensions.splice(index, 1);
     }
-    if (extension.type === this.BASIC_CONSTRAINTS) {
+    else if (extension.type === this.BASIC_CONSTRAINTS) {
       this.savedData.basicConstraints = {
         isCA: false,
         pathLen: 0,
@@ -416,6 +659,43 @@ export class NewCertificateComponent implements OnInit {
         isCA: false,
         pathLen: 0,
       };
+      this.selectedExtensions.splice(index, 1);
+    }
+    else if (extension.type === this.SUBJECT_ALTERNATIVE_NAME) {
+      this.savedData.subjectAlternativeName = [
+        {
+          focused: false,
+          value: '',
+          typeValue: null,
+          type: [{
+            value: 'IP',
+            label: 'IP',
+          },
+          {
+            value: 'DNS',
+            label: 'DNS',
+          }],
+        },
+      ];
+      this.tempData.subjectAlternativeName = [
+        {
+          focused: false,
+          value: '',
+          typeValue: null,
+          type: [{
+            value: 'IP',
+            label: 'IP',
+          },
+          {
+            value: 'DNS',
+            label: 'DNS',
+          }],
+        },
+      ];
+      this.tempData.subjectAlternativeName[0].typeValue = this.tempData.subjectAlternativeName[0].type[0];
+      this.selectedExtensions.splice(index, 1);
+    }
+    else {
       this.selectedExtensions.splice(index, 1);
     }
   }
