@@ -5,7 +5,6 @@ import bsep.pki.PublicKeyInfrastructure.data.IssuerData;
 import bsep.pki.PublicKeyInfrastructure.data.SubjectData;
 import bsep.pki.PublicKeyInfrastructure.data.X509CertificateData;
 import bsep.pki.PublicKeyInfrastructure.dto.CertificateDto;
-import bsep.pki.PublicKeyInfrastructure.exception.ApiBadRequestException;
 import bsep.pki.PublicKeyInfrastructure.exception.ApiInternalServerErrorException;
 import bsep.pki.PublicKeyInfrastructure.model.Certificate;
 import bsep.pki.PublicKeyInfrastructure.model.enums.CertificateType;

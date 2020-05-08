@@ -66,7 +66,7 @@ public class X509CreationTest {
                 null,
                 null
         );
-        certService.createCertificate(createCertificateDto);
+        certService.create(createCertificateDto);
 
     }
 
@@ -105,7 +105,7 @@ public class X509CreationTest {
                 "1",
                 null
         );
-        certService.createCertificate(createCertificateDto);
+        certService.create(createCertificateDto);
     }
 
     @Test
@@ -145,7 +145,7 @@ public class X509CreationTest {
                 "2",
                 null
         );
-        certService.createCertificate(createCertificateDto);
+        certService.create(createCertificateDto);
 
         Assert.assertEquals(2, certService.getCaCertificates().size());
 
@@ -191,7 +191,7 @@ public class X509CreationTest {
         );
 
         try {
-            certService.createCertificate(createCertificateDto);
+            certService.create(createCertificateDto);
             Assert.fail();
         } catch (Exception e) {
             Assert.assertTrue(true);
@@ -211,7 +211,7 @@ public class X509CreationTest {
                 null
         );
         try {
-            certService.createCertificate(createCertificateDto);
+            certService.create(createCertificateDto);
             Assert.fail();
         } catch (Exception e) {
             Assert.assertTrue(true);
@@ -232,7 +232,7 @@ public class X509CreationTest {
                 null
         );
         try {
-            certService.createCertificate(createCertificateDto);
+            certService.create(createCertificateDto);
             Assert.fail();
         } catch (Exception e) {
             Assert.assertTrue(true);
@@ -254,7 +254,7 @@ public class X509CreationTest {
                 null
         );
         try {
-            certService.createCertificate(createCertificateDto);
+            certService.create(createCertificateDto);
             Assert.fail();
         } catch (Exception e) {
             Assert.assertTrue(true);

@@ -144,7 +144,7 @@ public class OcspTest {
                 null,
                 null
         );
-        certService.createCertificate(createCertificateDto);
+        certService.create(createCertificateDto);
     }
 
     public void createOcspCert() {
@@ -181,7 +181,7 @@ public class OcspTest {
                 "1",
                 null
         );
-        certService.createCertificate(createCertificateDto);
+        certService.create(createCertificateDto);
     }
 
     public void createEndCert() {
@@ -219,7 +219,7 @@ public class OcspTest {
                 "1",
                 null
         );
-        certService.createCertificate(createCertificateDto);
+        certService.create(createCertificateDto);
     }
 
     public OCSPReq createOcspReq(X509CertificateHolder certHolder) {
@@ -262,7 +262,7 @@ public class OcspTest {
         if (ocspReq == null)
             Assert.fail("Ocsp request is null");
 
-        ocspService.processOcspRequest(new String().getBytes());
+        ocspService.getResponse(new String().getBytes());
     }
 
 
@@ -282,7 +282,7 @@ public class OcspTest {
         if (ocspReq == null)
             Assert.fail("Ocsp request is null");
 
-        ocspService.processOcspRequest(ocspReq.getEncoded());
+        ocspService.getResponse(ocspReq.getEncoded());
     }
 
     @Test
@@ -314,7 +314,7 @@ public class OcspTest {
         if (ocspReq == null)
             Assert.fail("Ocsp request is null");
 
-        byte[] ocspResponse = ocspService.processOcspRequest(ocspReq.getEncoded());
+        byte[] ocspResponse = ocspService.getResponse(ocspReq.getEncoded());
         OCSPResp ocspResp = new OCSPResp(ocspResponse);
         BasicOCSPResp basicOCSPResp = (BasicOCSPResp) ocspResp.getResponseObject();
 
@@ -359,7 +359,7 @@ public class OcspTest {
         if (ocspReq == null)
             Assert.fail("Ocsp request is null");
 
-        byte[] ocspResponse = ocspService.processOcspRequest(ocspReq.getEncoded());
+        byte[] ocspResponse = ocspService.getResponse(ocspReq.getEncoded());
         OCSPResp ocspResp = new OCSPResp(ocspResponse);
         BasicOCSPResp basicOCSPResp = (BasicOCSPResp) ocspResp.getResponseObject();
 

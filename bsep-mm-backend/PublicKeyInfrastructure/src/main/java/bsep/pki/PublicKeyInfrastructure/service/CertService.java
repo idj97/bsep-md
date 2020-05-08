@@ -5,7 +5,6 @@ import bsep.pki.PublicKeyInfrastructure.data.X509CertificateWithKeys;
 import bsep.pki.PublicKeyInfrastructure.dto.CertificateDto;
 import bsep.pki.PublicKeyInfrastructure.dto.CreateCertificateDto;
 import bsep.pki.PublicKeyInfrastructure.dto.extensions.AbstractExtensionDto;
-import bsep.pki.PublicKeyInfrastructure.dto.extensions.BasicConstraintsDto;
 import bsep.pki.PublicKeyInfrastructure.exception.ApiBadRequestException;
 import bsep.pki.PublicKeyInfrastructure.exception.ApiInternalServerErrorException;
 import bsep.pki.PublicKeyInfrastructure.model.Certificate;
@@ -13,7 +12,10 @@ import bsep.pki.PublicKeyInfrastructure.model.CertificateRequest;
 import bsep.pki.PublicKeyInfrastructure.model.enums.CertificateRequestStatus;
 import bsep.pki.PublicKeyInfrastructure.repository.CertificateRepository;
 import bsep.pki.PublicKeyInfrastructure.repository.CertificateRequestRepository;
-import bsep.pki.PublicKeyInfrastructure.utility.*;
+import bsep.pki.PublicKeyInfrastructure.utility.DateService;
+import bsep.pki.PublicKeyInfrastructure.utility.KeyStoreService;
+import bsep.pki.PublicKeyInfrastructure.utility.UriService;
+import bsep.pki.PublicKeyInfrastructure.utility.X500Service;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.Extension;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +53,7 @@ public class CertService {
     @Autowired
     private CertificateRequestRepository csrRepository;
 
-    public CertificateDto createCertificate(CreateCertificateDto dto) {
+    public CertificateDto create(CreateCertificateDto dto) {
         verifyCreateCertificate(dto);
 
         // create cert, chain and key pair

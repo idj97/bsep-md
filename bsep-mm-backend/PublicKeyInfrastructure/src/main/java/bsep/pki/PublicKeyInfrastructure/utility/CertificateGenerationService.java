@@ -4,7 +4,6 @@ import bsep.pki.PublicKeyInfrastructure.data.IssuerData;
 import bsep.pki.PublicKeyInfrastructure.data.SubjectData;
 import bsep.pki.PublicKeyInfrastructure.exception.ApiBadRequestException;
 import bsep.pki.PublicKeyInfrastructure.model.enums.CertificateType;
-
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.DERIA5String;

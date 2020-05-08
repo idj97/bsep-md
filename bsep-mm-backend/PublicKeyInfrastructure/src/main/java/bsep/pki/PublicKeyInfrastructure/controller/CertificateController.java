@@ -55,7 +55,7 @@ public class CertificateController {
     @PostMapping
     @PreAuthorize("hasRole('admin')")
     public ResponseEntity<CertificateDto> createCertificate(@RequestBody @Valid CreateCertificateDto createCertificateDto) {
-        return new ResponseEntity<>(certService.createCertificate(createCertificateDto), HttpStatus.OK);
+        return new ResponseEntity<>(certService.create(createCertificateDto), HttpStatus.OK);
     }
 
     //TODO: correct REST revoke endpoints

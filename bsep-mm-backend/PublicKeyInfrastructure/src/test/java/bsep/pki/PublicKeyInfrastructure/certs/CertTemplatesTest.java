@@ -21,6 +21,6 @@ public class CertTemplatesTest {
 
     @Test
     public void test() {
-        Assert.assertEquals(4, templateService.getTemplates().size());
+        Assert.assertEquals(4, templateService.getAll().size());
     }
 }

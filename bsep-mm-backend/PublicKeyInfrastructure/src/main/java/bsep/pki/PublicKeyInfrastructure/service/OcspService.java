@@ -35,7 +35,7 @@ public class OcspService {
     @Autowired
     private KeyStoreService keyStoreService;
 
-    public byte[] processOcspRequest(byte[] encodedOcspRequest) {
+    public byte[] getResponse(byte[] encodedOcspRequest) {
         /*
         pronadji OCSP responder sertifikat iz baze
         ako postoji

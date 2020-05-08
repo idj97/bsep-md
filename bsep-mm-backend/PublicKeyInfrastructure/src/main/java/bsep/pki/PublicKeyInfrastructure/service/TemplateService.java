@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,12 +26,19 @@ public class TemplateService {
     @Autowired
     private TemplateRepository templateRepository;
 
-    public void saveTemplate(TemplateDto dto) {
-        Template template = new Template(null, dto.getName(), dto.getExtensions());
+    public void create(TemplateDto dto) {
+        Optional<Template> optTemplate = templateRepository.findByName(dto.getName());
+        Template template;
+        if (optTemplate.isPresent()) {
+            template = optTemplate.get();
+            template.setExtensions(dto.getExtensions());
+        } else {
+            template = new Template(null, dto.getName(), dto.getExtensions());
+        }
         templateRepository.save(template);
     }
 
-    public List<TemplateDto> getTemplates() {
+    public List<TemplateDto> getAll() {
         return templateRepository.findAll()
                 .stream()
                 .map(t -> new TemplateDto(t.getName(), t.getExtensions()))

@@ -17,7 +17,7 @@ public class OcspController {
 
     @PostMapping(consumes = "application/ocsp-request", produces = "application/ocsp-response")
     public ResponseEntity<byte[]> processOcspRequest(@RequestBody byte[] request) {
-        return new ResponseEntity<>(ocspService.processOcspRequest(request), HttpStatus.OK);
+        return new ResponseEntity<>(ocspService.getResponse(request), HttpStatus.OK);
     }
 
     @PostMapping("/signer/{serialNumber}")

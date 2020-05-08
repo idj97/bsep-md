@@ -20,15 +20,15 @@ public class TemplateController {
 
     @PostMapping
     @PreAuthorize("hasRole('admin')")
-    public ResponseEntity<HttpStatus> createTemplate(@RequestBody @Valid TemplateDto templateDto) {
-        templateService.saveTemplate(templateDto);
+    public ResponseEntity<HttpStatus> create(@RequestBody @Valid TemplateDto templateDto) {
+        templateService.create(templateDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping
     @PreAuthorize("hasRole('admin')")
-    public ResponseEntity<List<TemplateDto>> getTemplates() {
-        return new ResponseEntity<>(templateService.getTemplates(), HttpStatus.OK);
+    public ResponseEntity<List<TemplateDto>> getAll() {
+        return new ResponseEntity<>(templateService.getAll(), HttpStatus.OK);
     }
 
 }
