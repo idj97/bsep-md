@@ -1,10 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import { CertificateAuthority } from 'src/app/dtos/CertificateAuthority.dto';
-import { Certificate } from 'src/app/dtos/Certificate.dto';
 import { CertificateAuthorityService } from 'src/app/services/certificate-authority.service';
 import { DateButton } from 'angular-bootstrap-datetimepicker';
 import { DatePipe } from '@angular/common';
+import { ToasterService } from 'src/app/services/toaster.service';
 
 @Component({
   selector: 'app-new-certificate',
@@ -15,23 +15,25 @@ export class NewCertificateComponent implements OnInit {
 
   certificateAuthority: CertificateAuthority;
   validFromDate: Date;
-  validUntilDate: Date;
 
-  datesValid: boolean;
   datePipe: DatePipe;
   @ViewChild("ncf", {static: false}) newCertificateForm: any;
 
+  submitting: boolean;
   private blurTimeout;
 
   //ICONS
   faQuestionCircle = faQuestionCircle;
 
-  constructor(private caService: CertificateAuthorityService) { }
+  constructor(
+    private caService: CertificateAuthorityService,
+    private toasterSvc: ToasterService
+    ) { }
 
   ngOnInit() {
     this.certificateAuthority = new CertificateAuthority();
-    this.datesValid = true;
-    this.certificateAuthority.caType = 0;
+    this.submitting = false;
+    this.setDefaultFormValues();
     this.datePipe = new DatePipe('en-US');
   }
 
@@ -64,43 +66,52 @@ export class NewCertificateComponent implements OnInit {
 
   createCertificate() {
 
-    // validating dates
-    if(this.validFromDate >= this.validUntilDate) {
-      this.datesValid = false;
-      return;
-    } else {
-      this.datesValid = true;
-    }
-
     if(this.newCertificateForm.valid) {
-      this.formatDates();
-      this.certificateAuthority.certificateDto.certificateType = this.getType(this.certificateAuthority.caType);
+      this.submitting = true;
+      this.formatDate();
+      this.certificateAuthority.certificateDto.certificateType = this.getEnumString(this.certificateAuthority.caType);
       this.caService.createCA(this.certificateAuthority).subscribe(
         data => {
-          console.log(data);
           this.newCertificateForm.resetForm();
+          this.setDefaultFormValues();
+          this.toasterSvc.showMessage('Success', 'Certificate authority successfully created');
         },
         err => {
-          console.log(err.error);
+          this.toasterSvc.showErrorMessage(err);
         }
-      );
+      ).add(() => {
+        this.submitting = false;
+      });
     }
   }
 
-  formatDates() {
+  formatDate() {
     this.certificateAuthority.certificateDto.validFrom =
       this.datePipe.transform(this.validFromDate, 'dd-MM-yyyy HH:mm');
-    this.certificateAuthority.certificateDto.validUntil =
-      this.datePipe.transform(this.validUntilDate, 'dd-MM-yyyy HH:mm');
   }
 
-  getType(enumValue: number) {
+  setDefaultFormValues() {
+    this.certificateAuthority.certificateDto.certificateType = 'SIEM_AGENT_ISSUER';
+    this.certificateAuthority.caType = 1;
+    this.certificateAuthority.certificateDto.validityInMonths = 6;
+  }
 
-    if(enumValue == 0) {
+  caTypeChanged(event: any) {
+    if (event.target.value == 0) { // if root ca selected
+      this.certificateAuthority.certificateDto.validityInMonths = 72;
+    } else {
+      this.certificateAuthority.certificateDto.validityInMonths = 6;
+    }
+  }
+
+  
+  getEnumString(enumNumber: number) {
+
+    if(enumNumber == 0) {
       return 'ROOT';
-    } else if(enumValue == 1) {
+    } else if(enumNumber == 1) {
       return 'SIEM_AGENT_ISSUER';
-    } else{
+    } else {
       return 'SIEM_CENTER_ISSUER';
     }
 

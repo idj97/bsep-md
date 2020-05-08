@@ -54,7 +54,7 @@
                     [(ngModel)]="certificateAuthority.certificateDto.country" name="country"
                     #country="ngModel" required>
                 <small *ngIf="(country.touched || ncf.submitted) && country.errors?.required">
-                    Country unit is required
+                    Country is required
                 </small>
             </div>
             <div class="input-holder col-6">
@@ -63,13 +63,13 @@
                     [(ngModel)]="certificateAuthority.certificateDto.email" name="email"
                     #email="ngModel" required>
                 <small *ngIf="(email.touched || ncf.submitted) && email.errors?.required">
-                    Email unit is required
+                    Email is required
                 </small>
             </div>
             <div class="input-holder col-6"></div>
             <div class="section-info col-12">Time data</div>
             <div class="input-holder col-6">
-                <p>Valid from</p>
+                <p>Valid from:</p>
                 <div class="date-holder">
                     <dl-date-time-picker
                         name="validFrom"
@@ -85,27 +85,51 @@
                     Valid from date is required
                 </small>
             </div>
-            <div class="input-holder col-6">
-                <p>Valid until</p>
-                <div class="date-holder">
-                    <dl-date-time-picker
-                        name="validUntil"
-                        startView="day"
-                        maxView="day"
-                        minView="day"
-                        [selectFilter]="futureDatesOnly"
-                        [(ngModel)]="validUntilDate"
-                        #validUntil="ngModel" required>
-                    </dl-date-time-picker>
+            <div class="input-holder col-3">
+                <div class="centered-content">
+                    <p> Valid for: </p>
+                    <br/>
+                    <div [ngClass]="certificateAuthority.caType == '0' ? ['custom-control','custom-radio','disabled-holder'] : ['custom-control', 'custom-radio']">
+                        <input type="radio" id="sixMonthsBtn" name="validityRadioBtn" class="custom-control-input"
+                            [value]="6" [(ngModel)]="certificateAuthority.certificateDto.validityInMonths"
+                            #validity>
+                        <label class="custom-control-label" for="sixMonthsBtn">
+                            6 months
+                        </label>
+                    </div>
+                    <br/>
+                    <div [ngClass]="certificateAuthority.caType == '0' ? ['custom-control','custom-radio','disabled-holder'] : ['custom-control', 'custom-radio']">
+                        <input type="radio" id="oneYearBtn" name="validityRadioBtn" class="custom-control-input"
+                            [value]="12" [(ngModel)]="certificateAuthority.certificateDto.validityInMonths">
+                        <label class="custom-control-label" for="oneYearBtn">
+                            1 year
+                        </label>
+                    </div>
+                    <br/>
+                    <div [ngClass]="certificateAuthority.caType == '0' ? ['custom-control','custom-radio','disabled-holder'] : ['custom-control', 'custom-radio']">
+                        <input type="radio" id="twoYearsBtn" name="validityRadioBtn" class="custom-control-input"
+                            [value]="24" [(ngModel)]="certificateAuthority.certificateDto.validityInMonths">
+                        <label class="custom-control-label" for="twoYearsBtn">
+                            2 years
+                        </label>
+                    </div>
+                    <br/>
+                    <div [ngClass]="certificateAuthority.caType != '0' ? ['custom-control','custom-radio','disabled-holder'] : ['custom-control', 'custom-radio']">
+                        <input type="radio" id="fiveYearsBtn" name="validityRadioBtn" class="custom-control-input"
+                            [value]="72" [(ngModel)]="certificateAuthority.certificateDto.validityInMonths">
+                        <label class="custom-control-label" for="fiveYearsBtn">
+                            5 years
+                        </label>
+                    </div>
+                    <br/>
+                    <div [ngClass]="certificateAuthority.caType != '0' ? ['custom-control','custom-radio','disabled-holder'] : ['custom-control', 'custom-radio']">
+                        <input type="radio" id="tenYearsBtn" name="validityRadioBtn" class="custom-control-input"
+                            [value]="120" [(ngModel)]="certificateAuthority.certificateDto.validityInMonths">
+                        <label class="custom-control-label" for="tenYearsBtn">
+                            10 years
+                        </label>
+                    </div>
                 </div>
-                <small *ngIf="ncf.submitted && validUntil.errors?.required">
-                    Valid until date is required
-                </small>
-            </div>
-            <div class="col-12">
-                <small class="centered-message" *ngIf="!datesValid"> 
-                    Valid from must be before valid until
-                </small>
             </div>
             <div class="section-info col-12">Extensions</div>
             <div class="col-6">
@@ -118,7 +142,8 @@
             </div>
             <div class="col-6">
                 <p> Certificate authority type: </p>
-                <select class="custom-select" name="caType" [(ngModel)]="certificateAuthority.caType">
+                <select class="custom-select" name="caType" [(ngModel)]="certificateAuthority.caType"
+                    (change)="caTypeChanged($event)">
                     <option value="0">Root</option>
                     <option value="1">Siem agent issuer</option>
                     <option value="2">Siem center issuer</option>
@@ -129,7 +154,10 @@
 
     <div class="row">
         <div class="col">
-            <button class="wide-btn btn btn-dark"> Create </button>
+            <button class="wide-btn btn btn-dark">
+                Create
+                <span *ngIf="submitting" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> 
+            </button>
         </div>
     </div>
 

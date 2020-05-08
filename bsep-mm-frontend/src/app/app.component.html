@@ -44,5 +44,14 @@
 
 </div>
 
+<!-- Toaster used to display messages -->
+<div class="card text-white bg-dark mb-3" id="toaster">
+    <div class="card-header" id="toaster-header"></div>
+    <div class="card-body">
+      <p class="card-text" id="toaster-message">
+      </p>
+    </div>
+</div>
+
 <div (click)="closeDialog()" class="teaser" [ngClass]="{'activated': activated}"></div>
 <div class="revoke-dialog-component" app-revoke-dialog></div>

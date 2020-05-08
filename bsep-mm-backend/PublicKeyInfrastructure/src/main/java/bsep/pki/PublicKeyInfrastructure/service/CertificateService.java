@@ -56,20 +56,13 @@ public class CertificateService {
     @Value("${certs.endpoint}")
     private String certEndpoint;
 
-    public CertificateDto createCertificate(CertificateRequest certificateRequest) {
-        if (certificateRequest.getCertificateType().equals(CertificateType.SIEM_AGENT)) {
-            CA issuerCaOptional = caRepository
-                    .findByType(CAType.SIEM_AGENT_ISSUER)
-                    .orElseThrow(() -> new ApiNotFoundException("Siem Agent Ca not found."));
-            return createCertificate(certificateRequest, issuerCaOptional);
-        } else if (certificateRequest.getCertificateType().equals(CertificateType.SIEM_CENTER)) {
-            CA issuerCaOptional = caRepository
-                    .findByType(CAType.SIEM_CENTER_ISSUER)
-                    .orElseThrow(() -> new ApiNotFoundException("Siem Center Ca not found."));
-            return createCertificate(certificateRequest, issuerCaOptional);
-        } else {
-            throw new ApiBadRequestException("Specify Certificate Type!!!");
-        }
+    public CertificateDto createCertificate(CertificateRequest certificateRequest, Long issuerId) {
+
+        CA issuer = caRepository
+                .findById(issuerId)
+                .orElseThrow(() -> new ApiNotFoundException("CA issuer not found"));
+
+        return createCertificate(certificateRequest, issuer);
     }
 
     public CertificateDto createCertificate(CertificateRequest certificateRequest, CA issuerCa) {

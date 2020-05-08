@@ -48,7 +48,8 @@ public class CertificateDto {
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm", timezone = "Europe/Belgrade")
     private Date validFrom;
 
-    @NotNull
+    private int validityInMonths;
+
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm", timezone = "Europe/Belgrade")
     private Date validUntil;
 

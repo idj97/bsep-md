@@ -77,6 +77,7 @@ public class X500Service {
         X509CertificateData issuerCertificateData = keyStoreService
                 .getCaCertificate(issuerCertificate.getKeyStoreAlias());
 
+
         return createX509Certificate(new CreateX509CertificateData(
                 createX500NameFromCertificate(issuerCertificate),
                 createX500NameFromCertificateDto(subjectCertificateDto),

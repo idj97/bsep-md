@@ -30,12 +30,14 @@ public class CertificateRequestController {
         );
     }
 
-    @PutMapping("/approve/{id}")
+    @PutMapping("/approve/{certRequestId}/{issuerId}")
     @PreAuthorize("hasRole('admin')")
-    public ResponseEntity<CertificateRequestDto> approveCertificateRequest(@PathVariable("id") Long id) {
+    public ResponseEntity<CertificateRequestDto> approveCertificateRequest(
+            @PathVariable("certRequestId") Long certRequestId,
+            @PathVariable("issuerId") Long issuerId) {
 
         return new ResponseEntity<>(
-                certificateReqSvc.approveCertificateSignRequest(id),
+                certificateReqSvc.approveCertificateSignRequest(certRequestId, issuerId),
                 HttpStatus.OK
         );
 
