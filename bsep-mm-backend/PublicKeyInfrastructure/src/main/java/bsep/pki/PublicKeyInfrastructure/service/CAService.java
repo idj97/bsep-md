@@ -5,6 +5,8 @@ import bsep.pki.PublicKeyInfrastructure.dto.CADto;
 import bsep.pki.PublicKeyInfrastructure.dto.CertificateDto;
 import bsep.pki.PublicKeyInfrastructure.exception.ApiNotFoundException;
 import bsep.pki.PublicKeyInfrastructure.model.*;
+import bsep.pki.PublicKeyInfrastructure.model.enums.CAType;
+import bsep.pki.PublicKeyInfrastructure.model.enums.CertificateType;
 import bsep.pki.PublicKeyInfrastructure.repository.CARepository;
 import bsep.pki.PublicKeyInfrastructure.repository.CertificateRepository;
 import bsep.pki.PublicKeyInfrastructure.utility.DateService;
@@ -24,6 +26,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+//TODO: DELETE (probably)
 @Service
 @Transactional(propagation = Propagation.REQUIRED)
 public class CAService {
@@ -130,32 +133,31 @@ public class CAService {
         issuerCertificate.getIssuerForCertificates().add(certificate);
 
         // extensions
-        Extension bcExtension = new Extension();
+        CertificateExtension bcExtension = new CertificateExtension();
         bcExtension.setName("Basic Constraint");
-        bcExtension.setCertificate(certificate);
+        //bcExtension.setCertificate(certificate);
         bcExtension.getAttributes().add(
-                new ExtensionAttribute(null, "Is Certificate Authority.", bcExtension));
+                new ExtensionAttribute(null, "Is Certificate Authority."));
 
-        Extension keyUsageExtension = new Extension();
+        CertificateExtension keyUsageExtension = new CertificateExtension();
         keyUsageExtension.setName("Key Usage");
-        keyUsageExtension.setCertificate(certificate);
+        //keyUsageExtension.setCertificate(certificate);
         keyUsageExtension.getAttributes().add(
-                new ExtensionAttribute(null, "KeyCertSign", keyUsageExtension));
+                new ExtensionAttribute(null, "KeyCertSign"));
 
-        Extension crlDistPointExtension = new Extension();
+        CertificateExtension crlDistPointExtension = new CertificateExtension();
         crlDistPointExtension.setName("CRL Distribution point");
-        crlDistPointExtension.setCertificate(certificate);
+        //crlDistPointExtension.setCertificate(certificate);
         crlDistPointExtension.getAttributes().add(
-                new ExtensionAttribute(null, crlPublicPath, crlDistPointExtension));
+                new ExtensionAttribute(null, crlPublicPath));
 
-        Extension aiaExtension = new Extension();
+        CertificateExtension aiaExtension = new CertificateExtension();
         aiaExtension.setName("Authority Information Access");
-        aiaExtension.setCertificate(certificate);
+        //aiaExtension.setCertificate(certificate);
         aiaExtension.getAttributes().add(
                 new ExtensionAttribute(
                         null,
-                        "URL: " + certEndpoint + issuerCertificate.getSerialNumber(),
-                        aiaExtension));
+                        "URL: " + certEndpoint + issuerCertificate.getSerialNumber()));
 
         certificate.getExtensions().add(bcExtension);
         certificate.getExtensions().add(keyUsageExtension);

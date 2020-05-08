@@ -1,6 +1,6 @@
 package bsep.pki.PublicKeyInfrastructure.utility;
 
-import bsep.pki.PublicKeyInfrastructure.model.RevokeReason;
+import bsep.pki.PublicKeyInfrastructure.model.enums.RevokeReason;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.*;
 import org.bouncycastle.cert.CertIOException;
@@ -25,6 +25,7 @@ import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.util.Date;
 
+//TODO: DELETE
 @Service
 public class X500CrlService {
     private static boolean CRITICAL = true;

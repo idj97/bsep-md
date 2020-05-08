@@ -1,6 +1,6 @@
 package bsep.pki.PublicKeyInfrastructure.repository;
 
-import bsep.pki.PublicKeyInfrastructure.model.CertificateRequestStatus;
+import bsep.pki.PublicKeyInfrastructure.model.enums.CertificateRequestStatus;
 import bsep.pki.PublicKeyInfrastructure.model.CertificateRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 

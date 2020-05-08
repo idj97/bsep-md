@@ -1,5 +1,6 @@
 package bsep.pki.PublicKeyInfrastructure.model;
 
+import bsep.pki.PublicKeyInfrastructure.model.enums.CertificateType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,6 +20,9 @@ public class Certificate {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, unique = true)
+    private String serialNumber;
+
     @OneToOne(cascade = CascadeType.ALL)
     private CA issuedForCA;
 
@@ -34,34 +38,48 @@ public class Certificate {
     @OneToOne(cascade = CascadeType.ALL)
     private CertificateRequest certificateRequest;
 
-    @Column(nullable = false, unique = true)
-    private String serialNumber;
-
     @Column(unique = true, nullable = false)
     private String keyStoreAlias;
 
     @Column(nullable = false)
+    private String keyGenerationAlgorithm;
+
+    @Column(nullable = false)
+    private Integer keySize;
+
+    @Column(nullable = false)
+    private String signingAlgorithm;
+
+    @Column(nullable = false)
+    private Boolean selfSigned;
+
+    @Column(nullable = false)
+    private Boolean isCa;
+
+    private Integer pathLen;
+
+    @Column
     private String userId;
 
-    @Column(nullable = false)
+    @Column
     private String userEmail;
 
-    @Column(nullable = false)
+    @Column
     private String O;
 
-    @Column(nullable = false)
+    @Column
     private String C;
 
-    @Column(nullable = false)
+    @Column
     private String OU;
 
-    @Column(nullable = false)
+    @Column
     private String GivenName;
 
-    @Column(nullable = false)
+    @Column
     private String Surname;
 
-    @Column(nullable = false)
+    @Column
     private String CN;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -76,9 +94,12 @@ public class Certificate {
     @Column(nullable = false)
     private Date dateCreated = new Date();
 
-    @OneToMany(mappedBy = "certificate", cascade = CascadeType.ALL)
-    private List<Extension> extensions = new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<CertificateExtension> extensions = new ArrayList<>();
 
     @Enumerated(value = EnumType.STRING)
     private CertificateType certificateType;
+
+    @Column(nullable = false)
+    private boolean isOcspResponder;
 }

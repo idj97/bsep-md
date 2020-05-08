@@ -1,6 +1,8 @@
 package bsep.pki.PublicKeyInfrastructure.model;
 
 import bsep.pki.PublicKeyInfrastructure.dto.CertificateRequestDto;
+import bsep.pki.PublicKeyInfrastructure.model.enums.CertificateRequestStatus;
+import bsep.pki.PublicKeyInfrastructure.model.enums.CertificateType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

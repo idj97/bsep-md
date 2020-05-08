@@ -1,12 +1,13 @@
 package bsep.pki.PublicKeyInfrastructure.dto;
 
 import bsep.pki.PublicKeyInfrastructure.model.CertificateRevocation;
-import bsep.pki.PublicKeyInfrastructure.model.RevokeReason;
+import bsep.pki.PublicKeyInfrastructure.model.enums.RevokeReason;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -22,6 +23,9 @@ public class RevocationDto {
 
     @NotNull
     private Long certificateId;
+
+    @NotBlank
+    private String serialNumber;
 
     @NotNull
     private RevokeReason revokeReason;

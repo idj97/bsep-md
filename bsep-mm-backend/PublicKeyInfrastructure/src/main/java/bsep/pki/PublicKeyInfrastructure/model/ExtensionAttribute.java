@@ -20,8 +20,4 @@ public class ExtensionAttribute {
 
     @Column(nullable = false)
     private String name;
-
-    @ManyToOne(cascade = CascadeType.ALL)
-    private Extension extension;
-
 }

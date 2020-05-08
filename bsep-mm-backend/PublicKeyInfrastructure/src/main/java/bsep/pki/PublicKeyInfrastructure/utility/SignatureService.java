@@ -1,10 +1,12 @@
 package bsep.pki.PublicKeyInfrastructure.utility;
 
 import org.apache.commons.codec.binary.Base64;
-import org.bouncycastle.jce.interfaces.ECPublicKey;
 import org.springframework.stereotype.Service;
 
-import java.security.*;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
+import java.security.Signature;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 

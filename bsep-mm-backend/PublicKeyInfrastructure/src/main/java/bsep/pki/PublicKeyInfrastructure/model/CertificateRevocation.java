@@ -1,5 +1,7 @@
 package bsep.pki.PublicKeyInfrastructure.model;
 
+import bsep.pki.PublicKeyInfrastructure.dto.RevocationDto;
+import bsep.pki.PublicKeyInfrastructure.model.enums.RevokeReason;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,4 +29,10 @@ public class CertificateRevocation {
 
     @Enumerated(value = EnumType.STRING)
     private RevokeReason revokeReason;
+
+    public CertificateRevocation(Certificate cert, RevokeReason revokeReason) {
+        super();
+        this.certificate = cert;
+        this.revokeReason = revokeReason;
+    }
 }

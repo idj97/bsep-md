@@ -1,6 +1,7 @@
 package bsep.pki.PublicKeyInfrastructure.utility;
 
 import bsep.pki.PublicKeyInfrastructure.data.X509CertificateData;
+import bsep.pki.PublicKeyInfrastructure.exception.ApiInternalServerErrorException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -49,6 +50,68 @@ public class KeyStoreService {
         return null;
     }
 
+    public X509Certificate getSingleCertificate(String alias) {
+        try {
+            KeyStore keyStore = KeyStore.getInstance(
+                    new File(keyStoreName),
+                    keyStorePassword.toCharArray());
+            Certificate certificate = keyStore.getCertificate(alias);
+            return (X509Certificate) certificate;
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (CertificateException e) {
+            e.printStackTrace();
+        }
+        throw new ApiInternalServerErrorException("Error while getting single certificate from keystore");
+    }
+
+    public X509Certificate[] getCertificateChain(String alias) {
+        try {
+            KeyStore keyStore = KeyStore.getInstance(
+                    new File(keyStoreName),
+                    keyStorePassword.toCharArray());
+            Certificate[] certificates = keyStore.getCertificateChain(alias);
+            X509Certificate[] x509Certificates = new X509Certificate[certificates.length];
+            for (int i = 0; i < certificates.length; i++)
+                x509Certificates[i] = (X509Certificate) certificates[i];
+            return x509Certificates;
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (CertificateException e) {
+            e.printStackTrace();
+        }
+        throw new ApiInternalServerErrorException("Error while getting single certificate from keystore");
+    }
+
+    public Key getKey(String alias) {
+        try {
+            KeyStore keyStore = KeyStore.getInstance(
+                    new File(keyStoreName),
+                    keyStorePassword.toCharArray());
+            return keyStore.getKey(alias, keyStorePassword.toCharArray());
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (CertificateException e) {
+            e.printStackTrace();
+        } catch (UnrecoverableKeyException e) {
+            e.printStackTrace();
+        }
+        throw new ApiInternalServerErrorException("Error while getting key from keystore");
+    }
+
+    //TODO: DELETE
     public X509CertificateData getCertificate(String alias) {
         try {
             KeyStore keyStore = KeyStore.getInstance(new File(keyStoreName), keyStorePassword.toCharArray());
@@ -75,6 +138,7 @@ public class KeyStoreService {
         return null;
     }
 
+    //TODO: DELETE (probably)
     public X509CertificateData getCaCertificate(String alias) {
         try {
             KeyStore keyStore = KeyStore.getInstance(new File(keyStoreName), keyStorePassword.toCharArray());
@@ -110,7 +174,6 @@ public class KeyStoreService {
         try {
             KeyStore keyStore = KeyStore.getInstance(new File(keyStoreName), keyStorePassword.toCharArray());
             keyStore.setKeyEntry(alias, privateKey, keyStorePassword.toCharArray(), chain);
-
             try (FileOutputStream fos = new FileOutputStream(keyStoreName)) {
                 keyStore.store(fos, keyStorePassword.toCharArray());
             }

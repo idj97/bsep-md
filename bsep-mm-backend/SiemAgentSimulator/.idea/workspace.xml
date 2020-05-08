@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="6cebdf43-1840-4e0c-bad0-c564390be9da" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
+  <component name="ProjectId" id="1aMbBuHAnzvk5rMf4PYuXBRXHsF" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="6cebdf43-1840-4e0c-bad0-c564390be9da" name="Default Changelist" comment="" />
+      <created>1586548277188</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1586548277188</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="571" y="243" width="216" height="260" key="#Notifications" timestamp="1586548296623">
+      <screen x="0" y="0" width="1366" height="740" />
+    </state>
+    <state x="571" y="243" width="216" height="260" key="#Notifications/0.0.1366.740@0.0.1366.740" timestamp="1586548296623" />
+    <state x="141" y="30" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1586548724789">
+      <screen x="0" y="0" width="1366" height="740" />
+    </state>
+    <state x="141" y="30" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1366.740@0.0.1366.740" timestamp="1586548724789" />
+  </component>
+</project>

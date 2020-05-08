@@ -3,14 +3,12 @@ package bsep.pki.PublicKeyInfrastructure.utility;
 import bsep.pki.PublicKeyInfrastructure.data.IssuerData;
 import bsep.pki.PublicKeyInfrastructure.data.SubjectData;
 import bsep.pki.PublicKeyInfrastructure.exception.ApiBadRequestException;
-import bsep.pki.PublicKeyInfrastructure.model.Certificate;
-import bsep.pki.PublicKeyInfrastructure.model.CertificateType;
-
+import bsep.pki.PublicKeyInfrastructure.model.enums.CertificateType;
 import org.bouncycastle.asn1.ASN1EncodableVector;
+import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.DERIA5String;
 import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.x509.*;
-import org.bouncycastle.cert.AttributeCertificateIssuer;
 import org.bouncycastle.cert.CertIOException;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
@@ -20,17 +18,18 @@ import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
-import org.hibernate.Criteria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
+//TODO: DELETE
 @Service
 public class CertificateGenerationService {
 
@@ -141,6 +140,11 @@ public class CertificateGenerationService {
                     CRITICAL,
                     new BasicConstraints(true));
 
+            certGen.addExtension(
+                    Extension.subjectKeyIdentifier,
+                    NOT_CRITICAL,
+                    jcaX509ExtensionUtils.createSubjectKeyIdentifier(issuerData.getPublicKey()));
+
             int keyUsageBits = KeyUsage.keyCertSign;
             certGen.addExtension(
                     Extension.keyUsage,
@@ -162,9 +166,9 @@ public class CertificateGenerationService {
                     CRITICAL,
                     jcaX509ExtensionUtils.createAuthorityKeyIdentifier(issuerData.getPublicKey()));
 
-        } catch (CertIOException e) {
-            e.printStackTrace();
-        }
+            } catch (CertIOException e) {
+                e.printStackTrace();
+            }
     }
 
     public void setSiemAgentCertExtensions(X509v3CertificateBuilder certGen, IssuerData issuerData) {
@@ -202,6 +206,17 @@ public class CertificateGenerationService {
 
     public void setSiemCenterCertExtensions(X509v3CertificateBuilder certGen, IssuerData issuerData) {
         try {
+            ExtensionsGenerator extensionsGenerator = new ExtensionsGenerator();
+            extensionsGenerator.addExtension(Extension.basicConstraints,
+                    CRITICAL,
+                    ASN1OctetString.getInstance(new BasicConstraints(false)));
+            extensionsGenerator.generate();
+
+            Extension extension = new Extension(
+                    Extension.basicConstraints,
+                    CRITICAL,
+                    ASN1OctetString.getInstance(new BasicConstraints(false)));
+
             certGen.addExtension(
                     Extension.basicConstraints,
                     CRITICAL,
@@ -230,6 +245,8 @@ public class CertificateGenerationService {
 
         } catch (CertIOException e) {
             e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -242,6 +259,7 @@ public class CertificateGenerationService {
 
         ASN1EncodableVector aia_ASN = new ASN1EncodableVector();
         aia_ASN.add(caIssuer);
+
         return new DERSequence(aia_ASN);
     }
 

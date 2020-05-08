@@ -5,6 +5,8 @@ import bsep.pki.PublicKeyInfrastructure.dto.CADto;
 import bsep.pki.PublicKeyInfrastructure.dto.CertificateDto;
 import bsep.pki.PublicKeyInfrastructure.exception.ApiBadRequestException;
 import bsep.pki.PublicKeyInfrastructure.model.*;
+import bsep.pki.PublicKeyInfrastructure.model.enums.CAType;
+import bsep.pki.PublicKeyInfrastructure.model.enums.CertificateType;
 import bsep.pki.PublicKeyInfrastructure.repository.CARepository;
 import bsep.pki.PublicKeyInfrastructure.repository.CertificateRepository;
 import bsep.pki.PublicKeyInfrastructure.utility.DateService;
@@ -22,6 +24,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+//TODO: DELETE
 @Service
 @Transactional(propagation = Propagation.REQUIRED)
 public class RootCAService {
@@ -152,19 +155,19 @@ public class RootCAService {
         certificate.setKeyStoreAlias(serialNumber);
         certificate.setCertificateType(certificateDto.getCertificateType());
 
-        Extension bcExtension = new Extension();
+        CertificateExtension bcExtension = new CertificateExtension();
         bcExtension.setName("Basic Constraint");
-        bcExtension.setCertificate(certificate);
+        //bcExtension.setCertificate(certificate);
         bcExtension.getAttributes().add(
-                new ExtensionAttribute(null, "Is Root Certificate Authority.", bcExtension));
+                new ExtensionAttribute(null, "Is Root Certificate Authority."));
 
-        Extension keyUsageExtension = new Extension();
+        CertificateExtension keyUsageExtension = new CertificateExtension();
         keyUsageExtension.setName("Key Usage");
-        keyUsageExtension.setCertificate(certificate);
+        //keyUsageExtension.setCertificate(certificate);
         keyUsageExtension.getAttributes().add(
-                new ExtensionAttribute(null, "KeyCertSign", keyUsageExtension));
+                new ExtensionAttribute(null, "KeyCertSign"));
         keyUsageExtension.getAttributes().add(
-                new ExtensionAttribute(null, "CrlSign", keyUsageExtension));
+                new ExtensionAttribute(null, "CrlSign"));
 
         certificate.getExtensions().add(bcExtension);
         certificate.getExtensions().add(keyUsageExtension);

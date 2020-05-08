@@ -1,9 +1,10 @@
 package bsep.pki.PublicKeyInfrastructure.repository;
 
 import bsep.pki.PublicKeyInfrastructure.model.Certificate;
-import bsep.pki.PublicKeyInfrastructure.model.CertificateType;
+import bsep.pki.PublicKeyInfrastructure.model.enums.CertificateType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,10 +17,21 @@ import java.util.Optional;
 @Repository
 public interface CertificateRepository extends JpaRepository<Certificate, Long> {
     Optional<Certificate> findBySerialNumber(String serialNumber);
-    List<Certificate> findByCNContainingAndIssuedForCANotNull(String commonName);
-    List<Certificate> findByIssuedForCANull();
+    Optional<Certificate> findByCN(String commonName);
 
-    @Query("SELECT c FROM Certificate c WHERE " +
+    @Query(value = "SELECT c FROM Certificate c WHERE " +
+            "c.revocation IS NULL AND " +
+            "c.isCa IS TRUE AND " +
+            "CURRENT_DATE < c.validUntil")
+    List<Certificate> findValidCaCertificates(Sort sort);
+
+    @Query(value = "SELECT c FROM Certificate c WHERE " +
+            "c.revocation IS NULL AND " +
+            "c.isOcspResponder IS TRUE AND " +
+            "CURRENT_DATE < c.validUntil")
+    Optional<Certificate> findOcspResponderCertificate();
+
+    @Query(value = "SELECT c FROM Certificate c WHERE " +
             "c.CN LIKE %:commonName% AND " +
             "(:revoked = CASE WHEN (c.revocation IS NULL) THEN FALSE ELSE TRUE END) AND " +
             "(:isCaCert = CASE WHEN (c.issuedForCA IS NULL) THEN FALSE ELSE TRUE END) AND " +
@@ -27,11 +39,11 @@ public interface CertificateRepository extends JpaRepository<Certificate, Long> 
             "((c.validUntil < :validUntil) OR (:validUntil IS NULL)) AND " +
             "((c.certificateType = :certificateType) OR (:certificateType IS NULL))")
     Page<Certificate> search(
-            @Param("commonName") String commonName,
-            @Param("revoked") boolean revoked,
-            @Param("isCaCert") boolean isCaCert,
-            @Param("validFrom") Date validFrom,
-            @Param("validUntil") Date validUntil,
+            @Param("commonName")      String commonName,
+            @Param("revoked")         boolean revoked,
+            @Param("isCaCert")        boolean isCaCert,
+            @Param("validFrom")       Date validFrom,
+            @Param("validUntil")      Date validUntil,
             @Param("certificateType") CertificateType certificateType,
             Pageable pageable);
 }

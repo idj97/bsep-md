@@ -1,4 +1,4 @@
-package bsep.pki.PublicKeyInfrastructure.model;
+package bsep.pki.PublicKeyInfrastructure.model.enums;
 
 public enum CertificateType {
     ROOT,
@@ -6,5 +6,6 @@ public enum CertificateType {
     SIEM_CENTER_ISSUER,
     SIEM_AGENT,
     SIEM_CENTER,
-    UNDEFINED
+    INTERMEDIATE_CA,
+    END_CA
 }
