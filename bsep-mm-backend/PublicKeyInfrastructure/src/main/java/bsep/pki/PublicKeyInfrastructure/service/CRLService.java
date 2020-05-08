@@ -80,6 +80,19 @@ public class CRLService {
         }
     }
 
+    public CertificateDto revoke(RevocationDto revocationDto) {
+        Optional<Certificate> optCert = certificateRepository.findBySerialNumber(revocationDto.getSerialNumber());
+        if (optCert.isPresent() && optCert.get().getRevocation() == null) {
+            Certificate cert = optCert.get();
+            CertificateRevocation certificateRevocation = new CertificateRevocation(cert, revocationDto.getRevokeReason());
+            cert.setRevocation(certificateRevocation);
+            cert = certificateRepository.save(cert);
+            return new CertificateDto(cert);
+        } else {
+            throw new ApiBadRequestException();
+        }
+    }
+
     public void createCRL() {
         if (createCrlFile) {
             // dobavi serial numebr za root CA

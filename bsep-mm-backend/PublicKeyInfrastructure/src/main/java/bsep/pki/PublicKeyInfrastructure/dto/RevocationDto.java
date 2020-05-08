@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -22,6 +23,9 @@ public class RevocationDto {
 
     @NotNull
     private Long certificateId;
+
+    @NotBlank
+    private String serialNumber;
 
     @NotNull
     private RevokeReason revokeReason;

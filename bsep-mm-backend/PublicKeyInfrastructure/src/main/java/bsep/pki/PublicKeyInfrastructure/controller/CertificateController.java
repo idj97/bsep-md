@@ -64,7 +64,7 @@ public class CertificateController {
     @PostMapping("/revoke")
     @PreAuthorize("hasRole('admin')")
     public ResponseEntity<CertificateDto> revoke(@RequestBody @Valid RevocationDto revocationDto) {
-        return new ResponseEntity<>(crlService.revokeCertificate(revocationDto), HttpStatus.OK);
+        return new ResponseEntity<>(crlService.revoke(revocationDto), HttpStatus.OK);
     }
 
     @GetMapping("/download/{serialNumber}")

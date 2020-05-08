@@ -64,7 +64,7 @@ public class StartupService {
 
             crlService.createCRL();
             //crlService.revokeCertificate(new RevocationDto(null, 1L, RevokeReason.KEY_COMPROMISE, null));
-            crlService.revokeCertificate(new RevocationDto(null, 2L, RevokeReason.PRIVILEGE_WITHDRAWN, null));
+            //crlService.revokeCertificate(new RevocationDto(null, 2L, RevokeReason.PRIVILEGE_WITHDRAWN, null));
         }
     }
 }

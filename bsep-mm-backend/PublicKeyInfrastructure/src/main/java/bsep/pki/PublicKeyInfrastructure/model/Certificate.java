@@ -20,6 +20,9 @@ public class Certificate {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, unique = true)
+    private String serialNumber;
+
     @OneToOne(cascade = CascadeType.ALL)
     private CA issuedForCA;
 
@@ -34,9 +37,6 @@ public class Certificate {
 
     @OneToOne(cascade = CascadeType.ALL)
     private CertificateRequest certificateRequest;
-
-    @Column(nullable = false, unique = true)
-    private String serialNumber;
 
     @Column(unique = true, nullable = false)
     private String keyStoreAlias;
@@ -99,4 +99,7 @@ public class Certificate {
 
     @Enumerated(value = EnumType.STRING)
     private CertificateType certificateType;
+
+    @Column(nullable = false)
+    private boolean isOcspResponder;
 }

@@ -26,6 +26,12 @@ public interface CertificateRepository extends JpaRepository<Certificate, Long> 
     List<Certificate> findValidCaCertificates(Sort sort);
 
     @Query(value = "SELECT c FROM Certificate c WHERE " +
+            "c.revocation IS NULL AND " +
+            "c.isOcspResponder IS TRUE AND " +
+            "CURRENT_DATE < c.validUntil")
+    Optional<Certificate> findOcspResponderCertificate();
+
+    @Query(value = "SELECT c FROM Certificate c WHERE " +
             "c.CN LIKE %:commonName% AND " +
             "(:revoked = CASE WHEN (c.revocation IS NULL) THEN FALSE ELSE TRUE END) AND " +
             "(:isCaCert = CASE WHEN (c.issuedForCA IS NULL) THEN FALSE ELSE TRUE END) AND " +
