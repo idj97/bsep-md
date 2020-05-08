@@ -6,6 +6,8 @@ import { DateButton } from 'angular-bootstrap-datetimepicker';
 import { DatePipe } from '@angular/common';
 import { ToasterService } from 'src/app/services/toaster.service';
 import { faPlus, faArrowUp, faCircle, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { CertificateService } from 'src/app/services/certificate.service';
+import { CreateCertificate } from 'src/app/dtos/create-certificate.dto';
 
 @Component({
   selector: 'app-new-certificate',
@@ -14,9 +16,13 @@ import { faPlus, faArrowUp, faCircle, faTimes } from '@fortawesome/free-solid-sv
 })
 export class NewCertificateComponent implements OnInit {
 
+  private createCertificateDTO: CreateCertificate = new CreateCertificate();
+
   private isSelfSigned: boolean = false;
   private validForDate: any = '0';
   private validUntil = null;
+  private serNumber: number;
+  private kSize: number = 2048;
 
   get validUntilText() {
     if (!this.validUntil) return null;
@@ -40,22 +46,12 @@ export class NewCertificateComponent implements OnInit {
     },
     signatureAlgorithm: {
       value: null,
-      items: [
-        {
-          value: 'Dummy',
-          label: 'Dummy',
-        },
-      ],
+      items: [],
       focused: false,
     },
     signWith: {
       value: null,
-      items: [
-        {
-          value: 'Dummy',
-          label: 'Dummy',
-        }
-      ],
+      items: [],
       focused: false,
     },
     periodType: {
@@ -173,7 +169,7 @@ export class NewCertificateComponent implements OnInit {
 
   set validFromDate(date: Date) {
     this._validFromDate = date;
-    this.certificateAuthority.certificateDto.validFrom = this.datePipe.transform(date, 'dd-MM-yyyy');
+    this.createCertificateDTO.validFrom = this.datePipe.transform(date, 'dd-MM-yyyy');
     this.updateValidUntil();
   }
 
@@ -192,7 +188,8 @@ export class NewCertificateComponent implements OnInit {
 
   constructor(
     private caService: CertificateAuthorityService,
-    private toasterSvc: ToasterService
+    private toasterSvc: ToasterService,
+    private certificateService: CertificateService,
     ) { }
 
   ngOnInit() {
@@ -205,10 +202,120 @@ export class NewCertificateComponent implements OnInit {
     
   }
 
+
+  createCertificateFinal(): CreateCertificate {
+    this.createCertificateDTO.keySize = this.kSize;
+    this.createCertificateDTO.keyGenerationAlgorithm = this.selects.algorithm.value.value;
+    this.createCertificateDTO.signatureAlgorithm = this.selects.signatureAlgorithm.value.value;
+    this.createCertificateDTO.issuingCaSerialNumber = this.selects.signWith.value.value;
+    this.createCertificateDTO.validUntil = this.validUntilText;
+    this.createCertificateDTO.selfSigned = this.isSelfSigned;
+    this.createCertificateDTO.serialNumber = this.serNumber.toString();
+    this.createCertificateDTO.name.serialNumber = this.serNumber.toString();
+    let extensions = [];
+    for (let i = 0; i < this.selectedExtensions.length; i++) {
+      let type = this.selectedExtensions[i].type;
+      let isCritical = this.selectedExtensions[i].critical;
+      let ex = <any> {
+        type: type,
+        isCritical: isCritical,
+      };
+
+      if (type == this.BASIC_CONSTRAINTS) {
+        ex.isCa = this.savedData.basicConstraints.isCA;
+        ex.pathLength = this.savedData.basicConstraints.pathLen;
+      }
+      else if (type == this.KEY_USAGE) {
+        ex.digitalSignature = this.savedData.keyUsage.includes('DIGITAL_SIGNATURE');
+        ex.nonRepudiation = this.savedData.keyUsage.includes('NON_REPUDIATION');
+        ex.keyEncipherment = this.savedData.keyUsage.includes('KEY_ENCIPHERMENT');
+        ex.dataEncipherment = this.savedData.keyUsage.includes('DATA_ENCIPHERMENT');
+        ex.keyAgreement = this.savedData.keyUsage.includes('KEY_AGREEMENT');
+        ex.keyCertSign = this.savedData.keyUsage.includes('CERTIFICATE_SIGNING');
+        ex.cRLSign = this.savedData.keyUsage.includes('CRL_SIGN');
+        ex.encipherOnly = this.savedData.keyUsage.includes('ENCIPHER_ONLY');
+        ex.decipherOnly = this.savedData.keyUsage.includes('DECIPHER_ONLY');
+      }
+      else if (type == this.EXTENDED_KEY_USAGE) {
+        ex.anyExtendedKeyUsage = this.savedData.extendedKeyUsage.includes('ANY_EXTENDED_USAGE');
+        ex.serverAuth = this.savedData.extendedKeyUsage.includes('SERVER_AUTHENTICATION');
+        ex.clientAuth = this.savedData.extendedKeyUsage.includes('CLIENT_AUTHENTICATION');
+        ex.codeSigning = this.savedData.extendedKeyUsage.includes('CODE_SIGNING');
+        ex.emailProtection = this.savedData.extendedKeyUsage.includes('EMAIL_PROTECTION');
+        ex.OCSPSigning = this.savedData.extendedKeyUsage.includes('OCSP_SIGNING');
+      }
+      else if (type == this.SUBJECT_ALTERNATIVE_NAME) {
+        let ips = this.savedData.subjectAlternativeName.filter(x => x.typeValue.value == 'IP').map(x => x.value);
+        let dns = this.savedData.subjectAlternativeName.filter(x => x.typeValue.value == 'DNS').map(x => x.value);
+
+        ex.dnsNames = dns;
+        ex.ipAddresses = ips;
+      }
+
+      extensions.push(ex);
+    }
+
+    this.createCertificateDTO.extensions = extensions;
+
+    return this.createCertificateDTO;
+  }
+
+  submit(): void {
+    let dto = this.createCertificateFinal();
+    console.log(dto);
+    this.certificateService.postCreateCertificate(dto).subscribe(
+      data => {
+        console.log(data);
+      },
+      error => {
+        console.log(error);
+      }
+    );
+    
+  }
+
+
   setUpSelects(): void {
     this.selects.algorithm.value = this.selects.algorithm.items[0];
     this.selects.periodType.value = this.selects.periodType.items[0];
     this.tempData.subjectAlternativeName[0].typeValue = this.tempData.subjectAlternativeName[0].type[0];
+
+    this.certificateService.getSignWithCertificates().subscribe(
+      data => {
+        let items = data.map(x => {
+          return {value: x.serialNumber, label: x.commonName};
+        });
+        this.selects.signWith.items = items;
+      },
+      error => {
+        console.log(error);
+      }
+    );
+
+    this.certificateService.getSignatureAlghoritms().subscribe(
+      data => {
+        let items = data.map(x => {
+          return {value: x, label: x};
+        });
+        this.selects.signatureAlgorithm.items = items;
+      },
+      error => {
+        console.log(error);
+      }
+    );
+
+    
+  }
+
+  generateSerialNumber(): void {
+    this.certificateService.getSerialNumber().subscribe(
+      data => {
+        this.serNumber = data;
+      },
+      error => {
+        console.log(error);
+      }
+    );
   }
 
   test(el) {

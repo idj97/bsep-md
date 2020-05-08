@@ -26,7 +26,7 @@ public class CreateCertificateDto {
     @NotBlank private String validUntil;
 
     // certificate details
-    @NotBlank private Boolean selfSigned;
+    @NotNull private Boolean selfSigned;
     @NotBlank private String serialNumber;
     @Valid @NotNull private NameDto name;
     @Valid @NotNull private List<AbstractExtensionDto> extensions;

@@ -12,6 +12,8 @@ import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.GeneralName;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +23,7 @@ import java.util.Map;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonTypeName("SUBJECT_ALTERNATIVE_NAME")
 public class SubjectAlternativeNameDto extends AbstractExtensionDto {
     private List<String> dnsNames = new ArrayList<>();
     private List<String> ipAddresses = new ArrayList<>();

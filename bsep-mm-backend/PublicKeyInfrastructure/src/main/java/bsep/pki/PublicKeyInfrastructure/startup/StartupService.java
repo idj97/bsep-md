@@ -54,7 +54,7 @@ public class StartupService {
 
     // TODO: comment out
     public void initialize() {
-        //initOcsp();
+        initOcsp();
         if (initApp) {
             //keystoreService.tryCreateKeyStore();
             //rootCAService.tryCreateRootCA();

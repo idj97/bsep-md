@@ -10,6 +10,8 @@ import org.bouncycastle.asn1.x509.AccessDescription;
 import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.GeneralName;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +19,7 @@ import java.util.Map;
 @Getter
 @Setter
 @NoArgsConstructor
+@JsonTypeName("AUTHORITY_INFO_ACCESS")
 public class AuthorityInfoAccessDto extends AbstractExtensionDto {
 
     @Override

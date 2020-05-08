@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.Map;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
         @Type(value = BasicConstraintsDto.class,       name = "BASIC_CONSTRAINTS"),
         @Type(value = SubjectKeyIdentifierDto.class,   name = "SUBJECT_KEY_IDENTIFIER"),

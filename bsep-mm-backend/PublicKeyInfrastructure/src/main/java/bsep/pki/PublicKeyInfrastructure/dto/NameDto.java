@@ -18,7 +18,6 @@ public class NameDto {
     @NotBlank
     private String serialNumber;
 
-    @NotBlank
     private String CN;              // common name
     private String OU;              // organisation unit
     private String O;               // organisation name
@@ -33,13 +32,13 @@ public class NameDto {
 
         if (serialNumber != null) builder.addRDN(BCStyle.SERIALNUMBER, serialNumber);
         if (CN != null)           builder.addRDN(BCStyle.CN, CN);
-        if (CN != null)           builder.addRDN(BCStyle.CN, CN);
         if (OU != null)           builder.addRDN(BCStyle.OU, OU);
         if (O != null)            builder.addRDN(BCStyle.O, O);
         if (L != null)            builder.addRDN(BCStyle.L, L);
         if (ST != null)           builder.addRDN(BCStyle.ST, ST);
         if (C != null)            builder.addRDN(BCStyle.C, C);
         if (DC != null)           builder.addRDN(BCStyle.DC, DC);
+        if (E != null)            builder.addRDN(BCStyle.E, E);
 
         X500Name x500Name = builder.build();
         return x500Name;

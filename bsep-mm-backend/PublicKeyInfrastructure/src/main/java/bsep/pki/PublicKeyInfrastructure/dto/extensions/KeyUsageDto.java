@@ -10,6 +10,8 @@ import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.KeyUsage;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
+
 import java.io.IOException;
 import java.util.Map;
 
@@ -17,6 +19,7 @@ import java.util.Map;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonTypeName("KEY_USAGE")
 public class KeyUsageDto extends AbstractExtensionDto {
     private Boolean digitalSignature = false;
     private Boolean nonRepudiation = false;

@@ -9,6 +9,8 @@ import lombok.Setter;
 import org.bouncycastle.asn1.x509.BasicConstraints;
 import org.bouncycastle.asn1.x509.Extension;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
+
 import java.io.IOException;
 import java.util.Map;
 
@@ -16,6 +18,7 @@ import java.util.Map;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonTypeName("BASIC_CONSTRAINTS")
 public class BasicConstraintsDto extends AbstractExtensionDto {
     private Boolean isCa;
     private String pathLength;

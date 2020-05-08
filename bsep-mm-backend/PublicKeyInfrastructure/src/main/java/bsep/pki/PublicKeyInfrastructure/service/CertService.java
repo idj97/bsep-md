@@ -92,7 +92,6 @@ public class CertService {
             subjectPublicKey = (PublicKey) keyStoreService.getKey(dto.getCsrId().toString());
             subjectPrivateKey = null;
         }
-
         PublicKey issuerPublicKey;
         PrivateKey issuerPrivateKey;
         if (dto.getSelfSigned()) {
@@ -145,6 +144,7 @@ public class CertService {
         cert.setValidUntil(dateService.getDate(dto.getValidUntil()));
         cert.setSelfSigned(dto.getSelfSigned());
         cert.setKeyStoreAlias(dto.getSerialNumber());
+        cert.setCN(dto.getName().getCN());
 
         Map<String , Object> params = new HashMap<>();
         params.put("subjectX509Cert", subjectX509Cert);

@@ -11,7 +11,7 @@ import java.util.Date;
 @Service
 public class DateService {
 
-    private static SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+    private static SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 
     public Date getDate(String dateStr) {
         try {
