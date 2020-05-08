@@ -17,6 +17,7 @@ public class OcspController {
 
     @PostMapping(consumes = "application/ocsp-request", produces = "application/ocsp-response")
     public ResponseEntity<byte[]> processOcspRequest(@RequestBody byte[] request) {
+        System.out.println("OCSP CHECK");
         return new ResponseEntity<>(ocspService.getResponse(request), HttpStatus.OK);
     }
 
