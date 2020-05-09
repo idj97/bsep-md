@@ -31,4 +31,10 @@ public class TemplateController {
         return new ResponseEntity<>(templateService.getAll(), HttpStatus.OK);
     }
 
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('admin')")
+    public ResponseEntity<HttpStatus> delete(@PathVariable Long id) {
+        templateService.delete(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
