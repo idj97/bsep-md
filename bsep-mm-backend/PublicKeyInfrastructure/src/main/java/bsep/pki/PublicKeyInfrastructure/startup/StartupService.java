@@ -54,9 +54,9 @@ public class StartupService {
 
     // TODO: comment out
     public void initialize() {
-        initOcsp();
         if (initApp) {
-            //keystoreService.tryCreateKeyStore();
+            keystoreService.tryCreateKeyStore();
+            initOcsp();
             //rootCAService.tryCreateRootCA();
 
             //caService.tryCreateCA(1L, CAType.SIEM_AGENT_ISSUER, CertificateType.SIEM_AGENT_ISSUER);
@@ -77,7 +77,7 @@ public class StartupService {
     public void createRootCert() {
         Security.addProvider(new BouncyCastleProvider());
         NameDto nameDto = new NameDto();
-        nameDto.setCN("root");
+        nameDto.setCommonName("root");
 
         KeyUsageDto keyUsageDto = new KeyUsageDto();
         keyUsageDto.setKeyCertSign(true);
@@ -112,7 +112,7 @@ public class StartupService {
     public void createOcspCert() {
         Security.addProvider(new BouncyCastleProvider());
         NameDto nameDto = new NameDto();
-        nameDto.setCN("ocsp");
+        nameDto.setCommonName("ocsp");
 
         KeyUsageDto keyUsageDto = new KeyUsageDto();
         keyUsageDto.setDigitalSignature(true);
@@ -149,7 +149,7 @@ public class StartupService {
     public void createSslIssuer() {
         Security.addProvider(new BouncyCastleProvider());
         NameDto nameDto = new NameDto();
-        nameDto.setCN("ssl-issuer");
+        nameDto.setCommonName("ssl-issuer");
 
         KeyUsageDto keyUsageDto = new KeyUsageDto();
         keyUsageDto.setKeyCertSign(true);
@@ -187,8 +187,8 @@ public class StartupService {
     public void createSslServerCert() {
         Security.addProvider(new BouncyCastleProvider());
         NameDto nameDto = new NameDto();
-        nameDto.setCN("ssl-server");
-        nameDto.setDC("localhost");
+        nameDto.setCommonName("ssl-server");
+        nameDto.setDomainComponent("localhost");
 
         KeyUsageDto keyUsageDto = new KeyUsageDto();
         keyUsageDto.setDigitalSignature(true);
@@ -233,8 +233,8 @@ public class StartupService {
     public void createSslClientCert() {
         Security.addProvider(new BouncyCastleProvider());
         NameDto nameDto = new NameDto();
-        nameDto.setCN("ssl-client");
-        nameDto.setDC("localhost");
+        nameDto.setCommonName("ssl-client");
+        nameDto.setDomainComponent("localhost");
 
         KeyUsageDto keyUsageDto = new KeyUsageDto();
         keyUsageDto.setDigitalSignature(true);

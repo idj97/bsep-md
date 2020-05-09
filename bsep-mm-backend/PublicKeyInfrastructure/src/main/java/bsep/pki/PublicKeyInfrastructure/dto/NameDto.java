@@ -16,29 +16,32 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 public class NameDto {
     @NotBlank
-    private String serialNumber;
-
-    private String CN;              // common name
-    private String OU;              // organisation unit
-    private String O;               // organisation name
-    private String L;               // locality
-    private String ST;              // state
-    private String C;               // country
-    private String DC;              // domain component
-    private String E;               // email
+    private String commonName;         // common name
+    private String serialNumber;       // serial number
+    private String organisationUnit;   // organisation unit
+    private String organisation;       // organisation name
+    private String locality;           // locality
+    private String state;              // state
+    private String country;            // country
+    private String domainComponent;    // domain component
+    private String email;              // email
+    private String givenName;          // given name
+    private String surname;            // surname?
 
     public X500Name getBCX500Name() {
         X500NameBuilder builder = new X500NameBuilder(BCStyle.INSTANCE);
 
-        if (serialNumber != null) builder.addRDN(BCStyle.SERIALNUMBER, serialNumber);
-        if (CN != null)           builder.addRDN(BCStyle.CN, CN);
-        if (OU != null)           builder.addRDN(BCStyle.OU, OU);
-        if (O != null)            builder.addRDN(BCStyle.O, O);
-        if (L != null)            builder.addRDN(BCStyle.L, L);
-        if (ST != null)           builder.addRDN(BCStyle.ST, ST);
-        if (C != null)            builder.addRDN(BCStyle.C, C);
-        if (DC != null)           builder.addRDN(BCStyle.DC, DC);
-        if (E != null)            builder.addRDN(BCStyle.E, E);
+        if (serialNumber != null)         builder.addRDN(BCStyle.SERIALNUMBER, serialNumber);
+        if (commonName != null)           builder.addRDN(BCStyle.CN, commonName);
+        if (organisationUnit != null)     builder.addRDN(BCStyle.OU, organisationUnit);
+        if (organisation != null)         builder.addRDN(BCStyle.O, organisation);
+        if (locality != null)             builder.addRDN(BCStyle.L, locality);
+        if (state != null)                builder.addRDN(BCStyle.ST, state);
+        if (country != null)              builder.addRDN(BCStyle.C, country);
+        if (domainComponent != null)      builder.addRDN(BCStyle.DC, domainComponent);
+        if (email != null)                builder.addRDN(BCStyle.E, email);
+        if (givenName != null)            builder.addRDN(BCStyle.GIVENNAME, givenName);
+        if (surname != null)              builder.addRDN(BCStyle.SURNAME, surname);
 
         X500Name x500Name = builder.build();
         return x500Name;

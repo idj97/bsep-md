@@ -24,7 +24,7 @@ public class NameDtoTest {
     public void test() {
         String commonName = "test name";
         NameDto nameDto = new NameDto();
-        nameDto.setCN(commonName);
+        nameDto.setCommonName(commonName);
 
         X500Name x500Name = nameDto.getBCX500Name();
 

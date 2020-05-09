@@ -183,7 +183,7 @@
                 <input type="text" class="input-styled" 
                 (blur)="blurInput($event, commonName.valueAccessor._elementRef.nativeElement.dataset.index)" 
                 (focus)="focusInput($event, commonName.valueAccessor._elementRef.nativeElement.dataset.index)"
-                    [(ngModel)]="createCertificateDTO.name.CN" name="commonName"
+                    [(ngModel)]="createCertificateDTO.name.commonName" name="commonName"
                     #commonName="ngModel" required data-index="8">
                 <small class="text-danger" *ngIf="(commonName.touched || ncf.submitted) && commonName.errors?.required">
                     Common name is required
@@ -197,7 +197,7 @@
                 <input type="text" class="input-styled" 
                 (blur)="blurInput($event, givenName.valueAccessor._elementRef.nativeElement.dataset.index)" 
                 (focus)="focusInput($event, givenName.valueAccessor._elementRef.nativeElement.dataset.index)"
-                    [(ngModel)]="createCertificateDTO.name.GN" name="givenName"
+                    [(ngModel)]="createCertificateDTO.name.givenName" name="givenName"
                     #givenName="ngModel" required data-index="9">
                 <small class="text-danger" *ngIf="(givenName.touched || ncf.submitted) && givenName.errors?.required">
                     Given name is required
@@ -211,7 +211,7 @@
                 <input type="text" class="input-styled" 
                 (blur)="blurInput($event, surname.valueAccessor._elementRef.nativeElement.dataset.index)" 
                 (focus)="focusInput($event, surname.valueAccessor._elementRef.nativeElement.dataset.index)"
-                    [(ngModel)]="createCertificateDTO.name.S" name="surname" 
+                    [(ngModel)]="createCertificateDTO.name.surname" name="surname" 
                     #surname="ngModel" required data-index="10">
                 <small class="text-danger" *ngIf="(surname.touched || ncf.submitted) && surname.errors?.required">
                     Surname is required
@@ -225,7 +225,7 @@
                 <input type="text" class="input-styled" 
                 (blur)="blurInput($event, organisation.valueAccessor._elementRef.nativeElement.dataset.index)" 
                 (focus)="focusInput($event, organisation.valueAccessor._elementRef.nativeElement.dataset.index)"
-                    [(ngModel)]="createCertificateDTO.name.O" name="organisation"
+                    [(ngModel)]="createCertificateDTO.name.organisation" name="organisation"
                     #organisation="ngModel" required data-index="11">
                 <small class="text-danger" *ngIf="(organisation.touched || ncf.submitted) && organisation.errors?.required">
                     Organisation name is required
@@ -239,7 +239,7 @@
                 <input type="text" class="input-styled" 
                 (blur)="blurInput($event, organisationUnit.valueAccessor._elementRef.nativeElement.dataset.index)" 
                 (focus)="focusInput($event, organisationUnit.valueAccessor._elementRef.nativeElement.dataset.index)"
-                    [(ngModel)]="createCertificateDTO.name.OU"  name="organisationUnit"
+                    [(ngModel)]="createCertificateDTO.name.organisationUnit"  name="organisationUnit"
                     #organisationUnit="ngModel" required data-index="12">
                 <small class="text-danger" *ngIf="(organisationUnit.touched || ncf.submitted) && organisationUnit.errors?.required">
                     Organisation unit is required
@@ -253,7 +253,7 @@
                 <input type="text" class="input-styled" 
                 (blur)="blurInput($event, stateName.valueAccessor._elementRef.nativeElement.dataset.index)" 
                 (focus)="focusInput($event, stateName.valueAccessor._elementRef.nativeElement.dataset.index)" 
-                    [(ngModel)]="certificateAuthority.certificateDto.stateName" name="stateName"
+                    [(ngModel)]="certificateAuthority.certificateDto.state" name="stateName"
                     #stateName="ngModel" required data-index="13">
                 <small class="text-danger" *ngIf="(country.touched || ncf.submitted) && country.errors?.required">
                     State name is required
@@ -267,7 +267,7 @@
                 <input type="text" class="input-styled" 
                 (blur)="blurInput($event, country.valueAccessor._elementRef.nativeElement.dataset.index)" 
                 (focus)="focusInput($event, country.valueAccessor._elementRef.nativeElement.dataset.index)" 
-                    [(ngModel)]="createCertificateDTO.name.C" name="country"
+                    [(ngModel)]="createCertificateDTO.name.country" name="country"
                     #country="ngModel" required data-index="14">
                 <small class="text-danger" *ngIf="(country.touched || ncf.submitted) && country.errors?.required">
                     Country is required
@@ -281,7 +281,7 @@
                 <input type="text" class="input-styled" 
                 (blur)="blurInput($event, email.valueAccessor._elementRef.nativeElement.dataset.index)" 
                 (focus)="focusInput($event, email.valueAccessor._elementRef.nativeElement.dataset.index)"
-                    [(ngModel)]="createCertificateDTO.name.E" name="email"
+                    [(ngModel)]="createCertificateDTO.name.email" name="email"
                     #email="ngModel" required data-index="15">
 
                 <small class="text-danger" *ngIf="(email.touched || ncf.submitted) && email.errors?.required">
@@ -297,7 +297,7 @@
                 <input type="text" class="input-styled" 
                 (blur)="blurInput($event, localityName.valueAccessor._elementRef.nativeElement.dataset.index)" 
                 (focus)="focusInput($event, localityName.valueAccessor._elementRef.nativeElement.dataset.index)"
-                    [(ngModel)]="createCertificateDTO.name.L" name="localityName"
+                    [(ngModel)]="createCertificateDTO.name.locality" name="localityName"
                     #localityName="ngModel" required data-index="16">
 
                 <small class="text-danger" *ngIf="(localityName.touched || ncf.submitted) && localityName.errors?.required">
@@ -313,7 +313,7 @@
                 <input type="text" class="input-styled" 
                 (blur)="blurInput($event, domainComponent.valueAccessor._elementRef.nativeElement.dataset.index)" 
                 (focus)="focusInput($event, domainComponent.valueAccessor._elementRef.nativeElement.dataset.index)"
-                    [(ngModel)]="createCertificateDTO.name.DC" name="domainComponent"
+                    [(ngModel)]="createCertificateDTO.name.domainComponent" name="domainComponent"
                     #domainComponent="ngModel" required data-index="17">
 
                 <small class="text-danger" *ngIf="(domainComponent.touched || ncf.submitted) && domainComponent.errors?.required">

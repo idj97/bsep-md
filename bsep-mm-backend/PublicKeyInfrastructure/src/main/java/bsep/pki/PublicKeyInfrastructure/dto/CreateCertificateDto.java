@@ -26,10 +26,18 @@ public class CreateCertificateDto {
     @NotBlank private String validUntil;
 
     // certificate details
-    @NotNull private Boolean selfSigned;
-    @NotBlank private String serialNumber;
-    @Valid @NotNull private NameDto name;
-    @Valid @NotNull private List<AbstractExtensionDto> extensions;
+    @NotNull
+    private Boolean selfSigned;
+
+    @NotBlank
+    private String serialNumber;
+
+    @Valid
+    private NameDto name;
+
+    @Valid
+    private List<AbstractExtensionDto> extensions;
+
     private String issuingCaSerialNumber;
 
     // if created as CSR

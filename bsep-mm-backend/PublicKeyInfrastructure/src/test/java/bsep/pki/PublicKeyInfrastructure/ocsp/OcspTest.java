@@ -115,7 +115,7 @@ public class OcspTest {
     public void createRootCert() {
         Security.addProvider(new BouncyCastleProvider());
         NameDto nameDto = new NameDto();
-        nameDto.setCN("root");
+        nameDto.setCommonName("root");
 
         KeyUsageDto keyUsageDto = new KeyUsageDto();
         keyUsageDto.setKeyCertSign(true);
@@ -150,7 +150,7 @@ public class OcspTest {
     public void createOcspCert() {
         Security.addProvider(new BouncyCastleProvider());
         NameDto nameDto = new NameDto();
-        nameDto.setCN("ocsp");
+        nameDto.setCommonName("ocsp");
 
         KeyUsageDto keyUsageDto = new KeyUsageDto();
         keyUsageDto.setDigitalSignature(true);
@@ -187,7 +187,7 @@ public class OcspTest {
     public void createEndCert() {
         Security.addProvider(new BouncyCastleProvider());
         NameDto nameDto = new NameDto();
-        nameDto.setCN("end");
+        nameDto.setCommonName("end");
 
         KeyUsageDto keyUsageDto = new KeyUsageDto();
         keyUsageDto.setDigitalSignature(true);

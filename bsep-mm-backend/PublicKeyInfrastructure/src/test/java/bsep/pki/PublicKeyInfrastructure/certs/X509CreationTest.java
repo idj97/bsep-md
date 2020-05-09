@@ -37,7 +37,7 @@ public class X509CreationTest {
     public void testCreateRoot() {
         Security.addProvider(new BouncyCastleProvider());
         NameDto nameDto = new NameDto();
-        nameDto.setCN("root");
+        nameDto.setCommonName("root");
 
         KeyUsageDto keyUsageDto = new KeyUsageDto();
         keyUsageDto.setKeyCertSign(true);
@@ -75,7 +75,7 @@ public class X509CreationTest {
         testCreateRoot();
         Security.addProvider(new BouncyCastleProvider());
         NameDto nameDto = new NameDto();
-        nameDto.setCN("inter");
+        nameDto.setCommonName("inter");
 
         KeyUsageDto keyUsageDto = new KeyUsageDto();
         keyUsageDto.setKeyCertSign(true);
@@ -113,7 +113,7 @@ public class X509CreationTest {
         testCreateInter();
         Security.addProvider(new BouncyCastleProvider());
         NameDto nameDto = new NameDto();
-        nameDto.setCN("end");
+        nameDto.setCommonName("end");
 
         KeyUsageDto keyUsageDto = new KeyUsageDto();
         keyUsageDto.setKeyEncipherment(true);
@@ -156,7 +156,7 @@ public class X509CreationTest {
         testCreateInter();
         Security.addProvider(new BouncyCastleProvider());
         NameDto nameDto = new NameDto();
-        nameDto.setCN("end");
+        nameDto.setCommonName("end");
 
         KeyUsageDto keyUsageDto = new KeyUsageDto();
         keyUsageDto.setKeyEncipherment(true);
