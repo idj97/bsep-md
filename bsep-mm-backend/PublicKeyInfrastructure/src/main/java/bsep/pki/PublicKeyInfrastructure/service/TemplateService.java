@@ -1,20 +1,14 @@
 package bsep.pki.PublicKeyInfrastructure.service;
 
 import bsep.pki.PublicKeyInfrastructure.dto.TemplateDto;
-import bsep.pki.PublicKeyInfrastructure.dto.extensions.AbstractExtensionDto;
-import bsep.pki.PublicKeyInfrastructure.exception.ApiBadRequestException;
-import bsep.pki.PublicKeyInfrastructure.exception.ApiInternalServerErrorException;
+import bsep.pki.PublicKeyInfrastructure.exception.ApiNotFoundException;
 import bsep.pki.PublicKeyInfrastructure.model.Template;
 import bsep.pki.PublicKeyInfrastructure.repository.TemplateRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -43,5 +37,14 @@ public class TemplateService {
                 .stream()
                 .map(t -> new TemplateDto(t.getName(), t.getExtensions()))
                 .collect(Collectors.toList());
+    }
+
+    public void delete(Long id) {
+        Optional<Template> optTemplate = templateRepository.findById(id);
+        if (optTemplate.isPresent()) {
+            templateRepository.delete(optTemplate.get());
+        } else {
+            throw new ApiNotFoundException("Template not found");
+        }
     }
 }
