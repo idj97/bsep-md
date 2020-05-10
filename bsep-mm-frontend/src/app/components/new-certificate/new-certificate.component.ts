@@ -8,6 +8,7 @@ import { ToasterService } from 'src/app/services/toaster.service';
 import { faPlus, faArrowUp, faCircle, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { CertificateService } from 'src/app/services/certificate.service';
 import { CreateCertificate } from 'src/app/dtos/create-certificate.dto';
+import { TemplateService } from 'src/app/services/template.service';
 
 @Component({
   selector: 'app-new-certificate',
@@ -15,6 +16,9 @@ import { CreateCertificate } from 'src/app/dtos/create-certificate.dto';
   styleUrls: ['./new-certificate.component.css']
 })
 export class NewCertificateComponent implements OnInit {
+
+  private templateNameText: string;
+  private isCreatingTemplate: boolean = false;
 
   private createCertificateDTO: CreateCertificate = new CreateCertificate();
 
@@ -70,6 +74,11 @@ export class NewCertificateComponent implements OnInit {
           label: 'Years',
         },
       ],
+      focused: false,
+    },
+    template: {
+      value: null,
+      items: [],
       focused: false,
     }
   }
@@ -190,6 +199,7 @@ export class NewCertificateComponent implements OnInit {
     private caService: CertificateAuthorityService,
     private toasterSvc: ToasterService,
     private certificateService: CertificateService,
+    private templateService: TemplateService,
     ) { }
 
   ngOnInit() {
@@ -212,52 +222,14 @@ export class NewCertificateComponent implements OnInit {
     this.createCertificateDTO.selfSigned = this.isSelfSigned;
     this.createCertificateDTO.serialNumber = this.serNumber.toString();
     this.createCertificateDTO.name.serialNumber = this.serNumber.toString();
-    let extensions = [];
-    for (let i = 0; i < this.selectedExtensions.length; i++) {
-      let type = this.selectedExtensions[i].type;
-      let isCritical = this.selectedExtensions[i].critical;
-      let ex = <any> {
-        type: type,
-        isCritical: isCritical,
-      };
-
-      if (type == this.BASIC_CONSTRAINTS) {
-        ex.isCa = this.savedData.basicConstraints.isCA;
-        ex.pathLength = this.savedData.basicConstraints.pathLen;
-      }
-      else if (type == this.KEY_USAGE) {
-        ex.digitalSignature = this.savedData.keyUsage.includes('DIGITAL_SIGNATURE');
-        ex.nonRepudiation = this.savedData.keyUsage.includes('NON_REPUDIATION');
-        ex.keyEncipherment = this.savedData.keyUsage.includes('KEY_ENCIPHERMENT');
-        ex.dataEncipherment = this.savedData.keyUsage.includes('DATA_ENCIPHERMENT');
-        ex.keyAgreement = this.savedData.keyUsage.includes('KEY_AGREEMENT');
-        ex.keyCertSign = this.savedData.keyUsage.includes('CERTIFICATE_SIGNING');
-        ex.cRLSign = this.savedData.keyUsage.includes('CRL_SIGN');
-        ex.encipherOnly = this.savedData.keyUsage.includes('ENCIPHER_ONLY');
-        ex.decipherOnly = this.savedData.keyUsage.includes('DECIPHER_ONLY');
-      }
-      else if (type == this.EXTENDED_KEY_USAGE) {
-        ex.anyExtendedKeyUsage = this.savedData.extendedKeyUsage.includes('ANY_EXTENDED_USAGE');
-        ex.serverAuth = this.savedData.extendedKeyUsage.includes('SERVER_AUTHENTICATION');
-        ex.clientAuth = this.savedData.extendedKeyUsage.includes('CLIENT_AUTHENTICATION');
-        ex.codeSigning = this.savedData.extendedKeyUsage.includes('CODE_SIGNING');
-        ex.emailProtection = this.savedData.extendedKeyUsage.includes('EMAIL_PROTECTION');
-        ex.OCSPSigning = this.savedData.extendedKeyUsage.includes('OCSP_SIGNING');
-      }
-      else if (type == this.SUBJECT_ALTERNATIVE_NAME) {
-        let ips = this.savedData.subjectAlternativeName.filter(x => x.typeValue.value == 'IP').map(x => x.value);
-        let dns = this.savedData.subjectAlternativeName.filter(x => x.typeValue.value == 'DNS').map(x => x.value);
-
-        ex.dnsNames = dns;
-        ex.ipAddresses = ips;
-      }
-
-      extensions.push(ex);
-    }
-
-    this.createCertificateDTO.extensions = extensions;
+    
+    this.createCertificateDTO.extensions = this.extensionsDataToDTO();
 
     return this.createCertificateDTO;
+  }
+
+  toggleCreateTemplate(): void {
+    this.isCreatingTemplate = !this.isCreatingTemplate;
   }
 
   submit(): void {
@@ -304,7 +276,21 @@ export class NewCertificateComponent implements OnInit {
       }
     );
 
-    
+    this.templateService.getAllTemplates().subscribe(
+      data => {
+        let items = data.map(x => {
+          return {
+            value: JSON.parse(x.extensions), 
+            label: x.name,
+          };
+        });
+        
+        this.selects.template.items = items;
+      },
+      error => {
+        console.log(error);
+      }
+    );
   }
 
   generateSerialNumber(): void {
@@ -708,6 +694,10 @@ export class NewCertificateComponent implements OnInit {
     return this.selectedExtensions[this.selectedExtensions.findIndex(x => x.type == type)];
   }
 
+  getByTypeP(extensions: any[], type: string): any {
+    return extensions[extensions.findIndex(x => x.type == type)];
+  }
+
   closeAll(): void {
     this.closeExtendedKeyUsageSelected();
     this.closeKeyUsageSelected();
@@ -807,4 +797,199 @@ export class NewCertificateComponent implements OnInit {
     }
   }
 
+  typeToName(type: string) {
+    if (type === this.AUTHORITY_INFO_ACCESS) return 'Authority Info Access';
+    if (type === this.AUTHORITY_KEY_IDENTIFIER) return 'Authority Key Identifier';
+    if (type === this.BASIC_CONSTRAINTS) return 'Basic Constraints';
+    if (type === this.EXTENDED_KEY_USAGE) return 'Extended Key Usage';
+    if (type === this.KEY_USAGE) return 'Key Usage';
+    if (type === this.SUBJECT_ALTERNATIVE_NAME) return 'Subject Alternative Name';
+    if (type === this.SUBJECT_KEY_IDENTIFIER) return 'Subject Key Identifier';
+  }
+
+  useTemplate(): void {
+    console.log(this.selects.template.value);
+    if (this.selects.template.value === null) return;
+    this.extensionsDTOToData(this.selects.template.value.value);
+  }
+
+
+
+  getKeyUsagesFromDTO(keyUsage): any {
+    let keyUsages = [];
+    if (this.bool(keyUsage.cRLSign)) keyUsages.push('CRL_SIGN');
+    if (this.bool(keyUsage.dataEncipherment)) keyUsages.push('DATA_ENCIPHERMENT');
+    if (this.bool(keyUsage.decipherOnly)) keyUsages.push('DECIPHER_ONLY');
+    if (this.bool(keyUsage.digitalSignature)) keyUsages.push('DIGITAL_SIGNATURE');
+    if (this.bool(keyUsage.encipherOnly)) keyUsages.push('ENCIPHER_ONLY');
+    if (this.bool(keyUsage.keyAgreement)) keyUsages.push('KEY_AGREEMENT');
+    if (this.bool(keyUsage.keyCertSign)) keyUsages.push('CERTIFICATE_SIGNING');
+    if (this.bool(keyUsage.keyEncipherment)) keyUsages.push('KEY_ENCIPHERMENT');
+    if (this.bool(keyUsage.nonRepudiation)) keyUsages.push('NON_REPUDIATION');
+    return keyUsages;
+  }
+
+  getExtendedKeyUsagesFromDTO(extendedKeyUsage): any {
+    let extendedKeyUsages = [];
+    if (this.bool(extendedKeyUsage.OCSPSigning)) extendedKeyUsages.push('OCSP_SIGNING');
+    if (this.bool(extendedKeyUsage.anyExtendedKeyUsage)) extendedKeyUsages.push('ANY_EXTENDED_USAGE');
+    if (this.bool(extendedKeyUsage.clientAuth)) extendedKeyUsages.push('CLIENT_AUTHENTICATION');
+    if (this.bool(extendedKeyUsage.codeSigning)) extendedKeyUsages.push('CODE_SIGNING');
+    if (this.bool(extendedKeyUsage.emailProtection)) extendedKeyUsages.push('EMAIL_PROTECTION');
+    if (this.bool(extendedKeyUsage.serverAuth)) extendedKeyUsages.push('SERVER_AUTHENTICATION');
+    return extendedKeyUsages;
+  }
+
+  getBasicConstraintsFromDTO(basicConstraints): any {
+    return {
+      isCA: this.bool(basicConstraints.isCa),
+      pathLen: parseInt(basicConstraints.pathLength),
+    }
+  }
+
+  getSubjectAlternativeNameFromDTO(subjectAlternativeName): any {
+    let ips = subjectAlternativeName.ipAddresses.map(
+      x => {
+        let obj = {
+          focused: false,
+          value: x,
+          typeValue: null,
+          type: [{
+            value: 'IP',
+            label: 'IP',
+          },
+          {
+            value: 'DNS',
+            label: 'DNS',
+          }],
+        }
+        obj.typeValue = obj.type[0];
+        return obj;
+      }
+    );
+    let dnses = subjectAlternativeName.dnsNames.map(
+      x => {
+        let obj = {
+          focused: false,
+          value: x,
+          typeValue: null,
+          type: [{
+            value: 'IP',
+            label: 'IP',
+          },
+          {
+            value: 'DNS',
+            label: 'DNS',
+          }],
+        }
+        obj.typeValue = obj.type[1];
+        return obj;
+      }
+    );
+
+    return ips.concat(dnses);
+  }
+
+  extensionsDTOToData(extensions: any[]): void {
+    let selectedExtensions = extensions.map(
+      x => {
+        if (x.type === this.KEY_USAGE) 
+          this.savedData.keyUsage = this.getKeyUsagesFromDTO(this.getByTypeP(extensions, this.KEY_USAGE));
+        if (x.type === this.EXTENDED_KEY_USAGE) 
+          this.savedData.extendedKeyUsage = this.getExtendedKeyUsagesFromDTO(this.getByTypeP(extensions, this.EXTENDED_KEY_USAGE));
+        if (x.type === this.BASIC_CONSTRAINTS) 
+          this.savedData.basicConstraints = this.getBasicConstraintsFromDTO(this.getByTypeP(extensions, this.BASIC_CONSTRAINTS));
+        if (x.type === this.SUBJECT_ALTERNATIVE_NAME) 
+          this.savedData.subjectAlternativeName = this.getSubjectAlternativeNameFromDTO(
+            this.getByTypeP(extensions, this.SUBJECT_ALTERNATIVE_NAME)
+          );
+        
+
+        return {
+          type: x.type,
+          name: this.typeToName(x.type),
+          critical: this.bool(x.isCritical),
+        };
+      }
+    );
+
+    this.selectedExtensions = selectedExtensions;
+  }
+
+  extensionsDataToDTO(): any {
+    let extensions = [];
+    for (let i = 0; i < this.selectedExtensions.length; i++) {
+      let type = this.selectedExtensions[i].type;
+      let isCritical = this.selectedExtensions[i].critical;
+      let ex = <any> {
+        type: type,
+        isCritical: isCritical,
+      };
+
+      if (type == this.BASIC_CONSTRAINTS) {
+        ex.isCa = this.savedData.basicConstraints.isCA;
+        ex.pathLength = this.savedData.basicConstraints.pathLen;
+      }
+      else if (type == this.KEY_USAGE) {
+        ex.digitalSignature = this.savedData.keyUsage.includes('DIGITAL_SIGNATURE');
+        ex.nonRepudiation = this.savedData.keyUsage.includes('NON_REPUDIATION');
+        ex.keyEncipherment = this.savedData.keyUsage.includes('KEY_ENCIPHERMENT');
+        ex.dataEncipherment = this.savedData.keyUsage.includes('DATA_ENCIPHERMENT');
+        ex.keyAgreement = this.savedData.keyUsage.includes('KEY_AGREEMENT');
+        ex.keyCertSign = this.savedData.keyUsage.includes('CERTIFICATE_SIGNING');
+        ex.cRLSign = this.savedData.keyUsage.includes('CRL_SIGN');
+        ex.encipherOnly = this.savedData.keyUsage.includes('ENCIPHER_ONLY');
+        ex.decipherOnly = this.savedData.keyUsage.includes('DECIPHER_ONLY');
+      }
+      else if (type == this.EXTENDED_KEY_USAGE) {
+        ex.anyExtendedKeyUsage = this.savedData.extendedKeyUsage.includes('ANY_EXTENDED_USAGE');
+        ex.serverAuth = this.savedData.extendedKeyUsage.includes('SERVER_AUTHENTICATION');
+        ex.clientAuth = this.savedData.extendedKeyUsage.includes('CLIENT_AUTHENTICATION');
+        ex.codeSigning = this.savedData.extendedKeyUsage.includes('CODE_SIGNING');
+        ex.emailProtection = this.savedData.extendedKeyUsage.includes('EMAIL_PROTECTION');
+        ex.OCSPSigning = this.savedData.extendedKeyUsage.includes('OCSP_SIGNING');
+      }
+      else if (type == this.SUBJECT_ALTERNATIVE_NAME) {
+        let ips = this.savedData.subjectAlternativeName.filter(x => x.typeValue.value == 'IP').map(x => x.value);
+        let dns = this.savedData.subjectAlternativeName.filter(x => x.typeValue.value == 'DNS').map(x => x.value);
+
+        ex.dnsNames = dns;
+        ex.ipAddresses = ips;
+      }
+
+      extensions.push(ex);
+    }
+    return extensions;
+  }
+
+  createTemplate(): void {
+    if (this.templateNameText === '' || this.templateNameText === null) {
+      return;
+    }
+
+    let dto = {
+      name: this.templateNameText,
+      extensions: JSON.stringify(this.extensionsDataToDTO()),
+    }
+    this.toggleCreateTemplate();
+    this.templateService.postCreateTemplate(dto).subscribe(
+      data => {
+        console.log(data);
+      },
+      error => {
+        console.log(error);
+      }
+    );
+  }
+
+
+  bool(val): boolean {
+    switch (val) {
+      case true:
+      case 'true':
+        return true;
+      default:
+        return false;
+    }
+  }
 }

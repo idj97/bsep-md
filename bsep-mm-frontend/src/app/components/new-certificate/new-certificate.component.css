@@ -324,10 +324,31 @@
     background: #dc3545;
 }
 
+.remove-template-btn {
+    background: #202122;
+    cursor: pointer;
+    color: white;
+    font-size: 14px;
+    transition: .3s;
+}
 
+.remove-template-btn:hover {
+    background: #dc3545;
+}
 
+.new-template-section {
+    margin: 0 !important;
+    padding: 0 !important;
+    max-height: 0;
+    transition: .3s;
+    overflow: hidden;
+}
 
-
+.new-template-section.selected {
+    max-height: 200px;
+    border-top: 2px solid gray;
+    border-bottom: 2px solid gray;
+}
 
 
 
@@ -605,6 +626,15 @@
     color: black;
 }
 
+.input-holder.generate-btn.create-template-btn {
+    background: #102433;
+}
+
+.input-holder.generate-btn.create-template-btn:hover {
+    background: white;
+    color: black;
+}
+
 
 .input-holder.self-signed {
     font-size: 14px;
@@ -624,4 +654,25 @@
 .input-holder.self-signed.selected {
     background: white;
     color: black;
+}
+
+.create-new-template-btn {
+    position: absolute;
+    color: white;
+    right: 15px;
+    top: calc(50% - 15px);
+    width: 30px;
+    height: 30px;
+    border-radius: 100%;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.create-new-template-btn:hover {
+    background: white;
+    color: black;
+}
+
+.create-new-template-btn.selected {
+    transform: rotate(45deg);
 }

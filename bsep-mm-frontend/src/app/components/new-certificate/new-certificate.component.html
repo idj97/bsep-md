@@ -321,9 +321,67 @@
                 </small>
             </div>
 
+            <div class="col-12 section-splitter">
+                Templates
+                <div class="create-new-template-btn d-flex justify-content-center align-items-center" 
+                [ngClass]="{selected : isCreatingTemplate}" (click)="toggleCreateTemplate()">
+                    <fa-icon [icon]="faPlus" class="navigation-icon"></fa-icon>
+                </div>
+            </div>
+
+            <div class="select-holder col-6"
+                [ngClass]="{blurred : !selects.template.focused, 
+                focused : selects.template.focused || 
+                selects.template.value !== null}">
+
+                <p class="input-text-value">Template Name</p>
+                <ng-select class="custom"
+                    (blur)="blurSelect($event, selects.template)" 
+                    (focus)="focusSelect($event, selects.template)"
+                    [(ngModel)]="selects.template.value" name="template"
+                    #template="ngModel"
+                    [searchable]="true"
+                    [clearable]="true"
+                    [items]="selects.template.items">
+                </ng-select>
+            </div>
+
+            <div class="input-holder generate-btn d-flex align-items-center justify-content-center col-3"
+            (click)="useTemplate()">
+                Use Template
+            </div>
+
+            <div class="col-3 d-flex align-items-center pointer justify-content-center remove-template-btn">
+                Remove Template
+            </div>
+
+
+
 
             <div class="col-12 section-splitter">
                 Extensions
+                
+            </div>
+
+            <div class="col-12 row new-template-section" [ngClass]="{selected : isCreatingTemplate}">
+                <div class="col-12 section-splitter">
+                    Create New Template - <span style="font-size:10px;">Current selected extensions will be added to the new template</span>
+                </div>
+                <div class="input-holder d-flex align-items-center col-6" 
+                [ngClass]="{blurred : activeInput != templateName.valueAccessor._elementRef.nativeElement.dataset.index, 
+                    focused : activeInput == templateName.valueAccessor._elementRef.nativeElement.dataset.index || 
+                    !isEmpty(templateName.valueAccessor._elementRef.nativeElement.dataset.index)}">
+                    <p class="input-text-value">Name</p>
+                    <input type="text" class="input-styled" 
+                    (blur)="blurInput($event, templateName.valueAccessor._elementRef.nativeElement.dataset.index)" 
+                    (focus)="focusInput($event, templateName.valueAccessor._elementRef.nativeElement.dataset.index)"
+                        [(ngModel)]="templateNameText" name="templateName"
+                        #templateName="ngModel" data-index="19">
+                </div>
+                <div class="input-holder generate-btn create-template-btn d-flex align-items-center justify-content-center col-6"
+                (click)="createTemplate()">
+                    Create
+                </div>
             </div>
 
             <div class="row col-12 extensions-holder">
