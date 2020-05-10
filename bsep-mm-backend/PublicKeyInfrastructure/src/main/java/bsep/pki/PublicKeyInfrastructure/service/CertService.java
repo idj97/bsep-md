@@ -7,6 +7,7 @@ import bsep.pki.PublicKeyInfrastructure.dto.CreateCertificateDto;
 import bsep.pki.PublicKeyInfrastructure.dto.extensions.AbstractExtensionDto;
 import bsep.pki.PublicKeyInfrastructure.exception.ApiBadRequestException;
 import bsep.pki.PublicKeyInfrastructure.exception.ApiInternalServerErrorException;
+import bsep.pki.PublicKeyInfrastructure.exception.ApiNotFoundException;
 import bsep.pki.PublicKeyInfrastructure.model.Certificate;
 import bsep.pki.PublicKeyInfrastructure.model.CertificateRequest;
 import bsep.pki.PublicKeyInfrastructure.model.enums.CertificateRequestStatus;
@@ -177,8 +178,16 @@ public class CertService {
             throw new ApiBadRequestException("Invalid key algorithm");
         }
 
-        if (!AlgorithmsConfig.secureSigningAlgorithms.contains(dto.getSignatureAlgorithm())) {
-            throw new ApiBadRequestException("Invalid signing algorithm");
+        if (dto.getKeyGenerationAlgorithm().equals("RSA")) {
+            if (!AlgorithmsConfig.secureRSASigningAlgorithms.contains(dto.getSignatureAlgorithm())) {
+                throw new ApiBadRequestException("Invalid signing algorithm");
+            }
+        } else if (dto.getKeyGenerationAlgorithm().equals("DSA")) {
+            if (!AlgorithmsConfig.secureDSASigningAlgorithms.contains("DSA")) {
+                throw new ApiBadRequestException("Invalid signing algorithm");
+            }
+        } else {
+            throw new ApiNotFoundException("Signing algorithm not found.");
         }
 
         if (certificateRepository.findBySerialNumber(dto.getSerialNumber()).isPresent()) {

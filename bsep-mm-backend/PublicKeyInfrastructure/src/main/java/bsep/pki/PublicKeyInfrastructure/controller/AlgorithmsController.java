@@ -1,6 +1,7 @@
 package bsep.pki.PublicKeyInfrastructure.controller;
 
 import bsep.pki.PublicKeyInfrastructure.config.AlgorithmsConfig;
+import bsep.pki.PublicKeyInfrastructure.exception.ApiNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,10 +15,16 @@ import java.util.List;
 @RequestMapping("/api/algorithms")
 public class AlgorithmsController {
 
-    @GetMapping("/signing")
+    @GetMapping("/signing/{key-generation-algorithm}")
     @PreAuthorize("hasRole('admin')")
-    public ResponseEntity<List<String>> getSigningAlgorithms() {
-        return new ResponseEntity<>(AlgorithmsConfig.secureSigningAlgorithms, HttpStatus.OK);
+    public ResponseEntity<List<String>> getSigningAlgorithms(String keyGenerationAlgorithm) {
+        if (keyGenerationAlgorithm.equals("RSA")) {
+            return new ResponseEntity<>(AlgorithmsConfig.secureRSASigningAlgorithms, HttpStatus.OK);
+        } else if (keyGenerationAlgorithm.equals("DSA")) {
+            return new ResponseEntity<>(AlgorithmsConfig.secureDSASigningAlgorithms, HttpStatus.OK);
+        } else {
+            throw new ApiNotFoundException("Signing algorithms not found.");
+        }
     }
 
     @GetMapping("/key-generation")
