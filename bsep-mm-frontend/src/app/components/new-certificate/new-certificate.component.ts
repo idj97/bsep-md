@@ -982,6 +982,23 @@ export class NewCertificateComponent implements OnInit {
     );
   }
 
+  removeTemplate(): void {
+    let selectedName = this.selects.template.value.label;
+    let items = <any[]>JSON.parse(JSON.stringify(this.selects.template.items));
+    items.splice(items.findIndex(x => x.label === selectedName), 1);
+    this.selects.template.items = items;
+    this.selects.template.value = null;
+    this.templateService.deleteRemoveTemplate(selectedName).subscribe(
+      data => {
+        console.log(data);
+      },
+      error => {
+        console.log(error);
+      }
+    );
+  }
+
+
 
   bool(val): boolean {
     switch (val) {

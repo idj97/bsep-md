@@ -18,5 +18,8 @@ export class TemplateService {
     return this.http.post<any>('/api/templates', template);
   }
 
+  deleteRemoveTemplate(templateName: string) {
+    return this.http.delete<any>(`/api/templates/${templateName}`);
+  }
   
 }
