@@ -31,10 +31,10 @@ public class TemplateController {
         return new ResponseEntity<>(templateService.getAll(), HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{name}")
     @PreAuthorize("hasRole('admin')")
-    public ResponseEntity<HttpStatus> delete(@PathVariable Long id) {
-        templateService.delete(id);
+    public ResponseEntity<HttpStatus> delete(@PathVariable String name) {
+        templateService.delete(name);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

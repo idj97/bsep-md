@@ -39,8 +39,8 @@ public class TemplateService {
                 .collect(Collectors.toList());
     }
 
-    public void delete(Long id) {
-        Optional<Template> optTemplate = templateRepository.findById(id);
+    public void delete(String name) {
+        Optional<Template> optTemplate = templateRepository.findByName(name);
         if (optTemplate.isPresent()) {
             templateRepository.delete(optTemplate.get());
         } else {
