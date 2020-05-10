@@ -217,7 +217,7 @@ export class NewCertificateComponent implements OnInit {
     this.createCertificateDTO.keySize = this.kSize;
     this.createCertificateDTO.keyGenerationAlgorithm = this.selects.algorithm.value.value;
     this.createCertificateDTO.signatureAlgorithm = this.selects.signatureAlgorithm.value.value;
-    this.createCertificateDTO.issuingCaSerialNumber = this.selects.signWith.value.value;
+    this.createCertificateDTO.issuingCaSerialNumber = !this.isSelfSigned ? this.selects.signWith.value.value : null;
     this.createCertificateDTO.validUntil = this.validUntilText;
     this.createCertificateDTO.selfSigned = this.isSelfSigned;
     this.createCertificateDTO.serialNumber = this.serNumber.toString();
@@ -996,6 +996,11 @@ export class NewCertificateComponent implements OnInit {
         console.log(error);
       }
     );
+  }
+
+
+  algorithmChanged(): void {
+    console.log(this.selects.algorithm.value);
   }
 
 
