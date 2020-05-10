@@ -20,7 +20,7 @@ public class TemplateService {
     @Autowired
     private TemplateRepository templateRepository;
 
-    public void create(TemplateDto dto) {
+    public List<TemplateDto> create(TemplateDto dto) {
         Optional<Template> optTemplate = templateRepository.findByName(dto.getName());
         Template template;
         if (optTemplate.isPresent()) {
@@ -30,6 +30,7 @@ public class TemplateService {
             template = new Template(null, dto.getName(), dto.getExtensions());
         }
         templateRepository.save(template);
+        return getAll();
     }
 
     public List<TemplateDto> getAll() {
