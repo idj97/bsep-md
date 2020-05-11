@@ -28,6 +28,7 @@ export class RevokeDialogComponent implements OnInit {
         this.activated = data.open;
         if (data.open) {
           this.data = data;
+          console.log(this.data);
           if (data.revoking && data.revoked) {
             this.revoked = true;
             this.revoking = true;
@@ -50,6 +51,7 @@ export class RevokeDialogComponent implements OnInit {
     this.revoking = true;
     let dl = {
       certificateId: data.id,
+      serialNumber: data.serialNumber,
       revokeReason: this.selectedValue,
     }
 
