@@ -264,17 +264,7 @@ export class NewCertificateComponent implements OnInit {
       }
     );
 
-    this.certificateService.getSignatureAlghoritms().subscribe(
-      data => {
-        let items = data.map(x => {
-          return {value: x, label: x};
-        });
-        this.selects.signatureAlgorithm.items = items;
-      },
-      error => {
-        console.log(error);
-      }
-    );
+    this.requestNewSignatureAlgorithms();
 
     this.templateService.getAllTemplates().subscribe(
       data => {
@@ -286,6 +276,21 @@ export class NewCertificateComponent implements OnInit {
         });
         
         this.selects.template.items = items;
+      },
+      error => {
+        console.log(error);
+      }
+    );
+  }
+
+  requestNewSignatureAlgorithms(): void {
+    this.certificateService.getSignatureAlghoritms(this.selects.algorithm.value.value).subscribe(
+      data => {
+        let items = data.map(x => {
+          return {value: x, label: x};
+        });
+        this.selects.signatureAlgorithm.items = items;
+        this.selects.signatureAlgorithm.value = null;
       },
       error => {
         console.log(error);
@@ -974,7 +979,15 @@ export class NewCertificateComponent implements OnInit {
     this.toggleCreateTemplate();
     this.templateService.postCreateTemplate(dto).subscribe(
       data => {
-        console.log(data);
+        let items = data.map(x => {
+          return {
+            value: JSON.parse(x.extensions), 
+            label: x.name,
+          };
+        });
+        
+        this.selects.template.items = items;
+        this.selects.template.value = null;
       },
       error => {
         console.log(error);
@@ -1000,7 +1013,7 @@ export class NewCertificateComponent implements OnInit {
 
 
   algorithmChanged(): void {
-    console.log(this.selects.algorithm.value);
+    this.requestNewSignatureAlgorithms();
   }
 
 

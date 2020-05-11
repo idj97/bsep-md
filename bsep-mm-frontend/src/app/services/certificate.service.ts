@@ -38,8 +38,8 @@ export class CertificateService {
     return this.http.get<any>('api/certificates/serial-number');
   }
 
-  getSignatureAlghoritms(): Observable<any> {
-    return this.http.get<any>('api/algorithms/signing');
+  getSignatureAlghoritms(algorithm: string): Observable<any> {
+    return this.http.get<any>(`api/algorithms/signing/${algorithm}`);
   }
 
   postCreateCertificate(data: CreateCertificate): Observable<any> {
