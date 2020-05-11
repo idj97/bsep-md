@@ -147,6 +147,12 @@ public class CertService {
         cert.setKeyStoreAlias(dto.getSerialNumber());
         cert.setCN(dto.getName().getCommonName());
 
+        if (dto.getIssuingCaSerialNumber() != null) {
+            Certificate issuer = certificateRepository.findBySerialNumber(dto.getIssuingCaSerialNumber()).get();
+            cert.setIssuedByCertificate(issuer);
+            issuer.getIssuerForCertificates().add(cert);
+        }
+
         Map<String , Object> params = new HashMap<>();
         params.put("subjectX509Cert", subjectX509Cert);
         params.put("ocspResponderUris", uriService.ocspResponderUris);
