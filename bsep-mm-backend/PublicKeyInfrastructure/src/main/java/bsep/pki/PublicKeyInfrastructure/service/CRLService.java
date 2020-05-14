@@ -9,6 +9,7 @@ import bsep.pki.PublicKeyInfrastructure.model.CA;
 import bsep.pki.PublicKeyInfrastructure.model.enums.CAType;
 import bsep.pki.PublicKeyInfrastructure.model.Certificate;
 import bsep.pki.PublicKeyInfrastructure.model.CertificateRevocation;
+import bsep.pki.PublicKeyInfrastructure.model.enums.RevokeReason;
 import bsep.pki.PublicKeyInfrastructure.repository.CARepository;
 import bsep.pki.PublicKeyInfrastructure.repository.CertificateRepository;
 import bsep.pki.PublicKeyInfrastructure.utility.KeyStoreService;
@@ -87,10 +88,22 @@ public class CRLService {
             Certificate cert = optCert.get();
             CertificateRevocation certificateRevocation = new CertificateRevocation(cert, revocationDto.getRevokeReason());
             cert.setRevocation(certificateRevocation);
+
+            if (revocationDto.getRevokeReason().equals(RevokeReason.KEY_COMPROMISE)) {
+                revokeAllChildCerts(cert);
+            }
+
             cert = certificateRepository.save(cert);
             return new CertificateDto(cert);
         } else {
             throw new ApiBadRequestException();
+        }
+    }
+
+    public void revokeAllChildCerts(Certificate parentCert) {
+        for (Certificate cert : parentCert.getIssuerForCertificates()) {
+            cert.setRevocation(new CertificateRevocation(cert, RevokeReason.CA_COMPROMISE));
+            revokeAllChildCerts(cert);
         }
     }
 

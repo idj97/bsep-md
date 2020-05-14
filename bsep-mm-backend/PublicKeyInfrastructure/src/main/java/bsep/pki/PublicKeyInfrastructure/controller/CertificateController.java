@@ -80,5 +80,4 @@ public class CertificateController {
                 headers,
                 HttpStatus.OK);
     }
-
 }
