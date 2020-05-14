@@ -34,14 +34,14 @@ public interface CertificateRepository extends JpaRepository<Certificate, Long> 
     @Query(value = "SELECT c FROM Certificate c WHERE " +
             "c.CN LIKE %:commonName% AND " +
             "(:revoked = CASE WHEN (c.revocation IS NULL) THEN FALSE ELSE TRUE END) AND " +
-            "(:isCaCert = CASE WHEN (c.issuedForCA IS NULL) THEN FALSE ELSE TRUE END) AND " +
+            "(:isCa = c.isCa) AND " +
             "((c.validFrom > :validFrom) OR (:validFrom IS NULL)) AND " +
             "((c.validUntil < :validUntil) OR (:validUntil IS NULL)) AND " +
             "((c.certificateType = :certificateType) OR (:certificateType IS NULL))")
     Page<Certificate> search(
             @Param("commonName")      String commonName,
             @Param("revoked")         boolean revoked,
-            @Param("isCaCert")        boolean isCaCert,
+            @Param("isCa")            boolean isCa,
             @Param("validFrom")       Date validFrom,
             @Param("validUntil")      Date validUntil,
             @Param("certificateType") CertificateType certificateType,
