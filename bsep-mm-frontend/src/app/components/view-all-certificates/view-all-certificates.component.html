@@ -18,8 +18,8 @@
                         <table class="certificates-table-inner">
                             <tr class="certificate-row-inner not-selected">
                                 <td>{{item.commonName}}</td>
-                                <td>{{item.validFrom | date: 'dd-MM-yyyy'}}</td>
-                                <td>{{item.validUntil | date: 'dd-MM-yyyy'}}</td>
+                                <td>{{item.validFrom}}</td>
+                                <td>{{item.validUntil}}</td>
                                 <td *ngIf="!isRevoked" (click)="initRevokeDialog(item, i)" class="revoke-action">Revoke</td>
                                 <td *ngIf="isRevoked">{{item.revocation.revokeReason}}</td>
                                 <td class="revoke-action" (click)="downloadCertificate(item)">Download</td>

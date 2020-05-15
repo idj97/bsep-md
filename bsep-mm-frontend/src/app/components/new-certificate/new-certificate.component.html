@@ -254,7 +254,7 @@
                 <input type="text" class="input-styled" 
                 (blur)="blurInput($event, stateName.valueAccessor._elementRef.nativeElement.dataset.index)" 
                 (focus)="focusInput($event, stateName.valueAccessor._elementRef.nativeElement.dataset.index)" 
-                    [(ngModel)]="certificateAuthority.certificateDto.state" name="stateName"
+                    [(ngModel)]="createCertificateDTO.name.state" name="stateName"
                     #stateName="ngModel" required data-index="13">
                 <small class="text-danger" *ngIf="(country.touched || ncf.submitted) && country.errors?.required">
                     State name is required

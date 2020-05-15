@@ -12,7 +12,7 @@ export class Certificate {
     surname: string;
     organisation: string;
     organisationUnit: string;
-    stateName: string;
+    state: string;
     country: string;
     email: string;
     localityName: string;
