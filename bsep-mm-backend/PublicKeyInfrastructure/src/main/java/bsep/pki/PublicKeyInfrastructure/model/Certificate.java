@@ -1,5 +1,6 @@
 package bsep.pki.PublicKeyInfrastructure.model;
 
+import bsep.pki.PublicKeyInfrastructure.dto.NameDto;
 import bsep.pki.PublicKeyInfrastructure.model.enums.CertificateType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -55,32 +56,18 @@ public class Certificate {
 
     @Column(nullable = false)
     private Boolean isCa;
-
     private Integer pathLen;
 
-    @Column
-    private String userId;
-
-    @Column
-    private String userEmail;
-
-    @Column
-    private String O;
-
-    @Column
-    private String C;
-
-    @Column
-    private String OU;
-
-    @Column
-    private String GivenName;
-
-    @Column
-    private String Surname;
-
-    @Column
-    private String CN;
+    private String commonName;         // common name
+    private String organisationUnit;   // organisation unit
+    private String organisation;       // organisation name
+    private String locality;           // locality
+    private String state;              // state
+    private String country;            // country
+    private String domainComponent;    // domain component
+    private String email;              // email
+    private String givenName;          // given name
+    private String surname;            // surname
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
@@ -102,4 +89,17 @@ public class Certificate {
 
     @Column(nullable = false)
     private boolean isOcspResponder;
+
+    public void setName(NameDto nameDto) {
+        commonName = nameDto.getCommonName();
+        organisationUnit = nameDto.getOrganisationUnit();
+        organisation = nameDto.getOrganisation();
+        locality = nameDto.getLocality();
+        state = nameDto.getState();
+        country = nameDto.getCountry();
+        domainComponent = nameDto.getDomainComponent();
+        email = nameDto.getEmail();
+        givenName = nameDto.getGivenName();
+        surname = nameDto.getSurname();
+    }
 }

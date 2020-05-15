@@ -145,7 +145,7 @@ public class CertService {
         cert.setValidUntil(dateService.getDate(dto.getValidUntil()));
         cert.setSelfSigned(dto.getSelfSigned());
         cert.setKeyStoreAlias(dto.getSerialNumber());
-        cert.setCN(dto.getName().getCommonName());
+        cert.setName(dto.getName());
 
         if (dto.getIssuingCaSerialNumber() != null) {
             Certificate issuer = certificateRepository.findBySerialNumber(dto.getIssuingCaSerialNumber()).get();
@@ -200,7 +200,7 @@ public class CertService {
             throw new ApiBadRequestException("Serial number not available");
         }
 
-        if (certificateRepository.findByCN(dto.getName().getCommonName()).isPresent()) {
+        if (certificateRepository.findByCommonName(dto.getName().getCommonName()).isPresent()) {
             throw new ApiBadRequestException("Common name not available");
         }
 

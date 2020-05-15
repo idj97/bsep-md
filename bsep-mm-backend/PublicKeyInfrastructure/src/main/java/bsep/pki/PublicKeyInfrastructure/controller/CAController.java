@@ -31,7 +31,7 @@ public class CAController {
     public ResponseEntity<CADto> create(@RequestBody @Valid CADto caDto) {
         CADto caDtoRet = null;
         if (caDto.getCertificateDto().getCertificateType().equals(CertificateType.ROOT)) {
-            caDtoRet = rootCAService.createRootCA(caDto);
+//            caDtoRet = rootCAService.createRootCA(caDto);
         } else {
             caDtoRet = caService.createCA(caDto);
         }

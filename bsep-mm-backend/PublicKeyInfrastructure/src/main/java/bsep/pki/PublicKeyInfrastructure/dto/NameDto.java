@@ -26,7 +26,7 @@ public class NameDto {
     private String domainComponent;    // domain component
     private String email;              // email
     private String givenName;          // given name
-    private String surname;            // surname?
+    private String surname;            // surname
 
     public X500Name getBCX500Name() {
         X500NameBuilder builder = new X500NameBuilder(BCStyle.INSTANCE);

@@ -107,14 +107,14 @@ public class CertificateService {
         Certificate certificate = new Certificate();
 
         // osnovni podaci
-        certificate.setCN(subjectCertificateDto.getCommonName());
+//        certificate.setCN(subjectCertificateDto.getCommonName());
         certificate.setSurname(subjectCertificateDto.getSurname());
-        certificate.setUserEmail(subjectCertificateDto.getEmail());
+//        certificate.setUserEmail(subjectCertificateDto.getEmail());
         certificate.setGivenName(subjectCertificateDto.getGivenName());
-        certificate.setC(subjectCertificateDto.getCountry());
-        certificate.setO(subjectCertificateDto.getOrganisation());
-        certificate.setOU(subjectCertificateDto.getOrganisationUnit());
-        certificate.setUserId("test"); // TODO postaviti user id iz keycloak context-a
+//        certificate.setC(subjectCertificateDto.getCountry());
+//        certificate.setO(subjectCertificateDto.getOrganisation());
+//        certificate.setOU(subjectCertificateDto.getOrganisationUnit());
+//        certificate.setUserId("test"); // TODO postaviti user id iz keycloak context-a
         certificate.setValidFrom(subjectCertificateDto.getValidFrom());
         certificate.setValidUntil(subjectCertificateDto.getValidUntil());
         certificate.setSerialNumber(serialNumber);

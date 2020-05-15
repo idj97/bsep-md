@@ -17,7 +17,7 @@ import java.util.Optional;
 @Repository
 public interface CertificateRepository extends JpaRepository<Certificate, Long> {
     Optional<Certificate> findBySerialNumber(String serialNumber);
-    Optional<Certificate> findByCN(String commonName);
+    Optional<Certificate> findByCommonName(String commonName);
 
     @Query(value = "SELECT c FROM Certificate c WHERE " +
             "c.revocation IS NULL AND " +
@@ -32,7 +32,7 @@ public interface CertificateRepository extends JpaRepository<Certificate, Long> 
     Optional<Certificate> findOcspResponderCertificate();
 
     @Query(value = "SELECT c FROM Certificate c WHERE " +
-            "c.CN LIKE %:commonName% AND " +
+            "c.commonName LIKE %:commonName% AND " +
             "(:revoked = CASE WHEN (c.revocation IS NULL) THEN FALSE ELSE TRUE END) AND " +
             "(:isCa = c.isCa) AND " +
             "((c.validFrom > :validFrom) OR (:validFrom IS NULL)) AND " +

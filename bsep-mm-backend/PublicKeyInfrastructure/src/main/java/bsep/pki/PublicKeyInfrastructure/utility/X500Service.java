@@ -49,7 +49,7 @@ public class X500Service {
     public X509CertificateData createRootCertificate(CertificateDto certificateDto) {
         KeyPair subjectKeyPair = generateKeyPair();
         Integer subjectSerialNumber = generateSerialNumber();
-        certificateDto.setSerialNumber(subjectSerialNumber); // potrebno da bude u DTO prilikom kreiranja x500name
+//        certificateDto.setSerialNumber(subjectSerialNumber); // potrebno da bude u DTO prilikom kreiranja x500name
 
         return createX509Certificate(new CreateX509CertificateData(
                 createX500NameFromCertificateDto(certificateDto),
@@ -73,7 +73,7 @@ public class X500Service {
     {
         KeyPair subjectKeyPair = generateKeyPair();
         Integer subjectSerialNumber = generateSerialNumber();
-        subjectCertificateDto.setSerialNumber(subjectSerialNumber); // potrebno da bude u DTO prilikom kreiranja x500name
+//        subjectCertificateDto.setSerialNumber(subjectSerialNumber); // potrebno da bude u DTO prilikom kreiranja x500name
         X509CertificateData issuerCertificateData = keyStoreService
                 .getCaCertificate(issuerCertificate.getKeyStoreAlias());
 
@@ -141,13 +141,13 @@ public class X500Service {
     //TODO: DELETE
     public X500Name createX500NameFromCertificate(Certificate certificate) {
         X500NameBuilder builder = new X500NameBuilder(BCStyle.INSTANCE);
-        builder.addRDN(BCStyle.CN, certificate.getCN());
+//        builder.addRDN(BCStyle.CN, certificate.getCN());
         builder.addRDN(BCStyle.SURNAME, certificate.getSurname());
         builder.addRDN(BCStyle.GIVENNAME, certificate.getGivenName());
-        builder.addRDN(BCStyle.O, certificate.getO());
-        builder.addRDN(BCStyle.OU, certificate.getOU());
-        builder.addRDN(BCStyle.C, certificate.getC());
-        builder.addRDN(BCStyle.E, certificate.getUserEmail());
+//        builder.addRDN(BCStyle.O, certificate.getO());
+//        builder.addRDN(BCStyle.OU, certificate.getOU());
+//        builder.addRDN(BCStyle.C, certificate.getC());
+//        builder.addRDN(BCStyle.E, certificate.getUserEmail());
         builder.addRDN(BCStyle.SERIALNUMBER, certificate.getSerialNumber());
         X500Name subjectX500Name = builder.build();
         return subjectX500Name;
