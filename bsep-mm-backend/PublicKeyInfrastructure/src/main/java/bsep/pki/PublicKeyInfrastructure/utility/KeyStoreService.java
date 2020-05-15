@@ -5,9 +5,7 @@ import bsep.pki.PublicKeyInfrastructure.exception.ApiInternalServerErrorExceptio
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.security.*;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
@@ -144,6 +142,7 @@ public class KeyStoreService {
             KeyStore keyStore = KeyStore.getInstance(new File(keyStoreName), keyStorePassword.toCharArray());
             PrivateKey privateKey = (PrivateKey) keyStore.getKey(alias, keyStorePassword.toCharArray());
 
+
             //TODO: null pointer exception (originalChain is null)
             Certificate[] originalChain = keyStore.getCertificateChain(alias);
             X509Certificate[] chain = new X509Certificate[originalChain.length];
@@ -168,6 +167,31 @@ public class KeyStoreService {
         }
 
         return null;
+    }
+
+    public InputStream getPkcs12InputStream(X509Certificate[] chain, PrivateKey privateKey, String alias) {
+        try {
+            KeyStore keyStore = KeyStore.getInstance("PKCS12");
+            keyStore.load(null, keyStorePassword.toCharArray());
+            keyStore.setKeyEntry(
+                    chain[0].getSubjectX500Principal().getName(),
+                    privateKey,
+                    keyStorePassword.toCharArray(),
+                    chain);
+
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            keyStore.store(out, keyStorePassword.toCharArray());
+            return new ByteArrayInputStream(out.toByteArray());
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        } catch (CertificateException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        throw new ApiInternalServerErrorException("Something went wrong while generating PKCS12 file.");
     }
 
     public void saveEntry(X509Certificate[] chain, PrivateKey privateKey, String alias) {

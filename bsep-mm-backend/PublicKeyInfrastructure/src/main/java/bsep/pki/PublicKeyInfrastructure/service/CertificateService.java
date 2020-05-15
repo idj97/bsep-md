@@ -4,10 +4,8 @@ import bsep.pki.PublicKeyInfrastructure.data.X509CertificateData;
 import bsep.pki.PublicKeyInfrastructure.dto.CertificateDto;
 import bsep.pki.PublicKeyInfrastructure.dto.CertificateSearchDto;
 import bsep.pki.PublicKeyInfrastructure.dto.PageDto;
-import bsep.pki.PublicKeyInfrastructure.exception.ApiBadRequestException;
 import bsep.pki.PublicKeyInfrastructure.exception.ApiNotFoundException;
 import bsep.pki.PublicKeyInfrastructure.model.*;
-import bsep.pki.PublicKeyInfrastructure.model.enums.CAType;
 import bsep.pki.PublicKeyInfrastructure.model.enums.CertificateType;
 import bsep.pki.PublicKeyInfrastructure.repository.CARepository;
 import bsep.pki.PublicKeyInfrastructure.repository.CertificateRepository;
@@ -25,6 +23,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.security.PrivateKey;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.util.Date;
@@ -210,6 +210,27 @@ public class CertificateService {
             return new InputStreamResource(new ByteArrayInputStream(binary));
         } else {
             throw new ApiNotFoundException("Cert not found.");
+        }
+    }
+
+    public InputStreamResource getCertPKCS12BySerialNumber(String serialNumber) {
+        Optional<Certificate> optionalCertificate = certificateRepository.findBySerialNumber(serialNumber);
+        if (optionalCertificate.isPresent()) {
+            Certificate certificate = optionalCertificate.get();
+
+            X509Certificate[] chain = keyStoreService
+                    .getCertificate(certificate.getSerialNumber())
+                    .getX509CertificateChain();
+
+            PrivateKey privateKey = (PrivateKey) keyStoreService
+                    .getKey(certificate.getSerialNumber());
+
+            InputStream pkcs12InStream = keyStoreService.getPkcs12InputStream(
+                    chain, privateKey, certificate.getSerialNumber());
+
+            return new InputStreamResource(pkcs12InStream);
+        } else {
+            throw new ApiNotFoundException("Cert not found");
         }
     }
 }
