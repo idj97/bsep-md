@@ -30,10 +30,10 @@ public class CertificateDto {
     private String givenName;
     private String surname;
 
-    @JsonFormat(pattern = "dd-MM-yyyy HH:mm", timezone = "Europe/Belgrade")
+    @JsonFormat(pattern = "dd-MM-yyyy", timezone = "Europe/Belgrade")
     private Date validFrom;
 
-    @JsonFormat(pattern = "dd-MM-yyyy HH:mm", timezone = "Europe/Belgrade")
+    @JsonFormat(pattern = "dd-MM-yyyy", timezone = "Europe/Belgrade")
     private Date validUntil;
 
     private int validityInMonths;
@@ -52,6 +52,9 @@ public class CertificateDto {
         organisationUnit = certificate.getOrganisationUnit();
         country = certificate.getCountry();
         email = certificate.getEmail();
+        state = certificate.getState();
+        locality = certificate.getLocality();
+        domainComponent = certificate.getDomainComponent();
         validFrom = certificate.getValidFrom();
         validUntil = certificate.getValidUntil();
         serialNumber = certificate.getSerialNumber();
