@@ -46,8 +46,6 @@ export class ViewAllCertificatesComponent implements OnInit {
 
     this.data = finalData;
     this.elStatus = elStatus;
-    console.log(this.elStatus);
-    console.log(this.data);
   }
   get parentData() { return this.data; }
 
