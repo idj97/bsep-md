@@ -220,6 +220,15 @@
     font-size: 13px;
 }
 
+.select-holder small {
+    position: absolute;
+    left: 20px;
+    top: calc(50% + 28px);
+    transform: translateY(-50%);
+    color: red;
+    font-size: 13px;
+}
+
 
 .centered-message {
     margin-left: 35%;
@@ -539,12 +548,15 @@
 
 
 .submit-certificate {
+    border: none !important;
     padding: 30px;
     text-align: center;
     color: white;
     background: #22282e;
     cursor: pointer;
     font-size: 14px;
+    font-weight: 700;
+    outline: none !important;
     transition: .3s;
 }
 
@@ -675,4 +687,11 @@
 
 .create-new-template-btn.selected {
     transform: rotate(45deg);
+}
+
+.submit-spinner {
+    margin: 0 !important;
+    background: #22282e;
+    padding: 30px;
+    color: white;
 }

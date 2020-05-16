@@ -1,4 +1,4 @@
-<form name="newCertificateForm" #ncf="ngForm" novalidate (ngSubmit)="createCertificate()">
+<form name="newCertificateForm" #ncf="ngForm" novalidate (ngSubmit)="submit()">
     <div class="row holder">
     <div class="col-12 header">New Certificate</div>
         <div class="form-holder col-12 row">
@@ -35,9 +35,21 @@
                 (blur)="blurInput($event, keySize.valueAccessor._elementRef.nativeElement.dataset.index)" 
                 (focus)="focusInput($event, keySize.valueAccessor._elementRef.nativeElement.dataset.index)"
                     [(ngModel)]="kSize" name="keySize"
-                    #keySize="ngModel" required data-index="1">
+                    #keySize="ngModel" required validateKeySize data-index="1">
                 <small class="text-danger" *ngIf="(keySize.touched || ncf.submitted) && keySize.errors?.required">
                     Key size is required
+                </small>
+                <small class="text-danger" *ngIf="(keySize.touched || ncf.submitted) && keySize.errors?.keySizeInvalid">
+                    Invalid Key Size
+                </small>
+                <small class="text-danger" *ngIf="(keySize.touched || ncf.submitted) && keySize.errors?.keySizeLessThanMin">
+                    Key Size must be greater than  {{keySize.errors?.keySizeMin}}
+                </small>
+                <small class="text-danger" *ngIf="(keySize.touched || ncf.submitted) && keySize.errors?.keySizeGreaterThanMax">
+                    Key Size must be lesser than  {{keySize.errors?.keySizeMax}}
+                </small>
+                <small class="text-danger" *ngIf="(keySize.touched || ncf.submitted) && keySize.errors?.keySizeNotNumber">
+                    Key Size must be a number
                 </small>
             </div>
 
@@ -58,8 +70,12 @@
                     #signatureAlgorithm="ngModel"
                     [searchable]="true"
                     [clearable]="false"
-                    [items]="selects.signatureAlgorithm.items">
+                    [items]="selects.signatureAlgorithm.items"
+                    required>
                 </ng-select>
+                <small class="text-danger" *ngIf="(signatureAlgorithm.touched || ncf.submitted) && signatureAlgorithm.errors?.required">
+                    Signature algorithm is required
+                </small>
             </div>
 
             <div class="input-holder d-flex align-items-center col-6" 
@@ -90,7 +106,7 @@
 
             </div>
 
-            <div class="input-holder d-flex align-items-center col-2" 
+            <div class="input-holder d-flex align-items-center col-3" 
             [ngClass]="{blurred : activeInput != validFor.valueAccessor._elementRef.nativeElement.dataset.index, 
                 focused : activeInput == validFor.valueAccessor._elementRef.nativeElement.dataset.index || 
                 !isEmpty(validFor.valueAccessor._elementRef.nativeElement.dataset.index)}">
@@ -100,13 +116,19 @@
                 (focus)="focusInput($event, validFor.valueAccessor._elementRef.nativeElement.dataset.index)"
                 (keyup)="updateValidUntil()"
                     [(ngModel)]="validForDate" name="validFor"
-                    #validFor="ngModel" required data-index="4">
+                    #validFor="ngModel" required validateValidFor data-index="4">
                 <small class="text-danger" *ngIf="(validFor.touched || ncf.submitted) && validFor.errors?.required">
                     Valid for is required
                 </small>
+                <small class="text-danger" *ngIf="(validFor.touched || ncf.submitted) && validFor.errors?.validForNotNumber">
+                    Valid for must be a number
+                </small>
+                <small class="text-danger" *ngIf="(validFor.touched || ncf.submitted) && validFor.errors?.validForLessThanMin">
+                    Valid for must be greater than {{validFor.errors?.validForMin}}
+                </small>
             </div>
 
-            <div class="input-holder label d-flex align-items-center col-4">
+            <div class="input-holder label d-flex align-items-center col-3">
                 Valid Until: &nbsp;&nbsp; {{validUntilText}}
             </div>
 
@@ -143,8 +165,12 @@
                     [disabled]="isSelfSigned"
                     [searchable]="true"
                     [clearable]="true"
-                    [items]="selects.signWith.items">
+                    [items]="selects.signWith.items"
+                    required>
                 </ng-select>
+                <small class="text-danger" *ngIf="(signWith.touched || ncf.submitted) && signWith.errors?.required && !isSelfSigned">
+                    Sign with is required
+                </small>
             </div>
 
             <div class="input-holder self-signed d-flex align-items-center justify-content-center col-3" 
@@ -199,10 +225,7 @@
                 (blur)="blurInput($event, givenName.valueAccessor._elementRef.nativeElement.dataset.index)" 
                 (focus)="focusInput($event, givenName.valueAccessor._elementRef.nativeElement.dataset.index)"
                     [(ngModel)]="createCertificateDTO.name.givenName" name="givenName"
-                    #givenName="ngModel" required data-index="9">
-                <small class="text-danger" *ngIf="(givenName.touched || ncf.submitted) && givenName.errors?.required">
-                    Given name is required
-                </small>
+                    #givenName="ngModel" data-index="9">
             </div>
             <div class="input-holder d-flex align-items-center col-6" 
             [ngClass]="{blurred : activeInput != surname.valueAccessor._elementRef.nativeElement.dataset.index, 
@@ -213,10 +236,7 @@
                 (blur)="blurInput($event, surname.valueAccessor._elementRef.nativeElement.dataset.index)" 
                 (focus)="focusInput($event, surname.valueAccessor._elementRef.nativeElement.dataset.index)"
                     [(ngModel)]="createCertificateDTO.name.surname" name="surname" 
-                    #surname="ngModel" required data-index="10">
-                <small class="text-danger" *ngIf="(surname.touched || ncf.submitted) && surname.errors?.required">
-                    Surname is required
-                </small>
+                    #surname="ngModel" data-index="10">
             </div>
             <div class="input-holder d-flex align-items-center col-6" 
             [ngClass]="{blurred : activeInput != organisation.valueAccessor._elementRef.nativeElement.dataset.index, 
@@ -227,10 +247,7 @@
                 (blur)="blurInput($event, organisation.valueAccessor._elementRef.nativeElement.dataset.index)" 
                 (focus)="focusInput($event, organisation.valueAccessor._elementRef.nativeElement.dataset.index)"
                     [(ngModel)]="createCertificateDTO.name.organisation" name="organisation"
-                    #organisation="ngModel" required data-index="11">
-                <small class="text-danger" *ngIf="(organisation.touched || ncf.submitted) && organisation.errors?.required">
-                    Organisation name is required
-                </small>
+                    #organisation="ngModel" data-index="11">
             </div>
             <div class="input-holder d-flex align-items-center col-6" 
             [ngClass]="{blurred : activeInput != organisationUnit.valueAccessor._elementRef.nativeElement.dataset.index, 
@@ -241,10 +258,7 @@
                 (blur)="blurInput($event, organisationUnit.valueAccessor._elementRef.nativeElement.dataset.index)" 
                 (focus)="focusInput($event, organisationUnit.valueAccessor._elementRef.nativeElement.dataset.index)"
                     [(ngModel)]="createCertificateDTO.name.organisationUnit"  name="organisationUnit"
-                    #organisationUnit="ngModel" required data-index="12">
-                <small class="text-danger" *ngIf="(organisationUnit.touched || ncf.submitted) && organisationUnit.errors?.required">
-                    Organisation unit is required
-                </small>
+                    #organisationUnit="ngModel" data-index="12">
             </div>
             <div class="input-holder d-flex align-items-center col-6" 
             [ngClass]="{blurred : activeInput != stateName.valueAccessor._elementRef.nativeElement.dataset.index, 
@@ -255,10 +269,7 @@
                 (blur)="blurInput($event, stateName.valueAccessor._elementRef.nativeElement.dataset.index)" 
                 (focus)="focusInput($event, stateName.valueAccessor._elementRef.nativeElement.dataset.index)" 
                     [(ngModel)]="createCertificateDTO.name.state" name="stateName"
-                    #stateName="ngModel" required data-index="13">
-                <small class="text-danger" *ngIf="(country.touched || ncf.submitted) && country.errors?.required">
-                    State name is required
-                </small>
+                    #stateName="ngModel" data-index="13">
             </div>
             <div class="input-holder d-flex align-items-center col-6" 
             [ngClass]="{blurred : activeInput != country.valueAccessor._elementRef.nativeElement.dataset.index, 
@@ -269,10 +280,7 @@
                 (blur)="blurInput($event, country.valueAccessor._elementRef.nativeElement.dataset.index)" 
                 (focus)="focusInput($event, country.valueAccessor._elementRef.nativeElement.dataset.index)" 
                     [(ngModel)]="createCertificateDTO.name.country" name="country"
-                    #country="ngModel" required data-index="14">
-                <small class="text-danger" *ngIf="(country.touched || ncf.submitted) && country.errors?.required">
-                    Country is required
-                </small>
+                    #country="ngModel" data-index="14">
             </div>
             <div class="input-holder d-flex align-items-center col-6" 
             [ngClass]="{blurred : activeInput != email.valueAccessor._elementRef.nativeElement.dataset.index, 
@@ -283,11 +291,7 @@
                 (blur)="blurInput($event, email.valueAccessor._elementRef.nativeElement.dataset.index)" 
                 (focus)="focusInput($event, email.valueAccessor._elementRef.nativeElement.dataset.index)"
                     [(ngModel)]="createCertificateDTO.name.email" name="email"
-                    #email="ngModel" required data-index="15">
-
-                <small class="text-danger" *ngIf="(email.touched || ncf.submitted) && email.errors?.required">
-                    Email is required
-                </small>
+                    #email="ngModel" data-index="15">
             </div>
 
             <div class="input-holder d-flex align-items-center col-6" 
@@ -299,11 +303,7 @@
                 (blur)="blurInput($event, localityName.valueAccessor._elementRef.nativeElement.dataset.index)" 
                 (focus)="focusInput($event, localityName.valueAccessor._elementRef.nativeElement.dataset.index)"
                     [(ngModel)]="createCertificateDTO.name.locality" name="localityName"
-                    #localityName="ngModel" required data-index="16">
-
-                <small class="text-danger" *ngIf="(localityName.touched || ncf.submitted) && localityName.errors?.required">
-                    Locality name is required
-                </small>
+                    #localityName="ngModel" data-index="16">
             </div>
 
             <div class="input-holder d-flex align-items-center col-6" 
@@ -315,11 +315,7 @@
                 (blur)="blurInput($event, domainComponent.valueAccessor._elementRef.nativeElement.dataset.index)" 
                 (focus)="focusInput($event, domainComponent.valueAccessor._elementRef.nativeElement.dataset.index)"
                     [(ngModel)]="createCertificateDTO.name.domainComponent" name="domainComponent"
-                    #domainComponent="ngModel" required data-index="17">
-
-                <small class="text-danger" *ngIf="(domainComponent.touched || ncf.submitted) && domainComponent.errors?.required">
-                    Domain component is required
-                </small>
+                    #domainComponent="ngModel" data-index="17">
             </div>
 
             <div class="col-12 section-splitter">
@@ -587,10 +583,17 @@
                 Finalization
             </div>
 
-            <div class="col-12 submit-certificate d-flex align-items-center justify-content-center" (click)="submit()">
+            <button type="submit" class="col-12 submit-certificate d-flex align-items-center justify-content-center" *ngIf="!isSubmiting">
                 
                 Submit
                 
+            </button>
+            <div class="col-12 submit-spinner" *ngIf="isSubmiting">
+                <div class="d-flex justify-content-center align-items-center">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
             </div>
 
         </div>
