@@ -2,162 +2,597 @@
     <div class="row holder">
     <div class="col-12 header">New Certificate</div>
         <div class="form-holder col-12 row">
-            <div class="section-info col-12">Subject data</div>
-            <div class="input-holder col-6">
-                <p class="input-text-value blurred">Common Name</p>
-                <input type="text" class="input-styled" (blur)="blurInput($event)" (focus)="focusInput($event)"
-                    [(ngModel)]="certificateAuthority.certificateDto.commonName" name="commonName"
-                    #commonName="ngModel" required>
-                <small *ngIf="(commonName.touched || ncf.submitted) && commonName.errors?.required">
-                    Common name is required
+            
+            
+            <div class="col-12 section-splitter">
+                Algorithm selection
+            </div>
+            <div class="select-holder col-6"
+                [ngClass]="{blurred : !selects.algorithm.focused, 
+                focused : selects.algorithm.focused || 
+                selects.algorithm.value !== null}">
+
+                <p class="input-text-value">Algorithm</p>
+                <ng-select class="custom"
+                    (blur)="blurSelect($event, selects.algorithm)" 
+                    (focus)="focusSelect($event, selects.algorithm)"
+                    [(ngModel)]="selects.algorithm.value" name="algorithm"
+                    (change)="algorithmChanged()"
+                    #algorithm="ngModel"
+                    [searchable]="true"
+                    [clearable]="false"
+                    [items]="selects.algorithm.items">
+                </ng-select>
+            </div>
+            
+
+            <div class="input-holder d-flex align-items-center col-6" 
+            [ngClass]="{blurred : activeInput != keySize.valueAccessor._elementRef.nativeElement.dataset.index, 
+                focused : activeInput == keySize.valueAccessor._elementRef.nativeElement.dataset.index || 
+                !isEmpty(keySize.valueAccessor._elementRef.nativeElement.dataset.index)}">
+                <p class="input-text-value">Key Size</p>
+                <input type="text" class="input-styled" 
+                (blur)="blurInput($event, keySize.valueAccessor._elementRef.nativeElement.dataset.index)" 
+                (focus)="focusInput($event, keySize.valueAccessor._elementRef.nativeElement.dataset.index)"
+                    [(ngModel)]="kSize" name="keySize"
+                    #keySize="ngModel" required data-index="1">
+                <small class="text-danger" *ngIf="(keySize.touched || ncf.submitted) && keySize.errors?.required">
+                    Key size is required
                 </small>
             </div>
-            <div class="input-holder col-6">
-                <p class="input-text-value blurred">Given Name</p>
-                <input type="text" class="input-styled" (blur)="blurInput($event)" (focus)="focusInput($event)"
-                    [(ngModel)]="certificateAuthority.certificateDto.givenName" name="givenName"
-                    #givenName="ngModel" required>
-                <small *ngIf="(givenName.touched || ncf.submitted) && givenName.errors?.required">
-                    Given name is required
-                </small>
+
+            <div class="col-12 section-splitter">
+                General
             </div>
-            <div class="input-holder col-6">
-                <p class="input-text-value blurred">Surname</p>
-                <input type="text" class="input-styled" (blur)="blurInput($event)" (focus)="focusInput($event)"
-                    [(ngModel)]="certificateAuthority.certificateDto.surname" name="surname" 
-                    #surname="ngModel" required>
-                <small *ngIf="(surname.touched || ncf.submitted) && surname.errors?.required">
-                    Surname name is required
-                </small>
+
+            <div class="select-holder col-6"
+                [ngClass]="{blurred : !selects.signatureAlgorithm.focused, 
+                focused : selects.signatureAlgorithm.focused || 
+                selects.signatureAlgorithm.value !== null}">
+
+                <p class="input-text-value">Signature Algorithm</p>
+                <ng-select class="custom"
+                    (blur)="blurSelect($event, selects.signatureAlgorithm)" 
+                    (focus)="focusSelect($event, selects.signatureAlgorithm)"
+                    [(ngModel)]="selects.signatureAlgorithm.value" name="signatureAlgorithm"
+                    #signatureAlgorithm="ngModel"
+                    [searchable]="true"
+                    [clearable]="false"
+                    [items]="selects.signatureAlgorithm.items">
+                </ng-select>
             </div>
-            <div class="input-holder col-6">
-                <p class="input-text-value blurred">Organisation</p>
-                <input type="text" class="input-styled" (blur)="blurInput($event)" (focus)="focusInput($event)"
-                    [(ngModel)]="certificateAuthority.certificateDto.organisation" name="organisation"
-                    #organisation="ngModel" required>
-                <small *ngIf="(organisation.touched || ncf.submitted) && organisation.errors?.required">
-                    Organisation name is required
+
+            <div class="input-holder d-flex align-items-center col-6" 
+            [ngClass]="{blurred : activeInput != validFrom.valueAccessor._elementRef.nativeElement.dataset.index, 
+                focused : activeInput == validFrom.valueAccessor._elementRef.nativeElement.dataset.index || 
+                !isEmpty(validFrom.valueAccessor._elementRef.nativeElement.dataset.index)}">
+                <p class="input-text-value blurred">Valid From</p>
+                <input type="text" class="input-styled" 
+                (blur)="blurInput($event, validFrom.valueAccessor._elementRef.nativeElement.dataset.index)" 
+                (focus)="focusInput($event, validFrom.valueAccessor._elementRef.nativeElement.dataset.index)"
+                    [(ngModel)]="createCertificateDTO.validFrom" name="validFrom"
+                    #validFrom="ngModel" required data-index="3">
+                <small class="text-danger" *ngIf="(validFrom.touched || ncf.submitted) && validFrom.errors?.required">
+                    Valid from is required
                 </small>
-            </div>
-            <div class="input-holder col-6">
-                <p class="input-text-value blurred">Organisation Unit</p>
-                <input type="text" class="input-styled" (blur)="blurInput($event)" (focus)="focusInput($event)"
-                    [(ngModel)]="certificateAuthority.certificateDto.organisationUnit"  name="organisationUnit"
-                    #organisationUnit="ngModel" required>
-                <small *ngIf="(organisationUnit.touched || ncf.submitted) && organisationUnit.errors?.required">
-                    Organisation unit is required
-                </small>
-            </div>
-            <div class="input-holder col-6">
-                <p class="input-text-value blurred">Country</p>
-                <input type="text" class="input-styled" (blur)="blurInput($event)" (focus)="focusInput($event)" 
-                    [(ngModel)]="certificateAuthority.certificateDto.country" name="country"
-                    #country="ngModel" required>
-                <small *ngIf="(country.touched || ncf.submitted) && country.errors?.required">
-                    Country is required
-                </small>
-            </div>
-            <div class="input-holder col-6">
-                <p class="input-text-value blurred">Email</p>
-                <input type="text" class="input-styled" (blur)="blurInput($event)" (focus)="focusInput($event)"
-                    [(ngModel)]="certificateAuthority.certificateDto.email" name="email"
-                    #email="ngModel" required>
-                <small *ngIf="(email.touched || ncf.submitted) && email.errors?.required">
-                    Email is required
-                </small>
-            </div>
-            <div class="input-holder col-6"></div>
-            <div class="section-info col-12">Time data</div>
-            <div class="input-holder col-6">
-                <p>Valid from:</p>
-                <div class="date-holder">
+
+                <div class="date-holder" 
+                *ngIf="activeInput == validFrom.valueAccessor._elementRef.nativeElement.dataset.index">
                     <dl-date-time-picker
-                        name="validFrom"
+                        name="validFromDt"
                         startView="day"
                         maxView="day"
                         minView="day"
                         [selectFilter]="futureDatesOnly"
-                        [(ngModel)]="validFromDate"
-                        #validFrom="ngModel" required>
+                        [(ngModel)]="validFromDate">
                     </dl-date-time-picker>
                 </div>
-                <small *ngIf="ncf.submitted && validFrom.errors?.required">
-                    Valid from date is required
+
+            </div>
+
+            <div class="input-holder d-flex align-items-center col-2" 
+            [ngClass]="{blurred : activeInput != validFor.valueAccessor._elementRef.nativeElement.dataset.index, 
+                focused : activeInput == validFor.valueAccessor._elementRef.nativeElement.dataset.index || 
+                !isEmpty(validFor.valueAccessor._elementRef.nativeElement.dataset.index)}">
+                <p class="input-text-value blurred">Valid For</p>
+                <input type="text" class="input-styled" 
+                (blur)="blurInput($event, validFor.valueAccessor._elementRef.nativeElement.dataset.index)" 
+                (focus)="focusInput($event, validFor.valueAccessor._elementRef.nativeElement.dataset.index)"
+                (keyup)="updateValidUntil()"
+                    [(ngModel)]="validForDate" name="validFor"
+                    #validFor="ngModel" required data-index="4">
+                <small class="text-danger" *ngIf="(validFor.touched || ncf.submitted) && validFor.errors?.required">
+                    Valid for is required
                 </small>
             </div>
-            <div class="input-holder col-3">
-                <div class="centered-content">
-                    <p> Valid for: </p>
-                    <br/>
-                    <div [ngClass]="certificateAuthority.caType == '0' ? ['custom-control','custom-radio','disabled-holder'] : ['custom-control', 'custom-radio']">
-                        <input type="radio" id="sixMonthsBtn" name="validityRadioBtn" class="custom-control-input"
-                            [value]="6" [(ngModel)]="certificateAuthority.certificateDto.validityInMonths"
-                            #validity>
-                        <label class="custom-control-label" for="sixMonthsBtn">
-                            6 months
-                        </label>
-                    </div>
-                    <br/>
-                    <div [ngClass]="certificateAuthority.caType == '0' ? ['custom-control','custom-radio','disabled-holder'] : ['custom-control', 'custom-radio']">
-                        <input type="radio" id="oneYearBtn" name="validityRadioBtn" class="custom-control-input"
-                            [value]="12" [(ngModel)]="certificateAuthority.certificateDto.validityInMonths">
-                        <label class="custom-control-label" for="oneYearBtn">
-                            1 year
-                        </label>
-                    </div>
-                    <br/>
-                    <div [ngClass]="certificateAuthority.caType == '0' ? ['custom-control','custom-radio','disabled-holder'] : ['custom-control', 'custom-radio']">
-                        <input type="radio" id="twoYearsBtn" name="validityRadioBtn" class="custom-control-input"
-                            [value]="24" [(ngModel)]="certificateAuthority.certificateDto.validityInMonths">
-                        <label class="custom-control-label" for="twoYearsBtn">
-                            2 years
-                        </label>
-                    </div>
-                    <br/>
-                    <div [ngClass]="certificateAuthority.caType != '0' ? ['custom-control','custom-radio','disabled-holder'] : ['custom-control', 'custom-radio']">
-                        <input type="radio" id="fiveYearsBtn" name="validityRadioBtn" class="custom-control-input"
-                            [value]="72" [(ngModel)]="certificateAuthority.certificateDto.validityInMonths">
-                        <label class="custom-control-label" for="fiveYearsBtn">
-                            5 years
-                        </label>
-                    </div>
-                    <br/>
-                    <div [ngClass]="certificateAuthority.caType != '0' ? ['custom-control','custom-radio','disabled-holder'] : ['custom-control', 'custom-radio']">
-                        <input type="radio" id="tenYearsBtn" name="validityRadioBtn" class="custom-control-input"
-                            [value]="120" [(ngModel)]="certificateAuthority.certificateDto.validityInMonths">
-                        <label class="custom-control-label" for="tenYearsBtn">
-                            10 years
-                        </label>
-                    </div>
+
+            <div class="input-holder label d-flex align-items-center col-4">
+                Valid Until: &nbsp;&nbsp; {{validUntilText}}
+            </div>
+
+            <div class="select-holder col-6"
+                [ngClass]="{blurred : !selects.periodType.focused, 
+                focused : selects.periodType.focused || 
+                selects.periodType.value !== null}">
+
+                <p class="input-text-value">Period Type</p>
+                <ng-select class="custom"
+                    (blur)="blurSelect($event, selects.periodType)" 
+                    (focus)="focusSelect($event, selects.periodType)"
+                    [(ngModel)]="selects.periodType.value" name="periodType"
+                    #periodType="ngModel"
+                    (change)="updateValidUntil()"
+                    [searchable]="true"
+                    [clearable]="false"
+                    [items]="selects.periodType.items">
+                </ng-select>
+            </div>
+
+            <div class="select-holder col-3"
+                [ngClass]="{blurred : !selects.signWith.focused, 
+                focused : selects.signWith.focused || 
+                selects.signWith.value !== null,
+                disabled : isSelfSigned}">
+
+                <p class="input-text-value">Sign With</p>
+                <ng-select class="custom"
+                    (blur)="blurSelect($event, selects.signWith)" 
+                    (focus)="focusSelect($event, selects.signWith)"
+                    [(ngModel)]="selects.signWith.value" name="signWith"
+                    #signWith="ngModel"
+                    [disabled]="isSelfSigned"
+                    [searchable]="true"
+                    [clearable]="true"
+                    [items]="selects.signWith.items">
+                </ng-select>
+            </div>
+
+            <div class="input-holder self-signed d-flex align-items-center justify-content-center col-3" 
+            [ngClass]="{selected : isSelfSigned}" (click)="toggleSelfSigned()">
+                Is Self Signed
+            </div>
+
+            <div class="input-holder d-flex align-items-center col-3" 
+            [ngClass]="{blurred : activeInput != serialNumber.valueAccessor._elementRef.nativeElement.dataset.index, 
+                focused : activeInput == serialNumber.valueAccessor._elementRef.nativeElement.dataset.index || 
+                !isEmpty(serialNumber.valueAccessor._elementRef.nativeElement.dataset.index)}">
+                <p class="input-text-value blurred">Serial number</p>
+                <input type="text" class="input-styled" 
+                (blur)="blurInput($event, serialNumber.valueAccessor._elementRef.nativeElement.dataset.index)" 
+                (focus)="focusInput($event, serialNumber.valueAccessor._elementRef.nativeElement.dataset.index)" 
+                    [(ngModel)]="serNumber" name="serialNumber"
+                    #serialNumber="ngModel" required data-index="7">
+                <small class="text-danger" *ngIf="(serialNumber.touched || ncf.submitted) && serialNumber.errors?.required">
+                    Serial number is required
+                </small>
+            </div>
+
+            <div class="input-holder generate-btn d-flex align-items-center justify-content-center col-3"
+            (click)="generateSerialNumber()">
+                Generate
+            </div>
+
+            <div class="col-12 section-splitter">
+                Subject data
+            </div>
+
+            <div class="input-holder d-flex align-items-center col-6" 
+            [ngClass]="{blurred : activeInput != commonName.valueAccessor._elementRef.nativeElement.dataset.index, 
+                focused : activeInput == commonName.valueAccessor._elementRef.nativeElement.dataset.index || 
+                !isEmpty(commonName.valueAccessor._elementRef.nativeElement.dataset.index)}">
+                <p class="input-text-value">Common Name</p>
+                <input type="text" class="input-styled" 
+                (blur)="blurInput($event, commonName.valueAccessor._elementRef.nativeElement.dataset.index)" 
+                (focus)="focusInput($event, commonName.valueAccessor._elementRef.nativeElement.dataset.index)"
+                    [(ngModel)]="createCertificateDTO.name.commonName" name="commonName"
+                    #commonName="ngModel" required data-index="8">
+                <small class="text-danger" *ngIf="(commonName.touched || ncf.submitted) && commonName.errors?.required">
+                    Common name is required
+                </small>
+            </div>
+            <div class="input-holder d-flex align-items-center col-6"
+            [ngClass]="{blurred : activeInput != givenName.valueAccessor._elementRef.nativeElement.dataset.index,
+                focused : activeInput == givenName.valueAccessor._elementRef.nativeElement.dataset.index ||
+                !isEmpty(givenName.valueAccessor._elementRef.nativeElement.dataset.index)}">
+                <p class="input-text-value blurred">Given Name</p>
+                <input type="text" class="input-styled" 
+                (blur)="blurInput($event, givenName.valueAccessor._elementRef.nativeElement.dataset.index)" 
+                (focus)="focusInput($event, givenName.valueAccessor._elementRef.nativeElement.dataset.index)"
+                    [(ngModel)]="createCertificateDTO.name.givenName" name="givenName"
+                    #givenName="ngModel" required data-index="9">
+                <small class="text-danger" *ngIf="(givenName.touched || ncf.submitted) && givenName.errors?.required">
+                    Given name is required
+                </small>
+            </div>
+            <div class="input-holder d-flex align-items-center col-6" 
+            [ngClass]="{blurred : activeInput != surname.valueAccessor._elementRef.nativeElement.dataset.index, 
+                focused : activeInput == surname.valueAccessor._elementRef.nativeElement.dataset.index || 
+                !isEmpty(surname.valueAccessor._elementRef.nativeElement.dataset.index)}">
+                <p class="input-text-value blurred">Surname</p>
+                <input type="text" class="input-styled" 
+                (blur)="blurInput($event, surname.valueAccessor._elementRef.nativeElement.dataset.index)" 
+                (focus)="focusInput($event, surname.valueAccessor._elementRef.nativeElement.dataset.index)"
+                    [(ngModel)]="createCertificateDTO.name.surname" name="surname" 
+                    #surname="ngModel" required data-index="10">
+                <small class="text-danger" *ngIf="(surname.touched || ncf.submitted) && surname.errors?.required">
+                    Surname is required
+                </small>
+            </div>
+            <div class="input-holder d-flex align-items-center col-6" 
+            [ngClass]="{blurred : activeInput != organisation.valueAccessor._elementRef.nativeElement.dataset.index, 
+                focused : activeInput == organisation.valueAccessor._elementRef.nativeElement.dataset.index || 
+                !isEmpty(organisation.valueAccessor._elementRef.nativeElement.dataset.index)}">
+                <p class="input-text-value blurred">Organisation Name</p>
+                <input type="text" class="input-styled" 
+                (blur)="blurInput($event, organisation.valueAccessor._elementRef.nativeElement.dataset.index)" 
+                (focus)="focusInput($event, organisation.valueAccessor._elementRef.nativeElement.dataset.index)"
+                    [(ngModel)]="createCertificateDTO.name.organisation" name="organisation"
+                    #organisation="ngModel" required data-index="11">
+                <small class="text-danger" *ngIf="(organisation.touched || ncf.submitted) && organisation.errors?.required">
+                    Organisation name is required
+                </small>
+            </div>
+            <div class="input-holder d-flex align-items-center col-6" 
+            [ngClass]="{blurred : activeInput != organisationUnit.valueAccessor._elementRef.nativeElement.dataset.index, 
+                focused : activeInput == organisationUnit.valueAccessor._elementRef.nativeElement.dataset.index || 
+                !isEmpty(organisationUnit.valueAccessor._elementRef.nativeElement.dataset.index)}">
+                <p class="input-text-value blurred">Organisation Unit</p>
+                <input type="text" class="input-styled" 
+                (blur)="blurInput($event, organisationUnit.valueAccessor._elementRef.nativeElement.dataset.index)" 
+                (focus)="focusInput($event, organisationUnit.valueAccessor._elementRef.nativeElement.dataset.index)"
+                    [(ngModel)]="createCertificateDTO.name.organisationUnit"  name="organisationUnit"
+                    #organisationUnit="ngModel" required data-index="12">
+                <small class="text-danger" *ngIf="(organisationUnit.touched || ncf.submitted) && organisationUnit.errors?.required">
+                    Organisation unit is required
+                </small>
+            </div>
+            <div class="input-holder d-flex align-items-center col-6" 
+            [ngClass]="{blurred : activeInput != stateName.valueAccessor._elementRef.nativeElement.dataset.index, 
+                focused : activeInput == stateName.valueAccessor._elementRef.nativeElement.dataset.index || 
+                !isEmpty(stateName.valueAccessor._elementRef.nativeElement.dataset.index)}">
+                <p class="input-text-value blurred">State Name</p>
+                <input type="text" class="input-styled" 
+                (blur)="blurInput($event, stateName.valueAccessor._elementRef.nativeElement.dataset.index)" 
+                (focus)="focusInput($event, stateName.valueAccessor._elementRef.nativeElement.dataset.index)" 
+                    [(ngModel)]="createCertificateDTO.name.state" name="stateName"
+                    #stateName="ngModel" required data-index="13">
+                <small class="text-danger" *ngIf="(country.touched || ncf.submitted) && country.errors?.required">
+                    State name is required
+                </small>
+            </div>
+            <div class="input-holder d-flex align-items-center col-6" 
+            [ngClass]="{blurred : activeInput != country.valueAccessor._elementRef.nativeElement.dataset.index, 
+                focused : activeInput == country.valueAccessor._elementRef.nativeElement.dataset.index || 
+                !isEmpty(country.valueAccessor._elementRef.nativeElement.dataset.index)}">
+                <p class="input-text-value blurred">Country</p>
+                <input type="text" class="input-styled" 
+                (blur)="blurInput($event, country.valueAccessor._elementRef.nativeElement.dataset.index)" 
+                (focus)="focusInput($event, country.valueAccessor._elementRef.nativeElement.dataset.index)" 
+                    [(ngModel)]="createCertificateDTO.name.country" name="country"
+                    #country="ngModel" required data-index="14">
+                <small class="text-danger" *ngIf="(country.touched || ncf.submitted) && country.errors?.required">
+                    Country is required
+                </small>
+            </div>
+            <div class="input-holder d-flex align-items-center col-6" 
+            [ngClass]="{blurred : activeInput != email.valueAccessor._elementRef.nativeElement.dataset.index, 
+                focused : activeInput == email.valueAccessor._elementRef.nativeElement.dataset.index || 
+                !isEmpty(email.valueAccessor._elementRef.nativeElement.dataset.index)}">
+                <p class="input-text-value blurred">Email</p>
+                <input type="text" class="input-styled" 
+                (blur)="blurInput($event, email.valueAccessor._elementRef.nativeElement.dataset.index)" 
+                (focus)="focusInput($event, email.valueAccessor._elementRef.nativeElement.dataset.index)"
+                    [(ngModel)]="createCertificateDTO.name.email" name="email"
+                    #email="ngModel" required data-index="15">
+
+                <small class="text-danger" *ngIf="(email.touched || ncf.submitted) && email.errors?.required">
+                    Email is required
+                </small>
+            </div>
+
+            <div class="input-holder d-flex align-items-center col-6" 
+            [ngClass]="{blurred : activeInput != localityName.valueAccessor._elementRef.nativeElement.dataset.index, 
+                focused : activeInput == localityName.valueAccessor._elementRef.nativeElement.dataset.index || 
+                !isEmpty(localityName.valueAccessor._elementRef.nativeElement.dataset.index)}">
+                <p class="input-text-value blurred">Locality Name</p>
+                <input type="text" class="input-styled" 
+                (blur)="blurInput($event, localityName.valueAccessor._elementRef.nativeElement.dataset.index)" 
+                (focus)="focusInput($event, localityName.valueAccessor._elementRef.nativeElement.dataset.index)"
+                    [(ngModel)]="createCertificateDTO.name.locality" name="localityName"
+                    #localityName="ngModel" required data-index="16">
+
+                <small class="text-danger" *ngIf="(localityName.touched || ncf.submitted) && localityName.errors?.required">
+                    Locality name is required
+                </small>
+            </div>
+
+            <div class="input-holder d-flex align-items-center col-6" 
+            [ngClass]="{blurred : activeInput != domainComponent.valueAccessor._elementRef.nativeElement.dataset.index, 
+                focused : activeInput == domainComponent.valueAccessor._elementRef.nativeElement.dataset.index || 
+                !isEmpty(domainComponent.valueAccessor._elementRef.nativeElement.dataset.index)}">
+                <p class="input-text-value blurred">Domain Component</p>
+                <input type="text" class="input-styled" 
+                (blur)="blurInput($event, domainComponent.valueAccessor._elementRef.nativeElement.dataset.index)" 
+                (focus)="focusInput($event, domainComponent.valueAccessor._elementRef.nativeElement.dataset.index)"
+                    [(ngModel)]="createCertificateDTO.name.domainComponent" name="domainComponent"
+                    #domainComponent="ngModel" required data-index="17">
+
+                <small class="text-danger" *ngIf="(domainComponent.touched || ncf.submitted) && domainComponent.errors?.required">
+                    Domain component is required
+                </small>
+            </div>
+
+            <div class="col-12 section-splitter">
+                Templates
+                <div class="create-new-template-btn d-flex justify-content-center align-items-center" 
+                [ngClass]="{selected : isCreatingTemplate}" (click)="toggleCreateTemplate()">
+                    <fa-icon [icon]="faPlus" class="navigation-icon"></fa-icon>
                 </div>
             </div>
-            <div class="section-info col-12">Extensions</div>
-            <div class="col-6">
-                <p> Key usage: </p>
-                <select class="custom-select">
-                    <option value="" selected disabled hidden>Key usage</option>
-                    <option value="digital-signature">Digital signature</option>
-                    <option value="key-encipherment"> Key encipherment</option>
-                </select>
-            </div>
-            <div class="col-6">
-                <p> Certificate authority type: </p>
-                <select class="custom-select" name="caType" [(ngModel)]="certificateAuthority.caType"
-                    (change)="caTypeChanged($event)">
-                    <option value="0">Root</option>
-                    <option value="1">Siem agent issuer</option>
-                    <option value="2">Siem center issuer</option>
-                </select>
-            </div>
-        </div>
-    </div>
 
-    <div class="row">
-        <div class="col">
-            <button class="wide-btn btn btn-dark">
-                Create
-                <span *ngIf="submitting" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> 
-            </button>
+            <div class="select-holder col-6"
+                [ngClass]="{blurred : !selects.template.focused, 
+                focused : selects.template.focused || 
+                selects.template.value !== null}">
+
+                <p class="input-text-value">Template Name</p>
+                <ng-select class="custom"
+                    (blur)="blurSelect($event, selects.template)" 
+                    (focus)="focusSelect($event, selects.template)"
+                    [(ngModel)]="selects.template.value" name="template"
+                    #template="ngModel"
+                    [searchable]="true"
+                    [clearable]="true"
+                    [items]="selects.template.items">
+                </ng-select>
+            </div>
+
+            <div class="input-holder generate-btn d-flex align-items-center justify-content-center col-3"
+            (click)="useTemplate()">
+                Use Template
+            </div>
+
+            <div class="col-3 d-flex align-items-center pointer justify-content-center remove-template-btn"
+            (click)="removeTemplate()">
+                Remove Template
+            </div>
+
+
+
+
+            <div class="col-12 section-splitter">
+                Extensions
+                
+            </div>
+
+            <div class="col-12 row new-template-section" [ngClass]="{selected : isCreatingTemplate}">
+                <div class="col-12 section-splitter">
+                    Create New Template - <span style="font-size:10px;">Current selected extensions will be added to the new template</span>
+                </div>
+                <div class="input-holder d-flex align-items-center col-6" 
+                [ngClass]="{blurred : activeInput != templateName.valueAccessor._elementRef.nativeElement.dataset.index, 
+                    focused : activeInput == templateName.valueAccessor._elementRef.nativeElement.dataset.index || 
+                    !isEmpty(templateName.valueAccessor._elementRef.nativeElement.dataset.index)}">
+                    <p class="input-text-value">Name</p>
+                    <input type="text" class="input-styled" 
+                    (blur)="blurInput($event, templateName.valueAccessor._elementRef.nativeElement.dataset.index)" 
+                    (focus)="focusInput($event, templateName.valueAccessor._elementRef.nativeElement.dataset.index)"
+                        [(ngModel)]="templateNameText" name="templateName"
+                        #templateName="ngModel" data-index="19">
+                </div>
+                <div class="input-holder generate-btn create-template-btn d-flex align-items-center justify-content-center col-6"
+                (click)="createTemplate()">
+                    Create
+                </div>
+            </div>
+
+            <div class="row col-12 extensions-holder">
+                <div class="row col-12" *ngFor="let ex of selectedExtensions" [attr.data-type]="ex.type"
+                [ngClass]="{pointer : ex.type != SUBJECT_KEY_IDENTIFIER && ex.type != AUTHORITY_KEY_IDENTIFIER && ex.type != AUTHORITY_INFO_ACCESS,
+                    'not-editable' : ex.type == SUBJECT_KEY_IDENTIFIER || ex.type == AUTHORITY_KEY_IDENTIFIER || ex.type == AUTHORITY_INFO_ACCESS}">
+
+                    <div class="col-8 d-flex align-items-center" (click)="editExtension($event)">{{ex.name}}</div>
+                    <div class="col-2 d-flex align-items-center pointer justify-content-center critical-btn" (click)="markAsCritical($event)" [ngClass]="{selected : ex.critical}">Is Critical</div>
+                    <div class="col-2 d-flex align-items-center pointer justify-content-center close-btn" (click)="removeExtension($event)"><fa-icon [icon]="faTimes" class="navigation-icon"></fa-icon></div>
+                </div>
+            </div>
+
+            <div class="col-12 row add-subject-alternative-name" [ngStyle]="{'max-height.px': sanHeight}">
+                <div class="col-12 section-splitter">
+                    Edit Subject Alternative Name
+                </div>
+                <div class="col-12 row" style="margin: 0 !important;padding: 0 !important;" *ngFor="let val of tempData.subjectAlternativeName; let i = index">
+                    <div class="input-holder d-flex align-items-center col-6" 
+                    [ngClass]="{blurred : activeInput != 's' + i, 
+                        focused : activeInput == 's' + i || 
+                        val.value != ''}">
+                        <p class="input-text-value blurred">Value</p>
+                        <input type="text" class="input-styled"
+                        (blur)="blurInput($event, 's' + i)" 
+                        (focus)="focusInput($event, 's' + i)"
+                            [(ngModel)]="tempData.subjectAlternativeName[i].value" name="value{{i}}">
+                    </div>
+                    <div class="select-holder col-4"
+                        [ngClass]="{blurred : !val.focused, 
+                        focused : val.focused || 
+                        val.typeValue !== null}">
+
+                        <p class="input-text-value">Type</p>
+                        <ng-select class="custom"
+                            (blur)="blurSelect($event, tempData.subjectAlternativeName[i])" 
+                            (focus)="focusSelect($event, tempData.subjectAlternativeName[i])"
+                            [(ngModel)]="tempData.subjectAlternativeName[i].typeValue" name="type{{i}}"
+                            [searchable]="true"
+                            [clearable]="false"
+                            [items]="val.type">
+                        </ng-select>
+                    </div>
+            
+
+                    <div class="col-2 d-flex align-items-center justify-content-center close-btn" (click)="removeSubjectAlternativeName(i)">
+                        <fa-icon [icon]="faTimes" class="navigation-icon"></fa-icon>
+                    </div>
+
+                </div>
+                
+                <div class="col-12 add-new-subject" (click)="addNewSubjectAlternativeName()">Add New</div>
+                <div class="col-6 key-usage-btn" (click)="cancelSubjectAlternativeNameSelected()">Cancel</div>
+                <div class="col-6 key-usage-btn" (click)="saveSubjectAlternativeNameSelected()">Save</div>
+            </div>
+
+            <div class="col-12 row add-basic-constraints" [ngClass]="{selected : allSelections.showBasicConstraints}">
+                <div class="col-12 section-splitter">
+                    Edit Basic Constraints
+                </div>
+
+                <div class="input-holder is-ca d-flex align-items-center col-6" 
+                [ngClass]="{selected : tempData.basicConstraints.isCA}"
+                (click)="toggleIsCA($event)">
+                    Is Certificate Authority
+                </div>
+                
+                <div class="input-holder d-flex align-items-center col-6" 
+                [ngClass]="{blurred : activeInput != pathLength.valueAccessor._elementRef.nativeElement.dataset.index, 
+                    focused : activeInput == pathLength.valueAccessor._elementRef.nativeElement.dataset.index || 
+                    !isEmpty(pathLength.valueAccessor._elementRef.nativeElement.dataset.index),
+                disabled : !tempData.basicConstraints.isCA}">
+                    <p class="input-text-value blurred">Path Length</p>
+                    <input type="text" class="input-styled" [disabled]="!tempData.basicConstraints.isCA"
+                    (blur)="blurInput($event, pathLength.valueAccessor._elementRef.nativeElement.dataset.index)" 
+                    (focus)="focusInput($event, pathLength.valueAccessor._elementRef.nativeElement.dataset.index)"
+                        [(ngModel)]="tempData.basicConstraints.pathLen" name="pathLength"
+                        #pathLength="ngModel" required data-index="18">
+
+                </div>
+
+                <div class="col-6 key-usage-btn" (click)="cancelBasicConstraintsSelected()">Cancel</div>
+                <div class="col-6 key-usage-btn" (click)="saveBasicConstraintsSelected()">Save</div>
+            </div>
+
+            <div class="col-12 row add-extended-key-usage" [ngClass]="{selected : allSelections.showExtendedKeyUsages}">
+                <div class="col-12 section-splitter">
+                    Select Extended Key Usage
+                </div>
+                <div #ekAnyExtendedUsage class="col-4 add-key-usage-item" data-usage="ANY_EXTENDED_USAGE"
+                [ngClass]="{selected: tempData.extendedKeyUsage.includes(ekAnyExtendedUsage.dataset.usage)}"
+                (click)="toggleExtendedKeyUsageSelection($event)">Any Extended Usage &nbsp;&nbsp;&nbsp;
+                <fa-icon [icon]="faCircle" class="navigation-icon" 
+                *ngIf="tempData.extendedKeyUsage.includes(ekAnyExtendedUsage.dataset.usage)"></fa-icon></div>
+                <div #ekServerAuth class="col-4 add-key-usage-item" data-usage="SERVER_AUTHENTICATION"
+                [ngClass]="{selected: tempData.extendedKeyUsage.includes(ekServerAuth.dataset.usage)}"
+                (click)="toggleExtendedKeyUsageSelection($event)">TLS Web Server Authentication &nbsp;&nbsp;&nbsp;
+                <fa-icon [icon]="faCircle" class="navigation-icon" 
+                *ngIf="tempData.extendedKeyUsage.includes(ekServerAuth.dataset.usage)"></fa-icon></div>
+                <div #ekClientAuth class="col-4 add-key-usage-item" data-usage="CLIENT_AUTHENTICATION"
+                [ngClass]="{selected: tempData.extendedKeyUsage.includes(ekClientAuth.dataset.usage)}"
+                (click)="toggleExtendedKeyUsageSelection($event)">TLS Web Client Authentication &nbsp;&nbsp;&nbsp;
+                <fa-icon [icon]="faCircle" class="navigation-icon" 
+                *ngIf="tempData.extendedKeyUsage.includes(ekClientAuth.dataset.usage)"></fa-icon></div>
+                <div #ekCodeSigning class="col-4 add-key-usage-item" data-usage="CODE_SIGNING"
+                [ngClass]="{selected: tempData.extendedKeyUsage.includes(ekCodeSigning.dataset.usage)}"
+                (click)="toggleExtendedKeyUsageSelection($event)">Code Signing &nbsp;&nbsp;&nbsp;
+                <fa-icon [icon]="faCircle" class="navigation-icon" 
+                *ngIf="tempData.extendedKeyUsage.includes(ekCodeSigning.dataset.usage)"></fa-icon></div>
+                <div #ekEmailProtection class="col-4 add-key-usage-item" data-usage="EMAIL_PROTECTION"
+                [ngClass]="{selected: tempData.extendedKeyUsage.includes(ekEmailProtection.dataset.usage)}"
+                (click)="toggleExtendedKeyUsageSelection($event)">Email Protection &nbsp;&nbsp;&nbsp;
+                <fa-icon [icon]="faCircle" class="navigation-icon" 
+                *ngIf="tempData.extendedKeyUsage.includes(ekEmailProtection.dataset.usage)"></fa-icon></div>
+                <div #ekOCSPSigning class="col-4 add-key-usage-item" data-usage="OCSP_SIGNING"
+                [ngClass]="{selected: tempData.extendedKeyUsage.includes(ekOCSPSigning.dataset.usage)}"
+                (click)="toggleExtendedKeyUsageSelection($event)">OCSP Signing &nbsp;&nbsp;&nbsp;
+                <fa-icon [icon]="faCircle" class="navigation-icon" 
+                *ngIf="tempData.extendedKeyUsage.includes(ekOCSPSigning.dataset.usage)"></fa-icon></div>
+                <div class="col-6 key-usage-btn" (click)="cancelExtendedKeyUsageSelected()">Cancel</div>
+                <div class="col-6 key-usage-btn" (click)="saveExtendedKeyUsageSelected()">Save</div>
+            </div>
+
+            <div class="col-12 row add-key-usage" [ngClass]="{selected : allSelections.showKeyUsages}">
+                <div class="col-12 section-splitter">
+                    Select Key Usage
+                </div>
+                <div #kCertificateSigning class="col-4 add-key-usage-item" data-usage="CERTIFICATE_SIGNING"
+                [ngClass]="{selected: tempData.keyUsage.includes(kCertificateSigning.dataset.usage)}"
+                (click)="toggleKeyUsageSelection($event)">Certificate Signing &nbsp;&nbsp;&nbsp;
+                <fa-icon [icon]="faCircle" class="navigation-icon" 
+                *ngIf="tempData.keyUsage.includes(kCertificateSigning.dataset.usage)"></fa-icon></div>
+                <div #kCRLSign class="col-4 add-key-usage-item" data-usage="CRL_SIGN"
+                [ngClass]="{selected: tempData.keyUsage.includes(kCRLSign.dataset.usage)}"
+                (click)="toggleKeyUsageSelection($event)">CRL Sign &nbsp;&nbsp;&nbsp;
+                <fa-icon [icon]="faCircle" class="navigation-icon" 
+                *ngIf="tempData.keyUsage.includes(kCRLSign.dataset.usage)"></fa-icon></div>
+                <div #kDataEncipherment class="col-4 add-key-usage-item" data-usage="DATA_ENCIPHERMENT"
+                [ngClass]="{selected: tempData.keyUsage.includes(kDataEncipherment.dataset.usage)}"
+                (click)="toggleKeyUsageSelection($event)">Data Encipherment &nbsp;&nbsp;&nbsp;
+                <fa-icon [icon]="faCircle" class="navigation-icon" 
+                *ngIf="tempData.keyUsage.includes(kDataEncipherment.dataset.usage)"></fa-icon></div>
+                <div #kDecipherOnly class="col-4 add-key-usage-item" data-usage="DECIPHER_ONLY"
+                [ngClass]="{selected: tempData.keyUsage.includes(kDecipherOnly.dataset.usage)}"
+                (click)="toggleKeyUsageSelection($event)">Decipher Only &nbsp;&nbsp;&nbsp;
+                <fa-icon [icon]="faCircle" class="navigation-icon" 
+                *ngIf="tempData.keyUsage.includes(kDecipherOnly.dataset.usage)"></fa-icon></div>
+                <div #kDigitalSignature class="col-4 add-key-usage-item" data-usage="DIGITAL_SIGNATURE"
+                [ngClass]="{selected: tempData.keyUsage.includes(kDigitalSignature.dataset.usage)}"
+                (click)="toggleKeyUsageSelection($event)">Digital Signature &nbsp;&nbsp;&nbsp;
+                <fa-icon [icon]="faCircle" class="navigation-icon" 
+                *ngIf="tempData.keyUsage.includes(kDigitalSignature.dataset.usage)"></fa-icon></div>
+                <div #kEncipherOnly class="col-4 add-key-usage-item" data-usage="ENCIPHER_ONLY"
+                [ngClass]="{selected: tempData.keyUsage.includes(kEncipherOnly.dataset.usage)}"
+                (click)="toggleKeyUsageSelection($event)">Encipher Only &nbsp;&nbsp;&nbsp;
+                <fa-icon [icon]="faCircle" class="navigation-icon" 
+                *ngIf="tempData.keyUsage.includes(kEncipherOnly.dataset.usage)"></fa-icon></div>
+                <div #kKeyAgreement class="col-4 add-key-usage-item" data-usage="KEY_AGREEMENT"
+                [ngClass]="{selected: tempData.keyUsage.includes(kKeyAgreement.dataset.usage)}"
+                (click)="toggleKeyUsageSelection($event)">Key Agreement &nbsp;&nbsp;&nbsp;
+                <fa-icon [icon]="faCircle" class="navigation-icon" 
+                *ngIf="tempData.keyUsage.includes(kKeyAgreement.dataset.usage)"></fa-icon></div>
+                <div #kKeyEncipherment class="col-4 add-key-usage-item" data-usage="KEY_ENCIPHERMENT"
+                [ngClass]="{selected: tempData.keyUsage.includes(kKeyEncipherment.dataset.usage)}"
+                (click)="toggleKeyUsageSelection($event)">Key Encipherment &nbsp;&nbsp;&nbsp;
+                <fa-icon [icon]="faCircle" class="navigation-icon" 
+                *ngIf="tempData.keyUsage.includes(kKeyEncipherment.dataset.usage)"></fa-icon></div>
+                <div #kNonRepudiation class="col-4 add-key-usage-item" data-usage="NON_REPUDIATION"
+                [ngClass]="{selected: tempData.keyUsage.includes(kNonRepudiation.dataset.usage)}"
+                (click)="toggleKeyUsageSelection($event)">Non Repudiation &nbsp;&nbsp;&nbsp;
+                <fa-icon [icon]="faCircle" class="navigation-icon" 
+                *ngIf="tempData.keyUsage.includes(kNonRepudiation.dataset.usage)"></fa-icon></div>
+
+                <div class="col-6 key-usage-btn" (click)="cancelKeyUsageSelected()">Cancel</div>
+                <div class="col-6 key-usage-btn" (click)="saveKeyUsageSelected()">Save</div>
+            </div>
+
+            <div class="col-12 row add-extension-list" [ngClass]="{selected : extensionsSelected}">
+                <div class="col-12 section-splitter">
+                    New Extension
+                </div>
+                <div class="col-6 extension-list-item " (click)="basicConstraintsSelected()" [ngClass]="{selected : containsType('BASIC_CONSTRAINTS')}">Basic Constraints</div>
+                <div class="col-6 extension-list-item" (click)="saveSubjectKeyIdentifierSelected()" [ngClass]="{selected : containsType('SUBJECT_KEY_IDENTIFIER')}">Subject Key Identifier</div>
+                <div class="col-6 extension-list-item" (click)="saveAuthorityKeyIdentifierSelected()" [ngClass]="{selected : containsType('AUTHORITY_KEY_IDENTIFIER')}">Authority Key Identifier</div>
+                <div class="col-6 extension-list-item" (click)="keyUsageSelected()" [ngClass]="{selected : containsType('KEY_USAGE')}">Key Usage</div>
+                <div class="col-6 extension-list-item" (click)="extendedKeyUsageSelected()" [ngClass]="{selected : containsType('EXTENDED_KEY_USAGE')}">Extended Key Usage</div>
+                <div class="col-6 extension-list-item" (click)="saveAuthorityInfoAccessSelected()" [ngClass]="{selected : containsType('AUTHORITY_INFO_ACCESS')}">Authority Info Access</div>
+                <div class="col-6 extension-list-item" (click)="subjectAlternativeNameSelected()" [ngClass]="{selected : containsType('SUBJECT_ALTERNATIVE_NAME')}">Subject Alternative Name</div>
+            </div>
+
+            <div class="col-12 add-extension-btn d-flex align-items-center justify-content-center"
+            [ngClass]="{selected : extensionsSelected || additionalSelected}" (click)="toggleExtensions()">
+                
+                <fa-icon [icon]="faPlus" class="navigation-icon" *ngIf="!extensionsSelected && !additionalSelected"></fa-icon>
+                <fa-icon [icon]="faArrowUp" class="navigation-icon" *ngIf="extensionsSelected || additionalSelected"></fa-icon>
+                <div class="add-extension-circle d-flex align-items-center justify-content-center" [ngClass]="{selected : extensionsSelected || additionalSelected}"></div>
+                
+            </div>
+
+            <div class="col-12 section-splitter">
+                Finalization
+            </div>
+
+            <div class="col-12 submit-certificate d-flex align-items-center justify-content-center" (click)="submit()">
+                
+                Submit
+                
+            </div>
+
         </div>
     </div>
 

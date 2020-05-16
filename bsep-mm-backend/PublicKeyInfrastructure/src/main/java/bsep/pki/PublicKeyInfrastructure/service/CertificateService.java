@@ -4,14 +4,13 @@ import bsep.pki.PublicKeyInfrastructure.data.X509CertificateData;
 import bsep.pki.PublicKeyInfrastructure.dto.CertificateDto;
 import bsep.pki.PublicKeyInfrastructure.dto.CertificateSearchDto;
 import bsep.pki.PublicKeyInfrastructure.dto.PageDto;
-import bsep.pki.PublicKeyInfrastructure.exception.ApiBadRequestException;
 import bsep.pki.PublicKeyInfrastructure.exception.ApiNotFoundException;
 import bsep.pki.PublicKeyInfrastructure.model.*;
+import bsep.pki.PublicKeyInfrastructure.model.enums.CertificateType;
 import bsep.pki.PublicKeyInfrastructure.repository.CARepository;
 import bsep.pki.PublicKeyInfrastructure.repository.CertificateRepository;
 import bsep.pki.PublicKeyInfrastructure.utility.DateService;
 import bsep.pki.PublicKeyInfrastructure.utility.KeyStoreService;
-import bsep.pki.PublicKeyInfrastructure.utility.PageService;
 import bsep.pki.PublicKeyInfrastructure.utility.X500Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +23,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.security.PrivateKey;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.util.Date;
@@ -106,14 +107,14 @@ public class CertificateService {
         Certificate certificate = new Certificate();
 
         // osnovni podaci
-        certificate.setCN(subjectCertificateDto.getCommonName());
+//        certificate.setCN(subjectCertificateDto.getCommonName());
         certificate.setSurname(subjectCertificateDto.getSurname());
-        certificate.setUserEmail(subjectCertificateDto.getEmail());
+//        certificate.setUserEmail(subjectCertificateDto.getEmail());
         certificate.setGivenName(subjectCertificateDto.getGivenName());
-        certificate.setC(subjectCertificateDto.getCountry());
-        certificate.setO(subjectCertificateDto.getOrganisation());
-        certificate.setOU(subjectCertificateDto.getOrganisationUnit());
-        certificate.setUserId("test"); // TODO postaviti user id iz keycloak context-a
+//        certificate.setC(subjectCertificateDto.getCountry());
+//        certificate.setO(subjectCertificateDto.getOrganisation());
+//        certificate.setOU(subjectCertificateDto.getOrganisationUnit());
+//        certificate.setUserId("test"); // TODO postaviti user id iz keycloak context-a
         certificate.setValidFrom(subjectCertificateDto.getValidFrom());
         certificate.setValidUntil(subjectCertificateDto.getValidUntil());
         certificate.setSerialNumber(serialNumber);
@@ -124,38 +125,37 @@ public class CertificateService {
         certificate.setIssuedByCertificate(issuerCertificate);
         issuerCertificate.getIssuerForCertificates().add(certificate);
 
-        Extension bcExtension = new Extension();
+        CertificateExtension bcExtension = new CertificateExtension();
         bcExtension.setName("Basic Constraint");
-        bcExtension.setCertificate(certificate);
+        //bcExtension.setCertificate(certificate);
         bcExtension.getAttributes().add(
-                new ExtensionAttribute(null, "Not Certificate Authority.", bcExtension));
+                new ExtensionAttribute(null, "Not Certificate Authority."));
 
-        Extension keyUsageExtension = new Extension();
+        CertificateExtension keyUsageExtension = new CertificateExtension();
         keyUsageExtension.setName("Key Usage");
-        keyUsageExtension.setCertificate(certificate);
+        //keyUsageExtension.setCertificate(certificate);
 
         if (certificate.getCertificateType().equals(CertificateType.SIEM_AGENT)) {
             keyUsageExtension.getAttributes().add(
-                    new ExtensionAttribute(null, "DataSign", keyUsageExtension));
+                    new ExtensionAttribute(null, "DataSign"));
         }
 
         keyUsageExtension.getAttributes().add(
-                new ExtensionAttribute(null, "KeyEncipherment", keyUsageExtension));
+                new ExtensionAttribute(null, "KeyEncipherment"));
 
-        Extension crlDistPointExtension = new Extension();
+        CertificateExtension crlDistPointExtension = new CertificateExtension();
         crlDistPointExtension.setName("CRL Distribution point");
-        crlDistPointExtension.setCertificate(certificate);
+        //crlDistPointExtension.setCertificate(certificate);
         crlDistPointExtension.getAttributes().add(
-                new ExtensionAttribute(null, crlPublicPath, crlDistPointExtension));
+                new ExtensionAttribute(null, crlPublicPath));
         
-        Extension aiaExtension = new Extension();
+        CertificateExtension aiaExtension = new CertificateExtension();
         aiaExtension.setName("Authority Information Access");
-        aiaExtension.setCertificate(certificate);
+        //aiaExtension.setCertificate(certificate);
         aiaExtension.getAttributes().add(
                 new ExtensionAttribute(
                         null,
-                        "URL: " + certEndpoint + issuerCertificate.getSerialNumber(),
-                        aiaExtension));
+                        "URL: " + certEndpoint + issuerCertificate.getSerialNumber()));
 
         certificate.getExtensions().add(bcExtension);
         certificate.getExtensions().add(keyUsageExtension);
@@ -210,6 +210,27 @@ public class CertificateService {
             return new InputStreamResource(new ByteArrayInputStream(binary));
         } else {
             throw new ApiNotFoundException("Cert not found.");
+        }
+    }
+
+    public InputStreamResource getCertPKCS12BySerialNumber(String serialNumber) {
+        Optional<Certificate> optionalCertificate = certificateRepository.findBySerialNumber(serialNumber);
+        if (optionalCertificate.isPresent()) {
+            Certificate certificate = optionalCertificate.get();
+
+            X509Certificate[] chain = keyStoreService
+                    .getCertificate(certificate.getSerialNumber())
+                    .getX509CertificateChain();
+
+            PrivateKey privateKey = (PrivateKey) keyStoreService
+                    .getKey(certificate.getSerialNumber());
+
+            InputStream pkcs12InStream = keyStoreService.getPkcs12InputStream(
+                    chain, privateKey, certificate.getSerialNumber());
+
+            return new InputStreamResource(pkcs12InStream);
+        } else {
+            throw new ApiNotFoundException("Cert not found");
         }
     }
 }

@@ -6,9 +6,10 @@ import bsep.pki.PublicKeyInfrastructure.dto.RevocationDto;
 import bsep.pki.PublicKeyInfrastructure.exception.ApiBadRequestException;
 import bsep.pki.PublicKeyInfrastructure.exception.ApiNotFoundException;
 import bsep.pki.PublicKeyInfrastructure.model.CA;
-import bsep.pki.PublicKeyInfrastructure.model.CAType;
+import bsep.pki.PublicKeyInfrastructure.model.enums.CAType;
 import bsep.pki.PublicKeyInfrastructure.model.Certificate;
 import bsep.pki.PublicKeyInfrastructure.model.CertificateRevocation;
+import bsep.pki.PublicKeyInfrastructure.model.enums.RevokeReason;
 import bsep.pki.PublicKeyInfrastructure.repository.CARepository;
 import bsep.pki.PublicKeyInfrastructure.repository.CertificateRepository;
 import bsep.pki.PublicKeyInfrastructure.utility.KeyStoreService;
@@ -24,6 +25,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+//TODO: DELETE
 @Service
 @Transactional(propagation = Propagation.REQUIRED)
 public class CRLService {
@@ -77,6 +79,31 @@ public class CRLService {
             return new CertificateDto(certificate);
         } else {
             throw new ApiNotFoundException();
+        }
+    }
+
+    public CertificateDto revoke(RevocationDto revocationDto) {
+        Optional<Certificate> optCert = certificateRepository.findBySerialNumber(revocationDto.getSerialNumber());
+        if (optCert.isPresent() && optCert.get().getRevocation() == null) {
+            Certificate cert = optCert.get();
+            CertificateRevocation certificateRevocation = new CertificateRevocation(cert, revocationDto.getRevokeReason());
+            cert.setRevocation(certificateRevocation);
+
+            if (revocationDto.getRevokeReason().equals(RevokeReason.KEY_COMPROMISE)) {
+                revokeAllChildCerts(cert);
+            }
+
+            cert = certificateRepository.save(cert);
+            return new CertificateDto(cert);
+        } else {
+            throw new ApiBadRequestException();
+        }
+    }
+
+    public void revokeAllChildCerts(Certificate parentCert) {
+        for (Certificate cert : parentCert.getIssuerForCertificates()) {
+            cert.setRevocation(new CertificateRevocation(cert, RevokeReason.CA_COMPROMISE));
+            revokeAllChildCerts(cert);
         }
     }
 

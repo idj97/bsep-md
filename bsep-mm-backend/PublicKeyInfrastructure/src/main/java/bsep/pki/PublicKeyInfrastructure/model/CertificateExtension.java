@@ -16,7 +16,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Extension {
+public class CertificateExtension {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,10 +25,6 @@ public class Extension {
     @Column(nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "extension", cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
     private List<ExtensionAttribute> attributes = new ArrayList<>();
-
-    @ManyToOne(cascade = CascadeType.ALL)
-    private Certificate certificate;
-
 }

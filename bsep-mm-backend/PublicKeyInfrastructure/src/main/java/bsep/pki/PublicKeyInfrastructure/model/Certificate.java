@@ -1,5 +1,7 @@
 package bsep.pki.PublicKeyInfrastructure.model;
 
+import bsep.pki.PublicKeyInfrastructure.dto.NameDto;
+import bsep.pki.PublicKeyInfrastructure.model.enums.CertificateType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,6 +21,9 @@ public class Certificate {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, unique = true)
+    private String serialNumber;
+
     @OneToOne(cascade = CascadeType.ALL)
     private CA issuedForCA;
 
@@ -34,35 +39,35 @@ public class Certificate {
     @OneToOne(cascade = CascadeType.ALL)
     private CertificateRequest certificateRequest;
 
-    @Column(nullable = false, unique = true)
-    private String serialNumber;
-
     @Column(unique = true, nullable = false)
     private String keyStoreAlias;
 
     @Column(nullable = false)
-    private String userId;
+    private String keyGenerationAlgorithm;
 
     @Column(nullable = false)
-    private String userEmail;
+    private Integer keySize;
 
     @Column(nullable = false)
-    private String O;
+    private String signingAlgorithm;
 
     @Column(nullable = false)
-    private String C;
+    private Boolean selfSigned;
 
     @Column(nullable = false)
-    private String OU;
+    private Boolean isCa;
+    private Integer pathLen;
 
-    @Column(nullable = false)
-    private String GivenName;
-
-    @Column(nullable = false)
-    private String Surname;
-
-    @Column(nullable = false)
-    private String CN;
+    private String commonName;         // common name
+    private String organisationUnit;   // organisation unit
+    private String organisation;       // organisation name
+    private String locality;           // locality
+    private String state;              // state
+    private String country;            // country
+    private String domainComponent;    // domain component
+    private String email;              // email
+    private String givenName;          // given name
+    private String surname;            // surname
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
@@ -76,9 +81,25 @@ public class Certificate {
     @Column(nullable = false)
     private Date dateCreated = new Date();
 
-    @OneToMany(mappedBy = "certificate", cascade = CascadeType.ALL)
-    private List<Extension> extensions = new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<CertificateExtension> extensions = new ArrayList<>();
 
     @Enumerated(value = EnumType.STRING)
     private CertificateType certificateType;
+
+    @Column(nullable = false)
+    private boolean isOcspResponder;
+
+    public void setName(NameDto nameDto) {
+        commonName = nameDto.getCommonName();
+        organisationUnit = nameDto.getOrganisationUnit();
+        organisation = nameDto.getOrganisation();
+        locality = nameDto.getLocality();
+        state = nameDto.getState();
+        country = nameDto.getCountry();
+        domainComponent = nameDto.getDomainComponent();
+        email = nameDto.getEmail();
+        givenName = nameDto.getGivenName();
+        surname = nameDto.getSurname();
+    }
 }

@@ -2,6 +2,8 @@ import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { RevokeDialogService } from 'src/app/services/revoke-dialog.service';
 import { Subscription } from 'rxjs';
 import { faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons';
+import { CertificateService } from 'src/app/services/certificate.service';
+import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'app-view-all-certificates',
@@ -46,13 +48,12 @@ export class ViewAllCertificatesComponent implements OnInit {
 
     this.data = finalData;
     this.elStatus = elStatus;
-    console.log(this.elStatus);
-    console.log(this.data);
   }
   get parentData() { return this.data; }
 
   
-  constructor(private revokeDialogService: RevokeDialogService) { }
+  constructor(private revokeDialogService: RevokeDialogService,
+              private certificateService: CertificateService) { }
 
   ngOnInit() {
     if (this.isRevoked) return;
@@ -124,6 +125,17 @@ export class ViewAllCertificatesComponent implements OnInit {
 
   moreOrLessIssuerInformation(event, issuerStatus): void {
     issuerStatus.isSelected = !issuerStatus.isSelected;
+  }
+
+  downloadCertificate(item: any): void {
+    this.certificateService.downloadCertificate(item.serialNumber).subscribe(
+      data => {
+        saveAs(data, `${item.commonName}.p12`);
+      },
+      error => {
+        console.log(error);
+      }
+    );
   }
 
 }

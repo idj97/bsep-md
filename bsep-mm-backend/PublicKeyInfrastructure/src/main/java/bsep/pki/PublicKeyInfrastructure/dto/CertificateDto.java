@@ -1,16 +1,13 @@
 package bsep.pki.PublicKeyInfrastructure.dto;
 
 import bsep.pki.PublicKeyInfrastructure.model.Certificate;
-import bsep.pki.PublicKeyInfrastructure.model.CertificateType;
+import bsep.pki.PublicKeyInfrastructure.model.enums.CertificateType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.Future;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,40 +18,26 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class CertificateDto {
 	private Long id;
-	
-    @NotBlank
     private String commonName;
-
-    @NotBlank
+    private String serialNumber;
+    private String organisationUnit;
+    private String organisation;
+    private String locality;
+    private String state;
+    private String country;
+    private String domainComponent;
+    private String email;
     private String givenName;
-
-    @NotBlank
     private String surname;
 
-    @NotBlank
-    private String organisation;
-
-    @NotBlank
-    private String organisationUnit;
-
-    @NotBlank
-    private String country;
-
-    @NotBlank
-    private String email;
-
-    @NotNull
-    @Future
-    @JsonFormat(pattern = "dd-MM-yyyy HH:mm", timezone = "Europe/Belgrade")
+    @JsonFormat(pattern = "dd-MM-yyyy", timezone = "Europe/Belgrade")
     private Date validFrom;
 
-    private int validityInMonths;
-
-    @JsonFormat(pattern = "dd-MM-yyyy HH:mm", timezone = "Europe/Belgrade")
+    @JsonFormat(pattern = "dd-MM-yyyy", timezone = "Europe/Belgrade")
     private Date validUntil;
 
+    private int validityInMonths;
     private CertificateDto issuer;
-    private Integer serialNumber;
     private CertificateType certificateType;
     private RevocationDto revocation;
     private List<ExtensionDto> extensionDtoList;
@@ -62,16 +45,19 @@ public class CertificateDto {
     public CertificateDto(Certificate certificate) {
         super();
         id = certificate.getId();
-        commonName = certificate.getCN();
+        commonName = certificate.getCommonName();
         givenName = certificate.getGivenName();
         surname = certificate.getGivenName();
-        organisation = certificate.getO();
-        organisationUnit = certificate.getOU();
-        country = certificate.getC();
-        email = certificate.getUserEmail();
+        organisation = certificate.getOrganisation();
+        organisationUnit = certificate.getOrganisationUnit();
+        country = certificate.getCountry();
+        email = certificate.getEmail();
+        state = certificate.getState();
+        locality = certificate.getLocality();
+        domainComponent = certificate.getDomainComponent();
         validFrom = certificate.getValidFrom();
         validUntil = certificate.getValidUntil();
-        serialNumber = Integer.parseInt(certificate.getSerialNumber());
+        serialNumber = certificate.getSerialNumber();
         certificateType = certificate.getCertificateType();
 
         if (certificate.getRevocation() != null)

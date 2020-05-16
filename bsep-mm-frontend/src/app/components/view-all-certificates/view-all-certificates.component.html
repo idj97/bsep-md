@@ -2,11 +2,11 @@
     <table class="certificates-table">
         <tr class="certificate-row header">
             <td>Common Name</td>
-            <td>Type</td>
             <td>Valid From</td>
             <td>Valid Until</td>
-            <td *ngIf="!isRevoked">Action</td>
-            <td *ngIf="isRevoked">Revoke Reason</td>
+            <td colspan="2" *ngIf="!isRevoked">Action</td>
+            <td colspan="1" *ngIf="isRevoked">Revoke Reason</td>
+            <td colspan="1" *ngIf="isRevoked">Action</td>
         </tr>
         <tr *ngIf="data.length == 0">
             <td colspan="5" class="nothing-to-display">Currently nothing to display</td>
@@ -18,11 +18,11 @@
                         <table class="certificates-table-inner">
                             <tr class="certificate-row-inner not-selected">
                                 <td>{{item.commonName}}</td>
-                                <td>{{item.certificateType}}</td>
                                 <td>{{item.validFrom}}</td>
                                 <td>{{item.validUntil}}</td>
                                 <td *ngIf="!isRevoked" (click)="initRevokeDialog(item, i)" class="revoke-action">Revoke</td>
                                 <td *ngIf="isRevoked">{{item.revocation.revokeReason}}</td>
+                                <td class="revoke-action" (click)="downloadCertificate(item)">Download</td>
                             </tr>
                         </table>
                     </div>
@@ -62,10 +62,6 @@
                 <td>{{item.givenName}}</td>
             </tr>
             <tr>
-                <td>Surname: </td>
-                <td>{{item.surname}}</td>
-            </tr>
-            <tr>
                 <td>Organisation: </td>
                 <td>{{item.organisation}}</td>
             </tr>
@@ -73,13 +69,18 @@
                 <td>Organisation Unit: </td>
                 <td>{{item.organisationUnit}}</td>
             </tr>
+            <tr>
+                <td>State Name: </td>
+                <td>{{item.state}}</td>
+            </tr>
+            
         </table>
     </div>
     <div class="main-data-table-holder col-6 d-flex justify-content-center align-items-center">
         <table class="main-data-table">
             <tr>
-                <td>Certificate Type: </td>
-                <td>{{item.certificateType}}</td>
+                <td>Locality Name: </td>
+                <td>{{item.locality}}</td>
             </tr>
             <tr>
                 <td>Country: </td>
@@ -92,6 +93,10 @@
             <tr>
                 <td>Surname: </td>
                 <td>{{item.surname}}</td>
+            </tr>
+            <tr>
+                <td>Domain Component: </td>
+                <td>{{item.domainComponent}}</td>
             </tr>
             <tr>
                 <td>Valid From: </td>

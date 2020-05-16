@@ -4,7 +4,11 @@ import bsep.pki.PublicKeyInfrastructure.data.X509CertificateData;
 import bsep.pki.PublicKeyInfrastructure.dto.CADto;
 import bsep.pki.PublicKeyInfrastructure.dto.CertificateDto;
 import bsep.pki.PublicKeyInfrastructure.exception.ApiNotFoundException;
-import bsep.pki.PublicKeyInfrastructure.model.*;
+import bsep.pki.PublicKeyInfrastructure.model.CA;
+import bsep.pki.PublicKeyInfrastructure.model.Certificate;
+import bsep.pki.PublicKeyInfrastructure.model.CertificateExtension;
+import bsep.pki.PublicKeyInfrastructure.model.ExtensionAttribute;
+import bsep.pki.PublicKeyInfrastructure.model.enums.CAType;
 import bsep.pki.PublicKeyInfrastructure.repository.CARepository;
 import bsep.pki.PublicKeyInfrastructure.repository.CertificateRepository;
 import bsep.pki.PublicKeyInfrastructure.utility.DateService;
@@ -17,13 +21,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
+//TODO: DELETE (probably)
 @Service
 @Transactional(propagation = Propagation.REQUIRED)
 public class CAService {
@@ -111,14 +112,14 @@ public class CAService {
         Certificate certificate = new Certificate();
 
         // osnovni podaci
-        certificate.setCN(subjectCertificateDto.getCommonName());
+//        certificate.setCN(subjectCertificateDto.getCommonName());
         certificate.setSurname(subjectCertificateDto.getSurname());
-        certificate.setUserEmail(subjectCertificateDto.getEmail());
+//        certificate.setUserEmail(subjectCertificateDto.getEmail());
         certificate.setGivenName(subjectCertificateDto.getGivenName());
-        certificate.setC(subjectCertificateDto.getCountry());
-        certificate.setO(subjectCertificateDto.getOrganisation());
-        certificate.setOU(subjectCertificateDto.getOrganisationUnit());
-        certificate.setUserId("test"); // TODO postaviti user id iz keycloak context-a
+//        certificate.setC(subjectCertificateDto.getCountry());
+//        certificate.setO(subjectCertificateDto.getOrganisation());
+//        certificate.setOU(subjectCertificateDto.getOrganisationUnit());
+//        certificate.setUserId("test"); // TODO postaviti user id iz keycloak context-a
         certificate.setValidFrom(subjectCertificateDto.getValidFrom());
         certificate.setValidUntil(subjectCertificateDto.getValidUntil());
         certificate.setSerialNumber(serialNumber);
@@ -130,32 +131,31 @@ public class CAService {
         issuerCertificate.getIssuerForCertificates().add(certificate);
 
         // extensions
-        Extension bcExtension = new Extension();
+        CertificateExtension bcExtension = new CertificateExtension();
         bcExtension.setName("Basic Constraint");
-        bcExtension.setCertificate(certificate);
+        //bcExtension.setCertificate(certificate);
         bcExtension.getAttributes().add(
-                new ExtensionAttribute(null, "Is Certificate Authority.", bcExtension));
+                new ExtensionAttribute(null, "Is Certificate Authority."));
 
-        Extension keyUsageExtension = new Extension();
+        CertificateExtension keyUsageExtension = new CertificateExtension();
         keyUsageExtension.setName("Key Usage");
-        keyUsageExtension.setCertificate(certificate);
+        //keyUsageExtension.setCertificate(certificate);
         keyUsageExtension.getAttributes().add(
-                new ExtensionAttribute(null, "KeyCertSign", keyUsageExtension));
+                new ExtensionAttribute(null, "KeyCertSign"));
 
-        Extension crlDistPointExtension = new Extension();
+        CertificateExtension crlDistPointExtension = new CertificateExtension();
         crlDistPointExtension.setName("CRL Distribution point");
-        crlDistPointExtension.setCertificate(certificate);
+        //crlDistPointExtension.setCertificate(certificate);
         crlDistPointExtension.getAttributes().add(
-                new ExtensionAttribute(null, crlPublicPath, crlDistPointExtension));
+                new ExtensionAttribute(null, crlPublicPath));
 
-        Extension aiaExtension = new Extension();
+        CertificateExtension aiaExtension = new CertificateExtension();
         aiaExtension.setName("Authority Information Access");
-        aiaExtension.setCertificate(certificate);
+        //aiaExtension.setCertificate(certificate);
         aiaExtension.getAttributes().add(
                 new ExtensionAttribute(
                         null,
-                        "URL: " + certEndpoint + issuerCertificate.getSerialNumber(),
-                        aiaExtension));
+                        "URL: " + certEndpoint + issuerCertificate.getSerialNumber()));
 
         certificate.getExtensions().add(bcExtension);
         certificate.getExtensions().add(keyUsageExtension);
@@ -164,35 +164,35 @@ public class CAService {
         return certificate;
     }
 
-    public CADto tryCreateCA(Long id, CAType caType, CertificateType certificateType) {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-        try {
-            Date validFrom = sdf.parse("08-04-2019 21:00");
-            Date validUntil = sdf.parse("08-04-2025 21:00");
-            CertificateDto certificateDto = new CertificateDto(
-            		null,
-                    "*.google-ca.com",
-                    "google",
-                    "ca",
-                    "abc",
-                    "google PKI",
-                    "usa",
-                    "google-pki@gmail.com",
-                    validFrom,
-                    0,
-                    validUntil,
-                    null,
-                    null,
-                    certificateType,
-                    null,
-                    null);
-            CADto caDto = new CADto(null, id, caType, certificateDto);
-            createCA(caDto);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
+//    public CADto tryCreateCA(Long id, CAType caType, CertificateType certificateType) {
+//        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+//        try {
+//            Date validFrom = sdf.parse("08-04-2019 21:00");
+//            Date validUntil = sdf.parse("08-04-2025 21:00");
+//            CertificateDto certificateDto = new CertificateDto(
+//            		null,
+//                    "*.google-ca.com",
+//                    "google",
+//                    "ca",
+//                    "abc",
+//                    "google PKI",
+//                    "usa",
+//                    "google-pki@gmail.com",
+//                    validFrom,
+//                    0,
+//                    validUntil,
+//                    null,
+//                    null,
+//                    certificateType,
+//                    null,
+//                    null);
+//            CADto caDto = new CADto(null, id, caType, certificateDto);
+//            createCA(caDto);
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
 
     public List<CADto> findByType(CAType type) {
 

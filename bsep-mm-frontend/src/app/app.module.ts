@@ -23,6 +23,7 @@ import { FormsModule } from '@angular/forms';
 import { DlDateTimeDateModule, DlDateTimePickerModule } from 'angular-bootstrap-datetimepicker';
 import { ViewAllCertificatesComponent } from './components/view-all-certificates/view-all-certificates.component';
 import { CertificateRequestDataComponent } from './components/certificate-requests/certificate-request-data/certificate-request-data.component';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @NgModule({
   declarations: [
@@ -51,6 +52,7 @@ import { CertificateRequestDataComponent } from './components/certificate-reques
     FormsModule,
     DlDateTimeDateModule,
     DlDateTimePickerModule,
+    NgSelectModule,
   ],
   providers: [
     {
