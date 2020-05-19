@@ -16,6 +16,7 @@ import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +36,7 @@ public class OcspService {
     @Autowired
     private KeyStoreService keyStoreService;
 
+    @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
     public byte[] getResponse(byte[] encodedOcspRequest) {
         /*
         pronadji OCSP responder sertifikat iz baze
@@ -92,7 +94,7 @@ public class OcspService {
 
                         if (certEntity.getRevocation() != null) {
                             basicOCSPRespBuilder.addResponse(certId,
-                                    new RevokedStatus(new Date(), certEntity.getRevocation().getRevokeReason().getKey()));
+                                    new RevokedStatus(certEntity.getRevocation().getCreatedAt(), certEntity.getRevocation().getRevokeReason().getKey()));
                         } else {
                             basicOCSPRespBuilder.addResponse(certId, CertificateStatus.GOOD);
                         }
