@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
+
 @RestController
 @RequestMapping("/ocsp")
 public class OcspController {
@@ -20,7 +22,7 @@ public class OcspController {
             produces = "application/ocsp-response"
     )
     public ResponseEntity<byte[]> processOcspRequest(@RequestBody byte[] request) {
-        System.out.println("OCSP CHECK");
+        System.out.println("OCSP CHECK at " + new Date());
         return new ResponseEntity<>(ocspService.getResponse(request), HttpStatus.OK);
     }
 

@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Date;
+
 @SpringBootApplication
 public class SiemAgentApplication implements CommandLineRunner {
 
@@ -29,11 +31,11 @@ public class SiemAgentApplication implements CommandLineRunner {
 								null,
 								String.class);
 
-				System.out.println(responseEntity.getStatusCode());
+				System.out.println(responseEntity.getStatusCode() + " at " + new Date());
 			} catch (ResourceAccessException ex) {
 				System.out.println("Error, reason " + ex.getCause().getMessage());
 			}
-			Thread.sleep(500);
+			Thread.sleep(5000);
 		}
 	}
 }
