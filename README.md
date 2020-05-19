@@ -17,5 +17,15 @@ The pages listed below contain information that helped us develop the applicatio
 ## Java run options:
 `-Djava.security.debug=certpath` - enable full certpath debugging
 
+## TODO CP2:
+- content security policy (zastita za xss)
+- forma u sklopu PKI-a za kreiranje sertifikata za bilo kog korisnika ???
+- verifikacija putem email-a ???
+- access control list da zastitimo neke bitne fajlove u sistemu (konfiguracione)
+  - windows -> desni klik + security (samo admin moze otvoriti aplikaciju)
+  - stelovanje kroz kod 
+  - (samo admin i aplikacija smeju da pristupe konfig. fajlovima)
+- keycloak login -> ogranici broj login-a (ne moze brute force)
+
 
 
