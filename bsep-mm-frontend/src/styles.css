@@ -186,6 +186,14 @@ body {
     color: gray !important;
 }
 
+.date-holder .col.dl-abdtp-date-button.dl-abdtp-day.dl-abdtp-disabled.aria-disabled {
+    color: gray !important;
+}
+
+.date-holder .col.dl-abdtp-date-button.dl-abdtp-day.dl-abdtp-active.dl-abdtp-selected.dl-abdtp-now.dl-abdtp-disabled.aria-disabled {
+    color: white !important;
+}
+
 .date-holder .col.dl-abdtp-date-button.dl-abdtp-day.dl-abdtp-future {
     color: gray !important;
 }
