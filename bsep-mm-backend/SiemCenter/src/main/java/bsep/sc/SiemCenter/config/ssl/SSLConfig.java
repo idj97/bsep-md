@@ -30,9 +30,11 @@ public class SSLConfig {
 
         SSLHostConfig sslHostConfig = new SSLHostConfig();
 
+
         // VERIFICAATION AND REVOCATION CHECKING
         sslHostConfig.setCertificateVerification("required");
         sslHostConfig.setRevocationEnabled(true);
+        sslHostConfig.setSslProtocol("TLS");
 
         // SERVER CERTIFICATE CONFIGURATION
         sslHostConfig.setCertificateKeystoreFile(keyStorePath);
@@ -42,7 +44,13 @@ public class SSLConfig {
 
         // TRUST CONFIGURATION
         sslHostConfig.setTrustManagerClassName("bsep.sc.SiemCenter.config.ssl.SSLTrustManager");
+
+        // ADDITIONAL
+        sslHostConfig.setSslProtocol("TLS");
+        sslHostConfig.setDisableSessionTickets(true);
+
         connector.addSslHostConfig(sslHostConfig);
+
 
         TomcatConnectorCustomizer customizer = conn -> {
             conn.setRedirectPort(8443);

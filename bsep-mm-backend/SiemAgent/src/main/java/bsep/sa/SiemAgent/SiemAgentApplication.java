@@ -4,8 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.ResourceAccessException;
@@ -33,10 +31,9 @@ public class SiemAgentApplication implements CommandLineRunner {
 
 				System.out.println(responseEntity.getStatusCode());
 			} catch (ResourceAccessException ex) {
-				ex.getMessage();
-				System.out.println(ex.getLocalizedMessage());
+				System.out.println("Error, reason " + ex.getCause().getMessage());
 			}
-			Thread.sleep(5000);
+			Thread.sleep(500);
 		}
 	}
 }

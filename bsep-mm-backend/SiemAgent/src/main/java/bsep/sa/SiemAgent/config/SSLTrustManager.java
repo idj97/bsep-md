@@ -3,15 +3,10 @@ package bsep.sa.SiemAgent.config;
 import bsep.sa.SiemAgent.util.KeyStoreUtil;
 
 import javax.net.ssl.X509TrustManager;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class SSLTrustManager implements X509TrustManager {
     private String classpath;
@@ -19,6 +14,7 @@ public class SSLTrustManager implements X509TrustManager {
     private String trustStorePassword;
     private String ocspCertAlias;
     private String rootCertAlias;
+    private Object lock;
 
     public SSLTrustManager() {
         super();
@@ -31,17 +27,26 @@ public class SSLTrustManager implements X509TrustManager {
 
     @Override
     public void checkClientTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
-        validation(x509Certificates);
+        try {
+            validation(x509Certificates);
+        } catch (CertificateException ex) {
+            System.out.println("Client validation failed, reason: " + ex.getMessage() + " at " + new Date());
+            throw ex;
+        }
     }
 
     @Override
     public void checkServerTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
-        validation(x509Certificates);
+        try {
+            validation(x509Certificates);
+        } catch (CertificateException ex) {
+            System.out.println("Server validation failed, reason: " + ex.getMessage() + " at " + new Date());
+            throw ex;
+        }
     }
 
     @Override
     public X509Certificate[] getAcceptedIssuers() {
-        System.out.println("ACCEPTED ISSUERS");
         return new X509Certificate[0];
     }
 
@@ -53,7 +58,7 @@ public class SSLTrustManager implements X509TrustManager {
         trustAnchors.add(new TrustAnchor(rootCert, null));
 
         List<X509Certificate> certChain = new ArrayList<>();
-        for (int i = 0; i < x509Certificates.length; i++)
+        for (int i = 0; i < x509Certificates.length-1; i++)
             certChain.add(x509Certificates[i]);
 
         CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
@@ -61,22 +66,23 @@ public class SSLTrustManager implements X509TrustManager {
 
         try {
             CertPathValidator certPathValidator = CertPathValidator.getInstance("PKIX");
-            PKIXParameters pkixParams = new PKIXParameters(trustAnchors);
+
             PKIXRevocationChecker pkixRevocationChecker = (PKIXRevocationChecker) certPathValidator.getRevocationChecker();
-            pkixRevocationChecker.setOcspResponder(new URI("http://localhost:8081/ocsp"));
+            HashSet<PKIXRevocationChecker.Option> options = new HashSet<>();
+            options.add(PKIXRevocationChecker.Option.NO_FALLBACK);
+            pkixRevocationChecker.setOptions(options);
             pkixRevocationChecker.setOcspResponderCert(ocspCert);
+
+            PKIXParameters pkixParams = new PKIXParameters(trustAnchors);
             pkixParams.addCertPathChecker(pkixRevocationChecker);
+            pkixParams.setDate(new Date());
             certPathValidator.validate(certPath, pkixParams);
         } catch (NoSuchAlgorithmException e) {
-            throw new CertificateException();
+            throw new CertificateException("No such algorithm.");
         } catch (InvalidAlgorithmParameterException e) {
-            throw new CertificateException();
-        } catch (URISyntaxException e) {
-            throw new CertificateException();
+            throw new CertificateException("Invalid algorithm parameter.");
         } catch (CertPathValidatorException e) {
-            System.out.println(e.getReason().toString());
-            System.out.println("VALIDATION FAILED");
-            throw new CertificateException("VALIDATION FAILED.");
+            throw new CertificateException(e.getReason().toString());
         }
     }
 }

@@ -4,6 +4,7 @@ import bsep.sa.SiemAgent.util.KeyStoreUtil;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContextBuilder;
+import org.apache.http.ssl.SSLContexts;
 import org.apache.http.ssl.TrustStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -33,11 +34,15 @@ public class RestTemplateConfig {
         TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> {
             SSLTrustManager customSSLTrustManager = new SSLTrustManager();
             try { customSSLTrustManager.checkServerTrusted(chain, ""); }
-            catch (CertificateException ex) { return false; }
+            catch (Exception ex) { return false; }
             return true;
         };
 
         String keyStorePath = resourceLoader.getResource("keystore.jks").getFile().getAbsolutePath();
+
+        SSLContextBuilder builder = SSLContexts.custom();
+
+
         SSLContext sslContext = SSLContextBuilder
                 .create()
                 .loadKeyMaterial(KeyStoreUtil.getKeyStore(keyStorePath, password), password.toCharArray())
