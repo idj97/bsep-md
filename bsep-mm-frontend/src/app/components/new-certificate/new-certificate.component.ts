@@ -9,6 +9,8 @@ import { faPlus, faArrowUp, faCircle, faTimes } from '@fortawesome/free-solid-sv
 import { CertificateService } from 'src/app/services/certificate.service';
 import { CreateCertificate } from 'src/app/dtos/create-certificate.dto';
 import { TemplateService } from 'src/app/services/template.service';
+import { ValidationErrors } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-new-certificate',
@@ -17,13 +19,17 @@ import { TemplateService } from 'src/app/services/template.service';
 })
 export class NewCertificateComponent implements OnInit {
 
+  private defaults: any = {};
+
+  private isSubmiting: boolean = false;
+
   private templateNameText: string;
   private isCreatingTemplate: boolean = false;
 
   private createCertificateDTO: CreateCertificate = new CreateCertificate();
 
   private isSelfSigned: boolean = false;
-  private validForDate: any = '0';
+  private validForDate: any = '1';
   private validUntil = null;
   private serNumber: number;
   private kSize: number = 2048;
@@ -200,18 +206,19 @@ export class NewCertificateComponent implements OnInit {
     private toasterSvc: ToasterService,
     private certificateService: CertificateService,
     private templateService: TemplateService,
+    private router: Router,
     ) { }
 
   ngOnInit() {
     this.datePipe = new DatePipe('en-US');
     this.submitting = false;
-    this.setDefaultFormValues();
+    this.validFromDate = new Date();
 
     this.setUpSelects();
     this.updateValidUntil();
     
+    
   }
-
 
   createCertificateFinal(): CreateCertificate {
     this.createCertificateDTO.keySize = this.kSize;
@@ -233,14 +240,59 @@ export class NewCertificateComponent implements OnInit {
   }
 
   submit(): void {
+    const errors = [];
+    Object.keys(this.newCertificateForm.controls).forEach(key => {
+      const controlErrors: ValidationErrors = this.newCertificateForm.controls[key].errors;
+      if (controlErrors) {
+        Object.keys(controlErrors).forEach(keyError => {
+          errors.push({
+            'control': key,
+            'error': keyError,
+            'value': controlErrors[keyError]
+          });
+        });
+      }
+    });
+
+    console.log(errors);
+
+    if (errors.length > 1) {
+      this.toasterSvc.showMessage('Error', 'Please make sure that all fields are entered correctly');
+      return;
+    }
+
+    if ((errors.length === 1 && 
+      errors[0].control === 'signWith' && 
+      errors[0].error === 'required' && 
+      errors[0].value && 
+      !this.isSelfSigned) ||
+      (errors.length === 1 && 
+      errors[0].control !== 'signWith')) {
+        this.toasterSvc.showMessage('Error', 'Please make sure that all fields are entered correctly');
+        return;
+    }
+
+
+    this.isSubmiting = true;
     let dto = this.createCertificateFinal();
     console.log(dto);
     this.certificateService.postCreateCertificate(dto).subscribe(
       data => {
         console.log(data);
+        //this.newCertificateForm.resetForm();
+        //this.resetForm();
+        //this.setUpDefaults();
+        this.toasterSvc.showMessage('Success', 'Certificate has been successfully created');
       },
       error => {
-        console.log(error);
+        this.toasterSvc.showErrorMessage(error);
+      }
+    ).add(
+      () => {
+        this.isSubmiting = false;
+        this.router.navigateByUrl('/home', { skipLocationChange: true }).then(() => {
+          this.router.navigateByUrl('new-certificate');
+      });
       }
     );
     
@@ -384,37 +436,9 @@ export class NewCertificateComponent implements OnInit {
     return dateButton.value > (new Date()).getTime();
   }
 
-  createCertificate() {
-
-    if(this.newCertificateForm.valid) {
-      this.submitting = true;
-      this.formatDate();
-      this.certificateAuthority.certificateDto.certificateType = this.getEnumString(this.certificateAuthority.caType);
-      this.caService.createCA(this.certificateAuthority).subscribe(
-        data => {
-          this.newCertificateForm.resetForm();
-          this.setDefaultFormValues();
-          this.toasterSvc.showMessage('Success', 'Certificate authority successfully created');
-        },
-        err => {
-          this.toasterSvc.showErrorMessage(err);
-        }
-      ).add(() => {
-        this.submitting = false;
-      });
-    }
-  }
-
   formatDate() {
     this.certificateAuthority.certificateDto.validFrom =
       this.datePipe.transform(this.validFromDate, 'dd-MM-yyyy HH:mm');
-  }
-
-  setDefaultFormValues() {
-    this.certificateAuthority.certificateDto.certificateType = 'SIEM_AGENT_ISSUER';
-    this.certificateAuthority.caType = 1;
-    this.certificateAuthority.certificateDto.validityInMonths = 6;
-    this.validFromDate = new Date();
   }
 
   caTypeChanged(event: any) {
