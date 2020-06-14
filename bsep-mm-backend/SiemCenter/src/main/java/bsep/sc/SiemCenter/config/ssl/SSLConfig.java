@@ -30,7 +30,6 @@ public class SSLConfig {
 
         SSLHostConfig sslHostConfig = new SSLHostConfig();
 
-
         // VERIFICAATION AND REVOCATION CHECKING
         sslHostConfig.setCertificateVerification("required");
         sslHostConfig.setRevocationEnabled(true);
@@ -48,12 +47,10 @@ public class SSLConfig {
         // ADDITIONAL
         sslHostConfig.setSslProtocol("TLS");
         sslHostConfig.setDisableSessionTickets(true);
-
         connector.addSslHostConfig(sslHostConfig);
 
-
         TomcatConnectorCustomizer customizer = conn -> {
-            conn.setRedirectPort(8443);
+            conn.setRedirectPort(8442);
         };
 
         TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory();

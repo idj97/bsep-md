@@ -1,6 +1,5 @@
 package bsep.pki.PublicKeyInfrastructure.dto;
 
-import bsep.pki.PublicKeyInfrastructure.model.enums.CAType;
 import bsep.pki.PublicKeyInfrastructure.model.enums.CertificateType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
@@ -29,7 +28,6 @@ public class CertificateSearchDto {
     private Boolean isCa;
 
     private String commonName = "";
-    private CAType caType; // TREBA IZBRISATI NAKON STO SE getAll metoda za pretragu izbrise
     private CertificateType certificateType;
 
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm", timezone = "Europe/Belgrade")

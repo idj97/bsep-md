@@ -1,168 +1,257 @@
 package bsep.pki.PublicKeyInfrastructure.service;
 
-import bsep.pki.PublicKeyInfrastructure.data.X509CertificateData;
-import bsep.pki.PublicKeyInfrastructure.dto.CertificateDto;
-import bsep.pki.PublicKeyInfrastructure.dto.CertificateSearchDto;
-import bsep.pki.PublicKeyInfrastructure.dto.PageDto;
+import bsep.pki.PublicKeyInfrastructure.config.AlgorithmsConfig;
+import bsep.pki.PublicKeyInfrastructure.data.X509CertificateWithKeys;
+import bsep.pki.PublicKeyInfrastructure.dto.*;
+import bsep.pki.PublicKeyInfrastructure.dto.extensions.AbstractExtensionDto;
+import bsep.pki.PublicKeyInfrastructure.exception.ApiBadRequestException;
+import bsep.pki.PublicKeyInfrastructure.exception.ApiInternalServerErrorException;
 import bsep.pki.PublicKeyInfrastructure.exception.ApiNotFoundException;
-import bsep.pki.PublicKeyInfrastructure.model.*;
-import bsep.pki.PublicKeyInfrastructure.model.enums.CertificateType;
-import bsep.pki.PublicKeyInfrastructure.repository.CARepository;
+import bsep.pki.PublicKeyInfrastructure.model.Certificate;
+import bsep.pki.PublicKeyInfrastructure.model.CertificateRequest;
+import bsep.pki.PublicKeyInfrastructure.model.CertificateRevocation;
+import bsep.pki.PublicKeyInfrastructure.model.enums.CertificateRequestStatus;
+import bsep.pki.PublicKeyInfrastructure.model.enums.RevokeReason;
 import bsep.pki.PublicKeyInfrastructure.repository.CertificateRepository;
+import bsep.pki.PublicKeyInfrastructure.repository.CertificateRequestRepository;
 import bsep.pki.PublicKeyInfrastructure.utility.DateService;
 import bsep.pki.PublicKeyInfrastructure.utility.KeyStoreService;
+import bsep.pki.PublicKeyInfrastructure.utility.UriService;
 import bsep.pki.PublicKeyInfrastructure.utility.X500Service;
+import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.asn1.x509.Extension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.security.KeyPair;
 import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
-import java.util.Date;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 @Transactional(propagation = Propagation.REQUIRED)
 public class CertificateService {
-
     @Autowired
-    private X500Service x500Service;
+    private UriService uriService;
 
     @Autowired
     private DateService dateService;
 
     @Autowired
-    private CARepository caRepository;
+    private X500Service x500Service;
+
+    @Autowired
+    private KeyStoreService keyStoreService;
 
     @Autowired
     private CertificateRepository certificateRepository;
 
     @Autowired
-    private KeyStoreService keyStoreService;
+    private CertificateRequestRepository csrRepository;
 
-    @Value("${crl.public.path}")
-    private String crlPublicPath;
-    
-    @Value("${certs.endpoint}")
-    private String certEndpoint;
+    public CertificateDto create(CreateCertificateDto dto) {
+        verifyCreateCertificate(dto);
 
-    public CertificateDto createCertificate(CertificateRequest certificateRequest, Long issuerId) {
+        // create cert, chain and key pair
+        X509CertificateWithKeys x509certificateWithKeys = createX509Certificate(dto);
 
-        CA issuer = caRepository
-                .findById(issuerId)
-                .orElseThrow(() -> new ApiNotFoundException("CA issuer not found"));
+        // create entity
+        Certificate certificateEntity = createCertificateEntity(dto, x509certificateWithKeys.getX509Certificate());
 
-        return createCertificate(certificateRequest, issuer);
+        // save private key and chain
+        keyStoreService.saveEntry(
+                x509certificateWithKeys.getX509CertificatesChain(),
+                x509certificateWithKeys.getPrivateKey(),
+                dto.getSerialNumber());
+
+        // save entity
+        certificateEntity = certificateRepository.save(certificateEntity);
+        return new CertificateDto(certificateEntity);
     }
 
-    public CertificateDto createCertificate(CertificateRequest certificateRequest, CA issuerCa) {
-        CertificateDto certificateDto = new CertificateDto();
+    public X509CertificateWithKeys createX509Certificate(CreateCertificateDto dto) {
+        X500Name subjectName = dto.getName().getBCX500Name();
+        X500Name issuerName;
+        if (dto.getSelfSigned()) issuerName = subjectName;
+        else                     issuerName = x500Service.getX500Name(dto.getIssuingCaSerialNumber());
 
-        certificateDto.setCertificateType(certificateRequest.getCertificateType());
-        certificateDto.setCommonName(certificateRequest.getCommonName());
-        certificateDto.setCountry(certificateRequest.getCountry());
-        certificateDto.setOrganisation(certificateRequest.getOrganisation());
-        certificateDto.setGivenName(certificateRequest.getGivenName());
-        certificateDto.setSurname(certificateRequest.getSurname());
-        certificateDto.setOrganisationUnit(certificateRequest.getOrganisationUnit());
-        certificateDto.setEmail(certificateRequest.getEmail());
+        Date validFrom  = dateService.getDate(dto.getValidFrom());
+        Date validUntil = dateService.getDate(dto.getValidUntil());
 
-        Date now = new Date();
-        certificateDto.setValidFrom(now);
-
-        Date until = dateService.addMonths(now, 6);
-        certificateDto.setValidUntil(until);
-
-        X509CertificateData subjectX509Data = x500Service.createCertificate(
-                certificateDto, issuerCa.getCertificate());
-
-        Certificate certificate = createCertificateEntity(
-                certificateDto,
-                issuerCa.getCertificate(),
-                subjectX509Data.getSerialNumber());
-
-        certificateRequest.setCertificate(certificate);
-        certificate.setCertificateRequest(certificateRequest);
-
-        certificate = certificateRepository.save(certificate);
-        x500Service.saveX509Certificate(subjectX509Data);
-        return new CertificateDto(certificate);
-    }
-
-    public Certificate createCertificateEntity(
-            CertificateDto subjectCertificateDto,
-            Certificate issuerCertificate,
-            String serialNumber)
-    {
-        Certificate certificate = new Certificate();
-
-        // osnovni podaci
-//        certificate.setCN(subjectCertificateDto.getCommonName());
-        certificate.setSurname(subjectCertificateDto.getSurname());
-//        certificate.setUserEmail(subjectCertificateDto.getEmail());
-        certificate.setGivenName(subjectCertificateDto.getGivenName());
-//        certificate.setC(subjectCertificateDto.getCountry());
-//        certificate.setO(subjectCertificateDto.getOrganisation());
-//        certificate.setOU(subjectCertificateDto.getOrganisationUnit());
-//        certificate.setUserId("test"); // TODO postaviti user id iz keycloak context-a
-        certificate.setValidFrom(subjectCertificateDto.getValidFrom());
-        certificate.setValidUntil(subjectCertificateDto.getValidUntil());
-        certificate.setSerialNumber(serialNumber);
-        certificate.setKeyStoreAlias(serialNumber);
-        certificate.setCertificateType(subjectCertificateDto.getCertificateType());
-
-        // uvezivanje subject sertifikata sa issuer sertifikatom
-        certificate.setIssuedByCertificate(issuerCertificate);
-        issuerCertificate.getIssuerForCertificates().add(certificate);
-
-        CertificateExtension bcExtension = new CertificateExtension();
-        bcExtension.setName("Basic Constraint");
-        //bcExtension.setCertificate(certificate);
-        bcExtension.getAttributes().add(
-                new ExtensionAttribute(null, "Not Certificate Authority."));
-
-        CertificateExtension keyUsageExtension = new CertificateExtension();
-        keyUsageExtension.setName("Key Usage");
-        //keyUsageExtension.setCertificate(certificate);
-
-        if (certificate.getCertificateType().equals(CertificateType.SIEM_AGENT)) {
-            keyUsageExtension.getAttributes().add(
-                    new ExtensionAttribute(null, "DataSign"));
+        PublicKey subjectPublicKey;
+        PrivateKey subjectPrivateKey;
+        if (dto.getCsrId() == null) {
+            KeyPair subjectKeyPair = x500Service.generateKeyPair(dto.getKeyGenerationAlgorithm(), dto.getKeySize());
+            subjectPublicKey = subjectKeyPair.getPublic();
+            subjectPrivateKey = subjectKeyPair.getPrivate();
+        } else {
+            subjectPublicKey = (PublicKey) keyStoreService.getKey(dto.getCsrId().toString());
+            subjectPrivateKey = null;
+        }
+        PublicKey issuerPublicKey;
+        PrivateKey issuerPrivateKey;
+        if (dto.getSelfSigned()) {
+            issuerPublicKey = subjectPublicKey;
+            issuerPrivateKey = subjectPrivateKey;
+        } else {
+            issuerPublicKey = keyStoreService.getSingleCertificate(dto.getIssuingCaSerialNumber()).getPublicKey();
+            issuerPrivateKey = (PrivateKey) keyStoreService.getKey(dto.getIssuingCaSerialNumber());
         }
 
-        keyUsageExtension.getAttributes().add(
-                new ExtensionAttribute(null, "KeyEncipherment"));
+        Map<String , Object> params = new HashMap<>();
+        params.put("subjectPublicKey", subjectPublicKey);
+        params.put("issuerPublicKey", issuerPublicKey);
+        params.put("ocspResponderUris", uriService.ocspResponderUris);
+        if (dto.getSelfSigned()) params.put("caIssuersUris", Arrays.asList());
+        else params.put("caIssuersUris", Arrays.asList(uriService.getCertificateAddress(dto.getIssuingCaSerialNumber())));
 
-        CertificateExtension crlDistPointExtension = new CertificateExtension();
-        crlDistPointExtension.setName("CRL Distribution point");
-        //crlDistPointExtension.setCertificate(certificate);
-        crlDistPointExtension.getAttributes().add(
-                new ExtensionAttribute(null, crlPublicPath));
-        
-        CertificateExtension aiaExtension = new CertificateExtension();
-        aiaExtension.setName("Authority Information Access");
-        //aiaExtension.setCertificate(certificate);
-        aiaExtension.getAttributes().add(
-                new ExtensionAttribute(
-                        null,
-                        "URL: " + certEndpoint + issuerCertificate.getSerialNumber()));
+        List<Extension> bcExtensions = new ArrayList<>();
+        try {
+            for (AbstractExtensionDto e : dto.getExtensions()) {
+                Extension bcExtension = e.getBCExtension(params);
+                bcExtensions.add(bcExtension);
+            }
+        } catch (IOException ex) {
+            throw new ApiInternalServerErrorException("Something went wrong while generating extensions.");
+        }
 
-        certificate.getExtensions().add(bcExtension);
-        certificate.getExtensions().add(keyUsageExtension);
-        certificate.getExtensions().add(crlDistPointExtension);
-        certificate.getExtensions().add(aiaExtension);
+        X509Certificate subjectX509Certificate = x500Service.generate(
+                dto.getSignatureAlgorithm(),
+                dto.getSerialNumber(),
+                subjectName,
+                issuerName,
+                validFrom,
+                validUntil,
+                bcExtensions,
+                subjectPublicKey,
+                issuerPrivateKey
+        );
+        X509Certificate[] chain = x500Service.createX509CertChain(subjectX509Certificate, dto.getIssuingCaSerialNumber());
+        return new X509CertificateWithKeys(subjectX509Certificate, chain, subjectPublicKey, subjectPrivateKey);
+    }
 
-        return certificate;
+    public Certificate createCertificateEntity(CreateCertificateDto dto, X509Certificate subjectX509Cert) {
+        Certificate cert = new Certificate();
+        cert.setKeyGenerationAlgorithm(dto.getKeyGenerationAlgorithm());
+        cert.setKeySize(dto.getKeySize());
+        cert.setSigningAlgorithm(dto.getSignatureAlgorithm());
+        cert.setSerialNumber(dto.getSerialNumber());
+        cert.setValidFrom(dateService.getDate(dto.getValidFrom()));
+        cert.setValidUntil(dateService.getDate(dto.getValidUntil()));
+        cert.setSelfSigned(dto.getSelfSigned());
+        cert.setKeyStoreAlias(dto.getSerialNumber());
+        cert.setName(dto.getName());
+
+        if (dto.getIssuingCaSerialNumber() != null) {
+            Certificate issuer = certificateRepository.findBySerialNumber(dto.getIssuingCaSerialNumber()).get();
+            cert.setIssuedByCertificate(issuer);
+            issuer.getIssuerForCertificates().add(cert);
+        }
+
+        Map<String , Object> params = new HashMap<>();
+        params.put("subjectX509Cert", subjectX509Cert);
+        params.put("ocspResponderUris", uriService.ocspResponderUris);
+        if (dto.getSelfSigned()) params.put("caIssuersUris", Arrays.asList());
+        else                     params.put("caIssuersUris", Arrays.asList(uriService.getCertificateAddress(dto.getIssuingCaSerialNumber())));
+
+        cert.getExtensions().addAll(dto.getExtensions().stream().map(e -> e.getExtensionEntity(params)).collect(Collectors.toList()));
+
+        if (dto.getCsrId() != null) {
+            CertificateRequest csr = csrRepository.findById(dto.getCsrId()).get();
+            cert.setCertificateRequest(csr);
+            csr.setCertificate(cert);
+            csr.setStatus(CertificateRequestStatus.APPROVED);
+        }
+
+        Boolean isCa = false;
+        int pathLength = subjectX509Cert.getBasicConstraints();
+        if (pathLength != -1) {
+            isCa = true;
+        }
+
+        cert.setIsCa(isCa);
+        cert.setPathLen(pathLength);
+        return cert;
+    }
+
+    public void verifyCreateCertificate(CreateCertificateDto dto) {
+        if (!AlgorithmsConfig.secureKeyGenerationAlgorithms.contains(dto.getKeyGenerationAlgorithm())) {
+            throw new ApiBadRequestException("Invalid key algorithm");
+        }
+
+        if (dto.getKeyGenerationAlgorithm().equals("RSA")) {
+            if (!AlgorithmsConfig.secureRSASigningAlgorithms.contains(dto.getSignatureAlgorithm())) {
+                throw new ApiBadRequestException("Invalid signing algorithm");
+            }
+        } else if (dto.getKeyGenerationAlgorithm().equals("DSA")) {
+            if (!AlgorithmsConfig.secureDSASigningAlgorithms.contains("DSA")) {
+                throw new ApiBadRequestException("Invalid signing algorithm");
+            }
+        } else {
+            throw new ApiNotFoundException("Signing algorithm not found.");
+        }
+
+        if (certificateRepository.findBySerialNumber(dto.getSerialNumber()).isPresent()) {
+            throw new ApiBadRequestException("Serial number not available");
+        }
+
+        if (certificateRepository.findByCommonName(dto.getName().getCommonName()).isPresent()) {
+            throw new ApiBadRequestException("Common name not available");
+        }
+
+        Optional<Certificate> optionalCertificate = certificateRepository.findBySerialNumber(dto.getIssuingCaSerialNumber());
+        if (!dto.getSelfSigned() && optionalCertificate.isEmpty()) {
+            throw new ApiBadRequestException("Invalid issuer serial number");
+        }
+
+        if (dto.getSelfSigned() && optionalCertificate.isPresent()) {
+            throw new ApiBadRequestException("Self signed and issuer CA cannot be present at same time.");
+        }
+
+        //TODO: CA certificate path validation according to KeySigning action
+        boolean caPathValid = true;
+        if (!caPathValid) {
+            throw new ApiBadRequestException("Invalid CA for this type of action");
+        }
+
+        Date validFrom  = dateService.getDate(dto.getValidFrom());
+        Date validUntil = dateService.getDate(dto.getValidUntil());
+        if (!validFrom.before(validUntil) || validFrom.equals(validUntil)) {
+            throw new ApiBadRequestException("Invalid validity dates");
+        }
+
+        if (dto.getCsrId() != null && dto.getSelfSigned()) {
+            throw new ApiBadRequestException("Invalid csr request");
+        }
+
+        if (dto.getCsrId() != null) {
+            Optional<CertificateRequest> requestOptional = csrRepository.findById(dto.getCsrId());
+            if (requestOptional.isEmpty()) {
+                throw new ApiBadRequestException("Invalid csr id");
+            } else if (!requestOptional.get().getStatus().equals(CertificateRequestStatus.PENDING)) {
+                throw new ApiBadRequestException("Csr is already processed");
+            }
+        }
+    }
+
+    public List<CertificateDto> getCaCertificates() {
+        Sort sort = Sort.by(Sort.Direction.ASC, "dateCreated");
+        return certificateRepository.findValidCaCertificates(sort).stream()
+                .map(CertificateDto::new)
+                .collect(Collectors.toList());
     }
 
     public PageDto<CertificateDto> search(CertificateSearchDto certificateSearchDto) {
@@ -193,12 +282,32 @@ public class CertificateService {
         return pageDto;
     }
 
+    public InputStreamResource getCertPKCS12BySerialNumber(String serialNumber) {
+        Optional<Certificate> optionalCertificate = certificateRepository.findBySerialNumber(serialNumber);
+        if (optionalCertificate.isPresent()) {
+            Certificate certificate = optionalCertificate.get();
+
+            X509Certificate[] chain = keyStoreService
+                    .getCertificateChain(certificate.getSerialNumber());
+
+            PrivateKey privateKey = (PrivateKey) keyStoreService
+                    .getKey(certificate.getSerialNumber());
+
+            InputStream pkcs12InStream = keyStoreService.getPkcs12InputStream(
+                    chain, privateKey, certificate.getSerialNumber());
+
+            return new InputStreamResource(pkcs12InStream);
+        } else {
+            throw new ApiNotFoundException("Cert not found");
+        }
+    }
+
     public InputStreamResource getCertFileBySerialNumber(String serialNumber) {
         Optional<Certificate> optionalCertificate = certificateRepository.findBySerialNumber(serialNumber);
         if (optionalCertificate.isPresent()) {
             Certificate certificate = optionalCertificate.get();
-            X509Certificate x509Certificate = keyStoreService.getCertificate(
-                    certificate.getSerialNumber()).getX509CertificateChain()[0];
+            X509Certificate x509Certificate = keyStoreService.getSingleCertificate(
+                    certificate.getSerialNumber());
 
             byte[] binary = null;
             try {
@@ -213,24 +322,29 @@ public class CertificateService {
         }
     }
 
-    public InputStreamResource getCertPKCS12BySerialNumber(String serialNumber) {
-        Optional<Certificate> optionalCertificate = certificateRepository.findBySerialNumber(serialNumber);
-        if (optionalCertificate.isPresent()) {
-            Certificate certificate = optionalCertificate.get();
 
-            X509Certificate[] chain = keyStoreService
-                    .getCertificate(certificate.getSerialNumber())
-                    .getX509CertificateChain();
+    public CertificateDto revoke(RevocationDto revocationDto) {
+        Optional<Certificate> optCert = certificateRepository.findBySerialNumber(revocationDto.getSerialNumber());
+        if (optCert.isPresent() && optCert.get().getRevocation() == null) {
+            Certificate cert = optCert.get();
+            CertificateRevocation certificateRevocation = new CertificateRevocation(cert, revocationDto.getRevokeReason());
+            cert.setRevocation(certificateRevocation);
 
-            PrivateKey privateKey = (PrivateKey) keyStoreService
-                    .getKey(certificate.getSerialNumber());
+            if (revocationDto.getRevokeReason().equals(RevokeReason.KEY_COMPROMISE)) {
+                revokeAllChildCerts(cert);
+            }
 
-            InputStream pkcs12InStream = keyStoreService.getPkcs12InputStream(
-                    chain, privateKey, certificate.getSerialNumber());
-
-            return new InputStreamResource(pkcs12InStream);
+            cert = certificateRepository.save(cert);
+            return new CertificateDto(cert);
         } else {
-            throw new ApiNotFoundException("Cert not found");
+            throw new ApiBadRequestException();
+        }
+    }
+
+    public void revokeAllChildCerts(Certificate parentCert) {
+        for (Certificate cert : parentCert.getIssuerForCertificates()) {
+            cert.setRevocation(new CertificateRevocation(cert, RevokeReason.CA_COMPROMISE));
+            revokeAllChildCerts(cert);
         }
     }
 }
