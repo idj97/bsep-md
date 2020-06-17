@@ -18,7 +18,7 @@ import java.util.Date;
 
 template "Multiple logs with single condition template"
 
-rule "id:@{row.rowNumber} - @{ruleName}"
+rule "@{ruleName}"
     no-loop true
     when
         $log1: LogEvent($src: machineSource)
@@ -31,7 +31,7 @@ rule "id:@{row.rowNumber} - @{ruleName}"
             count($log2)
         )
     then
-        System.out.println("id:@{row.rowNumber} - @{ruleName}");
+        System.out.println("@{ruleName}");
         insert(new Alarm($src, "@{alarmName}", "@{alarmDescription}", AlarmType.@{alarmType}, new Date()));
 end
 

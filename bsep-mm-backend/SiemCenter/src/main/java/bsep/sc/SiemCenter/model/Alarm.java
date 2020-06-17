@@ -1,13 +1,14 @@
 package bsep.sc.SiemCenter.model;
 
+import bsep.sc.SiemCenter.events.AlarmType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Date;
 import java.util.UUID;
 
 @Document
@@ -15,10 +16,15 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class TestMessage {
+public class Alarm {
 
     @Id
     private UUID id;
-    private String message;
-    private String value;
+    private String machineSource;
+
+    private String name;
+    private String description;
+
+    private AlarmType alarmType;
+    private Date timeStamp;
 }

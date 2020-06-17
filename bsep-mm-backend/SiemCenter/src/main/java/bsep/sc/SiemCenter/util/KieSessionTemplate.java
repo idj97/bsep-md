@@ -1,5 +1,7 @@
 package bsep.sc.SiemCenter.util;
 
+import bsep.sc.SiemCenter.model.Rule;
+import bsep.sc.SiemCenter.repository.RuleRepository;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
 import org.kie.api.builder.Message;
@@ -37,6 +39,8 @@ public class KieSessionTemplate {
 
         templateSession =  kieHelper.build(kieBaseConfiguration).newKieSession();
     }
+
+
 
     public KieSession getTemplateSession() {
         return this.templateSession;
