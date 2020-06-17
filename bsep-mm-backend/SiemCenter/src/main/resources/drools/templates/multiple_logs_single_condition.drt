@@ -31,7 +31,7 @@ rule "id:@{row.rowNumber} - @{ruleName}"
             count($log2)
         )
     then
-        System.out.println("@{ruleName} - @{row.rowNumber}");
+        System.out.println("id:@{row.rowNumber} - @{ruleName}");
         insert(new Alarm($src, "@{alarmName}", "@{alarmDescription}", AlarmType.@{alarmType}, new Date()));
 end
 

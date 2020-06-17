@@ -22,7 +22,7 @@ rule "id:@{row.rowNumber} - @{ruleName}"
         $log: LogEvent($src: machineSource, @{attribute} @{comparator} "@{valueToCompare}")
         not ( Alarm(machineSource == $src && name == "@{alarmName}") )
     then
-        System.out.println("@{ruleName} - @{row.rowNumber}");
+        System.out.println("id:@{row.rowNumber} - @{ruleName}");
         insert(new Alarm($src, "@{alarmName}", "@{alarmDescription}", AlarmType.@{alarmType}, new Date()));
 end
 

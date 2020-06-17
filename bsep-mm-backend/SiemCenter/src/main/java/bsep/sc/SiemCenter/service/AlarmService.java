@@ -2,6 +2,8 @@ package bsep.sc.SiemCenter.service;
 
 import bsep.sc.SiemCenter.dto.RuleTemplate;
 import bsep.sc.SiemCenter.events.LogEvent;
+import bsep.sc.SiemCenter.exception.ApiBadRequestException;
+import bsep.sc.SiemCenter.exception.ApiNotFoundException;
 import bsep.sc.SiemCenter.util.KieSessionTemplate;
 import org.drools.template.ObjectDataCompiler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +29,7 @@ public class AlarmService {
         InputStream template = AlarmService.class.getResourceAsStream(templatePath + templateName + ".drt");
 
         if(template == null) {
-            return "Invalid template";  // TODO: throw exception
+            throw new ApiBadRequestException("Invalid template name");
         }
 
         // add rule templates to create rules
@@ -47,13 +49,11 @@ public class AlarmService {
     public int insertLogEvent(LogEvent logEvent) {
 
         if(kieSessionTemplate.getTemplateSession() == null) {
-            return -1; // TODO: throw new exception saying no rules were created
+            throw new ApiNotFoundException("No rules have been found");
         }
 
         kieSessionTemplate.getTemplateSession().insert(logEvent);
-
-        // return number of alarms activated
-        return  kieSessionTemplate.getTemplateSession().fireAllRules();
+        return kieSessionTemplate.getTemplateSession().fireAllRules(); // return number of alarms activated
     }
 
 
