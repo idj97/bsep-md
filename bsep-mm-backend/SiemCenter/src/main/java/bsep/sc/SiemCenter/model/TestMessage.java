@@ -20,4 +20,5 @@ public class TestMessage {
     @Id
     private UUID id;
     private String message;
+    private String value;
 }
