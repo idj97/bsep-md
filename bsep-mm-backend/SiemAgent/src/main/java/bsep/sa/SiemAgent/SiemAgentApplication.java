@@ -29,6 +29,7 @@ public class SiemAgentApplication implements CommandLineRunner{
 
 	@Override
 	public void run(String... args) throws Exception {
+		testGrok();
 	}
 
 	public void sslHandshakeWithSiemCenter() throws InterruptedException {
