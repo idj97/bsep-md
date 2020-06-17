@@ -20,7 +20,22 @@ public class SSLConfig {
 
     @Bean
     public ServletWebServerFactory servletContainer() throws IOException {
-        String keyStorePath = resourceLoader.getResource("classpath:keystore.jks").getFile().getAbsolutePath();;
+        Connector httpsX509AuthConnector = getHttpsConnectorWithX509Authentication();
+        Connector httpsConnector = getHttpsConnector();
+
+        TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory();
+        tomcat.addAdditionalTomcatConnectors(httpsX509AuthConnector);
+        tomcat.addAdditionalTomcatConnectors(httpsConnector);
+
+//        TomcatConnectorCustomizer customizer = conn -> {
+//            conn.setRedirectPort(8442);
+//        };
+//        tomcat.addConnectorCustomizers(customizer);
+        return tomcat;
+    }
+
+    public Connector getHttpsConnectorWithX509Authentication() throws IOException {
+        String keyStorePath = resourceLoader.getResource("classpath:keystore.jks").getFile().getAbsolutePath();
 
         Connector connector = new Connector(TomcatServletWebServerFactory.DEFAULT_PROTOCOL);
         connector.setPort(8442);
@@ -49,13 +64,27 @@ public class SSLConfig {
         sslHostConfig.setDisableSessionTickets(true);
         connector.addSslHostConfig(sslHostConfig);
 
-        TomcatConnectorCustomizer customizer = conn -> {
-            conn.setRedirectPort(8442);
-        };
+        return connector;
+    }
 
-        TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory();
-        tomcat.addAdditionalTomcatConnectors(connector);
-        tomcat.addConnectorCustomizers(customizer);
-        return tomcat;
+    public Connector getHttpsConnector() throws IOException {
+        String keyStorePath = resourceLoader.getResource("classpath:keystore.jks").getFile().getAbsolutePath();
+
+        Connector connector = new Connector(TomcatServletWebServerFactory.DEFAULT_PROTOCOL);
+        connector.setPort(8443);
+        connector.setScheme("https");
+        connector.setSecure(true);
+        connector.setAttribute("SSLEnabled", "true");
+
+        SSLHostConfig sslHostConfig = new SSLHostConfig();
+
+        // SERVER CERTIFICATE CONFIGURATION
+        sslHostConfig.setCertificateKeystoreFile(keyStorePath);
+        sslHostConfig.setCertificateKeystorePassword("");
+        sslHostConfig.setCertificateKeyAlias("ssl-server");
+        sslHostConfig.setCertificateKeyPassword("");
+
+        connector.addSslHostConfig(sslHostConfig);
+        return connector;
     }
 }

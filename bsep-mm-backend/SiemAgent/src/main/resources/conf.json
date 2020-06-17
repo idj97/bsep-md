@@ -1,0 +1,30 @@
+{
+  "win": {
+
+  },
+  "linux": {
+    "files": [
+      {
+        "path": "/var/log/auth.log",
+        "readFrequency": 5000,
+        "patterns": [
+          {
+            "name": "System_Login_OK",
+            "type": "info",
+            "pattern": "<pattern>"
+          },
+          {
+            "name": "System_Login_Fail",
+            "type": "warning",
+            "pattern": "<pattern>"
+          }
+        ]
+      },
+      {
+        "path": "/var/log/syslog",
+        "readFrequency": 10000,
+        "patterns": []
+      }
+    ]
+  }
+}
