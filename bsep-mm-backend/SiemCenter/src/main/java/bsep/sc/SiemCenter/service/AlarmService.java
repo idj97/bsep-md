@@ -4,6 +4,7 @@ import bsep.sc.SiemCenter.dto.RuleTemplate;
 import bsep.sc.SiemCenter.events.LogEvent;
 import bsep.sc.SiemCenter.util.KieSessionTemplate;
 import org.drools.template.ObjectDataCompiler;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,8 @@ import java.util.List;
 @Service
 public class AlarmService {
 
+    @Autowired
+    private KieSessionTemplate kieSessionTemplate;
 
     @Value("${drools.templates.path}")
     private String templatePath;
@@ -30,11 +33,12 @@ public class AlarmService {
         // add rule templates to create rules
         List<RuleTemplate> ruleData = new ArrayList<>();
         ruleData.add(ruleTemplate);
+
         ObjectDataCompiler converter = new ObjectDataCompiler();
         String drl = converter.compile(ruleData, template);
 
         System.out.print(drl); // print out created rules
-        KieSessionTemplate.createSessionFromDRL(drl);
+        kieSessionTemplate.createSessionFromDRL(drl);
         return drl;
 
     }
@@ -42,14 +46,14 @@ public class AlarmService {
 
     public int insertLogEvent(LogEvent logEvent) {
 
-        if(KieSessionTemplate.templateSession == null) {
+        if(kieSessionTemplate.getTemplateSession() == null) {
             return -1; // TODO: throw new exception saying no rules were created
         }
 
-        KieSessionTemplate.templateSession.insert(logEvent);
+        kieSessionTemplate.getTemplateSession().insert(logEvent);
 
         // return number of alarms activated
-        return KieSessionTemplate.templateSession.fireAllRules();
+        return  kieSessionTemplate.getTemplateSession().fireAllRules();
     }
 
 

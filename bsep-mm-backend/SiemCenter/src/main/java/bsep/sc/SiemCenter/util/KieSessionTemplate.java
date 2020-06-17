@@ -1,19 +1,27 @@
 package bsep.sc.SiemCenter.util;
 
+import org.kie.api.KieBaseConfiguration;
+import org.kie.api.KieServices;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
+import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
 public class KieSessionTemplate {
 
-    public static KieSession templateSession = null;
+    @Autowired
+    private KieBaseConfiguration kieBaseConfiguration;
 
-    public static KieSession createSessionFromDRL(String drl) {
+    private KieSession templateSession;
+
+    public void createSessionFromDRL(String drl) {
         KieHelper kieHelper = new KieHelper();
+
         kieHelper.addContent(drl, ResourceType.DRL);
 
         Results results = kieHelper.verify();
@@ -27,11 +35,11 @@ public class KieSessionTemplate {
             throw new IllegalStateException("Compilation errors were found. Check the logs.");
         }
 
-        templateSession =  kieHelper.build().newKieSession();
-        return templateSession;
+        templateSession =  kieHelper.build(kieBaseConfiguration).newKieSession();
     }
 
-    private KieSessionTemplate() { }
-
+    public KieSession getTemplateSession() {
+        return this.templateSession;
+    }
 
 }
