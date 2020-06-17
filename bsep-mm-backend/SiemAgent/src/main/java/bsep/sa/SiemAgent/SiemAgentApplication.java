@@ -69,6 +69,4 @@ public class SiemAgentApplication implements CommandLineRunner{
 			System.out.println(key + " - " + capture.get(key));
 		}
 	}
-
-
 }

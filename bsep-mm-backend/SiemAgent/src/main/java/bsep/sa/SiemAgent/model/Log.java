@@ -16,7 +16,6 @@ public class Log {
     private Date dateSent;
     private Integer facility;
     private Integer severity;
-
     private String machineSource;
     private String machineOS;
     private String logFileSource;

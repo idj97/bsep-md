@@ -24,34 +24,34 @@ public class ScheduledTasks {
     @Value("${scheduling.simpleMessage.enabled}")
     private boolean simpleMessageEnabled;
 
-    @Scheduled(fixedRate = 5000)
-    public void ReadWindowsLogEvents() {
-        Advapi32Util.EventLogIterator iter = new Advapi32Util.EventLogIterator("Security");
-        while(iter.hasNext()) {
-            Advapi32Util.EventLogRecord record = iter.next();
-            long timestamp = record.getRecord().TimeGenerated.longValue() * 1000;
-            Date d = new Date(timestamp);
-            System.out.println(record.getRecordNumber()
-                    + "Time Generated: " + d.toString()
-                    + ": Event ID: " + record.getEventId()
-                    + ", Event Type: " + record.getType()
-                    + ", Event Source: " + record.getSource());
-        }
-    }
-
-    @Scheduled(fixedRate = 5000)
-    public void simpleMessage() {
-        if (!simpleMessageEnabled) return;
-        try {
-            ResponseEntity<String> responseEntity = restTemplate.exchange(
-                    "https://localhost:8442/agents/api/test",
-                    HttpMethod.GET,
-                    null,
-                    String.class);
-
-            System.out.println(responseEntity.getStatusCode() + " at " + new Date());
-        } catch (ResourceAccessException ex) {
-            System.out.println("Error, reason " + ex.getCause().getMessage());
-        }
-    }
+//    @Scheduled(fixedRate = 5000)
+//    public void ReadWindowsLogEvents() {
+//        Advapi32Util.EventLogIterator iter = new Advapi32Util.EventLogIterator("Security");
+//        while(iter.hasNext()) {
+//            Advapi32Util.EventLogRecord record = iter.next();
+//            long timestamp = record.getRecord().TimeGenerated.longValue() * 1000;
+//            Date d = new Date(timestamp);
+//            System.out.println(record.getRecordNumber()
+//                    + "Time Generated: " + d.toString()
+//                    + ": Event ID: " + record.getEventId()
+//                    + ", Event Type: " + record.getType()
+//                    + ", Event Source: " + record.getSource());
+//        }
+//    }
+//
+//    @Scheduled(fixedRate = 5000)
+//    public void simpleMessage() {
+//        if (!simpleMessageEnabled) return;
+//        try {
+//            ResponseEntity<String> responseEntity = restTemplate.exchange(
+//                    "https://localhost:8442/agents/api/test",
+//                    HttpMethod.GET,
+//                    null,
+//                    String.class);
+//
+//            System.out.println(responseEntity.getStatusCode() + " at " + new Date());
+//        } catch (ResourceAccessException ex) {
+//            System.out.println("Error, reason " + ex.getCause().getMessage());
+//        }
+//    }
 }
