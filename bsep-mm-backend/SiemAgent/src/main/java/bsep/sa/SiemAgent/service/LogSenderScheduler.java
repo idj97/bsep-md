@@ -28,6 +28,7 @@ public class LogSenderScheduler {
 
     public void addLog(Log log) {
         logService.setMachineInfoToLog(log);
+        System.out.println(log);
         logs.add(log);
         realTimeSendLog();
     }

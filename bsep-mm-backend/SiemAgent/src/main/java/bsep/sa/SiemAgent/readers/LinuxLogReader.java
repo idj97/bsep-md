@@ -43,10 +43,9 @@ public class LinuxLogReader implements Runnable {
                     Thread.sleep(logFile.getReadFrequency());
                 } else {
                     List<Log> logs = parse(line);
-                    logSenderScheduler.addLog(null);
+                    logs.stream().forEach(log -> logSenderScheduler.addLog(log));
                 }
             }
-
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -75,11 +74,21 @@ public class LinuxLogReader implements Runnable {
             Match gm = grok.match(line);
             Map<String, Object> capturedFields = gm.capture();
 
+            boolean added = false;
             for (String logField : logMap.keySet()) {
                 if (capturedFields.containsKey(logField)) {
                     logMap.put(logField, capturedFields.get(logField));
+                    added = true;
                 }
             }
+
+            if (!added) {
+                continue;
+            }
+
+            logMap.put("eventType", logPattern.getType());
+            logMap.put("eventName", logPattern.getName());
+            logMap.put("message", line);
 
             Log log = gson.fromJson(gson.toJson(logMap, typeMap), Log.class);
             logs.add(log);

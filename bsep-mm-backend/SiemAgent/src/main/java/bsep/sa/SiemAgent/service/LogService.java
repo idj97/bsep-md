@@ -31,7 +31,6 @@ public class LogService {
     @PostConstruct
     public void startReaders() throws Exception {
         List<LogFile> logFiles = getLogFiles();
-        String publicIp = configurationUtil.getPublicIp();
         if (os.equals("Linux")) {
             for (LogFile logFile : logFiles) {
                 LinuxLogReader logReader = new LinuxLogReader(logFile, logSenderScheduler);
