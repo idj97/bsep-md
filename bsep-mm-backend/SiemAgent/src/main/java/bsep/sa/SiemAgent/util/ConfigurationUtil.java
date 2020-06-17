@@ -1,5 +1,6 @@
 package bsep.sa.SiemAgent.util;
 
+import com.google.gson.Gson;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -30,27 +31,31 @@ public class ConfigurationUtil {
         return jsonObject;
     }
 
-    public String getPublicIp() throws Exception {
-        if (publicIp == null) {
-            URL whatismyip = new URL("http://checkip.amazonaws.com");
-            BufferedReader in = null;
-            try {
-                in = new BufferedReader(new InputStreamReader(
-                        whatismyip.openStream()));
-                String ip = in.readLine();
-                publicIp = ip;
-                return ip;
-            } finally {
-                if (in != null) {
-                    try {
-                        in.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
+    public String getPublicIp() {
+        try {
+            if (publicIp == null) {
+                URL whatismyip = new URL("http://checkip.amazonaws.com");
+                BufferedReader in = null;
+                try {
+                    in = new BufferedReader(new InputStreamReader(
+                            whatismyip.openStream()));
+                    String ip = in.readLine();
+                    publicIp = ip;
+                    return ip;
+                } finally {
+                    if (in != null) {
+                        try {
+                            in.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
+            } else {
+                return publicIp;
             }
-        } else {
-            return publicIp;
+        } catch (Exception ex) {
+            return "unknown";
         }
 
     }

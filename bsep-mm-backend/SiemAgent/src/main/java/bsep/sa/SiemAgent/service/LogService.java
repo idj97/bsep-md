@@ -1,5 +1,6 @@
 package bsep.sa.SiemAgent.service;
 
+import bsep.sa.SiemAgent.model.Log;
 import bsep.sa.SiemAgent.model.LogFile;
 import bsep.sa.SiemAgent.model.LogPattern;
 import bsep.sa.SiemAgent.readers.LinuxLogReader;
@@ -7,6 +8,7 @@ import bsep.sa.SiemAgent.util.ConfigurationUtil;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -18,14 +20,21 @@ public class LogService {
 
     @Autowired
     private ConfigurationUtil configurationUtil;
+
+    @Autowired
+    private LogSenderScheduler logSenderScheduler;
     private String os = System.getProperty("os.name");
+
+    @Value("${agent.info}")
+    private String agentInfo;
 
     @PostConstruct
     public void startReaders() throws Exception {
         List<LogFile> logFiles = getLogFiles();
+        String publicIp = configurationUtil.getPublicIp();
         if (os.equals("Linux")) {
             for (LogFile logFile : logFiles) {
-                LinuxLogReader logReader = new LinuxLogReader(logFile);
+                LinuxLogReader logReader = new LinuxLogReader(logFile, logSenderScheduler);
                 new Thread(logReader).start();
             }
         }
@@ -60,5 +69,11 @@ public class LogService {
         }
 
         return logFiles;
+    }
+
+    public void setMachineInfoToLog(Log log) {
+        log.setMachineOS(os);
+        log.setMachineIp(configurationUtil.getPublicIp());
+        log.setAgentInfo(agentInfo);
     }
 }
