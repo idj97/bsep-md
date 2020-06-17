@@ -26,6 +26,7 @@ public class LogSenderScheduler {
     private RestTemplate restTemplate;
     private ConcurrentLinkedQueue<Log> logs = new ConcurrentLinkedQueue<>();
 
+
     public void addLog(Log log) {
         logService.setMachineInfoToLog(log);
         System.out.println(log);
