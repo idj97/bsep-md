@@ -1,9 +1,13 @@
 package bsep.sa.SiemAgent.scheduled;
 
 
+import bsep.sa.SiemAgent.readers.WindowsLogReader;
+import com.sun.jna.Memory;
+import com.sun.jna.Pointer;
 import com.sun.jna.platform.win32.Advapi32;
 import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.WinNT;
+import com.sun.jna.ptr.IntByReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
@@ -26,7 +30,7 @@ public class ScheduledTasks {
 
     @Scheduled(fixedRate = 5000)
     public void ReadWindowsLogEvents() {
-        Advapi32Util.EventLogIterator iter = new Advapi32Util.EventLogIterator("Security");
+        /*Advapi32Util.EventLogIterator iter = new Advapi32Util.EventLogIterator("Security");
         while(iter.hasNext()) {
             Advapi32Util.EventLogRecord record = iter.next();
             long timestamp = record.getRecord().TimeGenerated.longValue() * 1000;
@@ -36,7 +40,15 @@ public class ScheduledTasks {
                     + ": Event ID: " + record.getEventId()
                     + ", Event Type: " + record.getType()
                     + ", Event Source: " + record.getSource());
-        }
+        }*/
+        System.out.println(System.getProperty("os.name").toLowerCase().contains("win"));
+
+
+        WindowsLogReader wlr = new WindowsLogReader();
+        //Advapi32Util.EventLogRecord eventLogRecord = wlr.getLatestEvent("System");
+        //System.out.println(eventLogRecord.getRecord().EventID.);
+        System.out.println(new Date(wlr.getNewestEvent("System").TimeGenerated.longValue() * 1000));
+
     }
 
     @Scheduled(fixedRate = 5000)

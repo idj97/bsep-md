@@ -24,7 +24,7 @@ public class ConfigurationUtil {
 
     public JSONObject getConfiguration() throws IOException, ParseException {
         JSONParser parser = new JSONParser();
-        String confPath = resourceLoader.getResource("conf.json").getFile().getAbsolutePath();
+        String confPath = resourceLoader.getResource("classpath:conf.json").getFile().getAbsolutePath();
         Object obj = parser.parse(new FileReader(confPath));
         JSONObject jsonObject = (JSONObject) obj;
         return jsonObject;

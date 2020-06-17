@@ -16,7 +16,7 @@ public class LogSenderScheduler {
 
     private ConcurrentLinkedQueue<Log> logs = new ConcurrentLinkedQueue<>();
 
-    @Scheduled
+
     public void send() {
 
     }
