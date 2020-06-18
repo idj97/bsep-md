@@ -21,8 +21,8 @@ public class RuleController {
         return ResponseEntity.ok(ruleService.createRule(ruleTemplate, templateName));
     }
 
-    @GetMapping("/insert")
-    public ResponseEntity<Integer> createRule(@RequestBody LogEvent logEvent) {
+    @GetMapping("/insert") // TODO: PutMApping
+    public ResponseEntity<Integer> insertLogEvent(@RequestBody LogEvent logEvent) {
         return ResponseEntity.ok(ruleService.insertLogEvent(logEvent));
     }
 

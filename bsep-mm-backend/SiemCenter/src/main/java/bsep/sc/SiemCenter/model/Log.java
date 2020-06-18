@@ -13,8 +13,6 @@ import java.util.UUID;
 @Document
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 public class Log {
 
     @Id
@@ -32,4 +30,10 @@ public class Log {
     private String eventType; // warn, info, err
     private Date createdAt;
     private Date dateReceived;
+
+    public Log() {
+        this.id = UUID.randomUUID();
+    }
+
+
 }
