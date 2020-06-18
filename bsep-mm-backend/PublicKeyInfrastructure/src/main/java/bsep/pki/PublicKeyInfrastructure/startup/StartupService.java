@@ -6,6 +6,7 @@ import bsep.pki.PublicKeyInfrastructure.dto.extensions.*;
 import bsep.pki.PublicKeyInfrastructure.service.*;
 import bsep.pki.PublicKeyInfrastructure.utility.DateService;
 import bsep.pki.PublicKeyInfrastructure.utility.KeyStoreService;
+import lombok.extern.apachecommons.CommonsLog;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Service
+@CommonsLog
 public class StartupService {
 
     @Autowired
@@ -54,7 +56,9 @@ public class StartupService {
 
     // TODO: comment out
     public void initialize() {
+
         if (initApp) {
+            log.info("Init app activated, creating keystore and ocsp certificates");
             keystoreService.tryCreateKeyStore();
             initOcsp();
             //rootCAService.tryCreateRootCA();
@@ -75,6 +79,8 @@ public class StartupService {
     private OcspService ocspService;
 
     public void createRootCert() {
+        log.info("Creating root certificate");
+
         Security.addProvider(new BouncyCastleProvider());
         NameDto nameDto = new NameDto();
         nameDto.setCommonName("root");
@@ -110,6 +116,8 @@ public class StartupService {
     }
 
     public void createOcspCert() {
+        log.info("Creating OCSP certificate");
+
         Security.addProvider(new BouncyCastleProvider());
         NameDto nameDto = new NameDto();
         nameDto.setCommonName("ocsp");
@@ -147,6 +155,8 @@ public class StartupService {
     }
 
     public void createSslIssuer() {
+        log.info("Creating SSL issuer certificate");
+
         Security.addProvider(new BouncyCastleProvider());
         NameDto nameDto = new NameDto();
         nameDto.setCommonName("ssl-issuer");
@@ -185,6 +195,9 @@ public class StartupService {
     }
 
     public void createSslServerCert() {
+
+        log.info("Creating SSL server certificate");
+
         Security.addProvider(new BouncyCastleProvider());
         NameDto nameDto = new NameDto();
         nameDto.setCommonName("ssl-server");
@@ -231,6 +244,9 @@ public class StartupService {
     }
 
     public void createSslClientCert() {
+
+        log.info("Creating SSL Client certificate");
+
         Security.addProvider(new BouncyCastleProvider());
         NameDto nameDto = new NameDto();
         nameDto.setCommonName("ssl-client");

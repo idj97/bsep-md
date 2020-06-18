@@ -5,6 +5,7 @@ import bsep.pki.PublicKeyInfrastructure.service.CRLService;
 import bsep.pki.PublicKeyInfrastructure.service.CertService;
 import bsep.pki.PublicKeyInfrastructure.service.CertificateService;
 import bsep.pki.PublicKeyInfrastructure.utility.X500Service;
+import lombok.extern.apachecommons.CommonsLog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
