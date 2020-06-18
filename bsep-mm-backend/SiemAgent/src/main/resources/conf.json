@@ -1,6 +1,26 @@
 {
   "win": {
+    "files": [
+      {
+        "path": "System",
+        "readFrequency": 5000,
+        "patterns": [
+          {
+            "name": "System_Login_OK",
+            "type": "info",
+            "pattern": "<pattern>"
+          }
+        ]
+      },
+      {
+        "path": "Application",
+        "readFrequency": 5000,
+        "patterns": []
+      }
 
+
+
+    ]
   },
   "linux": {
     "files": [
