@@ -29,7 +29,6 @@ public class SiemAgentApplication implements CommandLineRunner{
 
 	@Override
 	public void run(String... args) throws Exception {
-		testGrok();
 	}
 
 	public void sslHandshakeWithSiemCenter() throws InterruptedException {
@@ -54,9 +53,9 @@ public class SiemAgentApplication implements CommandLineRunner{
 		grokCompiler.registerDefaultPatterns();
 
 		final Grok grok = grokCompiler.compile("" +
-				"%{SYSLOGTIMESTAMP:date_created} " +
-				"%{USERNAME:user} " +
-				"%{WORD:operation}:" +
+				"%{SYSLOGTIMESTAMP:timestamp} " +
+				"%{USERNAME:sourceUser} " +
+				"%{WORD:action}:" +
 				"%{GREEDYDATA}1 incorrect password attempt" +
 				"%{GREEDYDATA}COMMAND=%{PATH:command}");
 
