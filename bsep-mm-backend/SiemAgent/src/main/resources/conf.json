@@ -6,16 +6,27 @@
         "readFrequency": 5000,
         "patterns": [
           {
-            "name": "System_Login_OK",
-            "type": "info",
-            "pattern": "<pattern>"
+            "pattern": "%{SYSLOGTIMESTAMP:timestamp} %{HOSTNAME:machineName} %{NUMBER:eventId} %{WORD:eventType} %{WORD:source} %{GREEDYDATA}"
           }
         ]
       },
       {
         "path": "Application",
         "readFrequency": 5000,
-        "patterns": []
+        "patterns": [
+          {
+            "pattern": "%{SYSLOGTIMESTAMP:timestamp} %{HOSTNAME:machineName} %{NUMBER:eventId} %{WORD:eventType} %{WORD:source} %{GREEDYDATA}"
+          }
+        ]
+      },
+      {
+        "path": "Security",
+        "readFrequency": 6000,
+        "patterns": [
+          {
+            "pattern": "%{SYSLOGTIMESTAMP:timestamp} %{HOSTNAME:machineName} %{NUMBER:eventId} %{WORD:eventType} %{WORD:source} %{GREEDYDATA}"
+          }
+        ]
       }
 
 

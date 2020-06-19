@@ -17,10 +17,11 @@ import io.krakens.grok.api.GrokCompiler;
 import io.krakens.grok.api.Match;
 
 import java.lang.reflect.Type;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class WindowsLogReader implements Runnable {
 
@@ -38,18 +39,23 @@ public class WindowsLogReader implements Runnable {
     public void run() {
 
         while (true) {
+            try {
+                new Advapi32Util.EventLogIterator(logFile.getPath());
+            }
+            catch (Exception e) {
+                System.out.println("A required privilege is not held by the client when accessing " + logFile.getPath() + ".");
+                break;
+            }
             WinNT.EVENTLOGRECORD tempRecord = this.getNewestEvent(logFile.getPath());
-            System.out.println(this.extractMessageFromEventLog(tempRecord));
-            //System.out.println(new Advapi32Util.EventLogRecord(tempRecord.getPointer()).getType());
+
             if (newestRecord == null || !tempRecord.dataEquals(newestRecord)) {
                 newestRecord = tempRecord;
-
-
-
-                Log log = new Log();
-
+                String logString = createLogLine(newestRecord);
+                System.out.println(logString);
+                List<Log> logs = parse(logString);
+                logs.stream().forEach(log -> logSenderScheduler.addLog(log));
+                continue;
             }
-
 
             try {
                 Thread.sleep(logFile.getReadFrequency());
@@ -58,6 +64,24 @@ public class WindowsLogReader implements Runnable {
             }
         }
 
+    }
+
+    private String createLogLine(WinNT.EVENTLOGRECORD record) {
+        Advapi32Util.EventLogRecord eRecord = new Advapi32Util.EventLogRecord(record.getPointer());
+
+        Date date = new Date(eRecord.getRecord().TimeGenerated.longValue() * 1000);
+        SimpleDateFormat format = new SimpleDateFormat("MMMM dd HH:mm:ss");
+        String logString = String.format(
+                "%s %s %s %s %s %s %s",
+                format.format(date),
+                extractMachineName(eRecord.getRecord()),
+                eRecord.getEventId(),
+                eRecord.getType(),
+                eRecord.getSource(),
+                eRecord.getStatusCode(),
+                extractMessageFromEventLog(eRecord.getRecord()));
+
+        return logString;
     }
 
     private WinNT.EVENTLOGRECORD getNewestEvent(String sourceName) {
@@ -77,41 +101,39 @@ public class WindowsLogReader implements Runnable {
         int dwRead = pnBytesRead.getValue();
         Pointer pevlr = buffer;
 
-
         WinNT.EVENTLOGRECORD record = new WinNT.EVENTLOGRECORD(pevlr);
 
-        /*int dwMessage = dwRead - record.StringOffset.intValue();
-        int dxM = record.NumStrings.intValue();
-
-        System.out.println("-----------------------");
-        String sss = pevlr.getWideString(record.StringOffset.intValue());
-        StringBuilder stringBuilder = new StringBuilder();
-
-        //pevlr = pevlr.share(record.StringOffset.intValue());
-        int incrementedOffset = 0;
-        for (int i = 0; i < record.NumStrings.intValue(); i++) {
-            String param = pevlr.getWideString( record.StringOffset.intValue() + incrementedOffset);
-            incrementedOffset += param.length();
-        }
-
-        System.out.println(stringBuilder.toString());
-        System.out.println("=========================");
-*/
         return record;
     }
 
     private String extractMessageFromEventLog(WinNT.EVENTLOGRECORD record) {
-        Pointer pointer = record.getPointer();
+        Advapi32Util.EventLogRecord eRecord = new Advapi32Util.EventLogRecord(record.getPointer());
+        String[] recordStrings = eRecord.getStrings();
         StringBuilder message = new StringBuilder();
-        int incrementedOffset = 0;
-        for (int i = 0; i < record.NumStrings.intValue(); i++) {
-            String param = pointer.getWideString( record.StringOffset.longValue() + incrementedOffset);
-            incrementedOffset += param.length() * Native.WCHAR_SIZE + Native.WCHAR_SIZE;
-            message.append(param);
-            if (i != record.NumStrings.intValue() - 1) message.append(" ");
+        for (int i = 0; i < recordStrings.length; i++) {
+            message.append(recordStrings[i]);
+            if (i != recordStrings.length - 1) message.append(" ");
         }
 
         return message.toString();
+    }
+
+    private String extractMachineName(WinNT.EVENTLOGRECORD record) {
+        Pointer pointer = record.getPointer();
+
+        if (record.size() > 0) {
+            ByteBuffer names = pointer.getByteBuffer(record.size(),
+                    (record.UserSidLength.intValue() != 0 ? record.UserSidOffset.intValue() : record.StringOffset.intValue()) - record.size());
+            names.position(0);
+            CharBuffer namesBuf = names.asCharBuffer();
+            String[] splits = namesBuf.toString().split("\0");
+            return splits[1];
+        }
+
+        return null;
+
+
+
     }
 
     public List<Log> parse(String line) {
@@ -134,6 +156,9 @@ public class WindowsLogReader implements Runnable {
                     logMap.put(logField, capturedFields.get(logField));
                 }
             }
+
+            logMap.put("genericTimestamp", new Date());
+            logMap.put("message", line);
 
             Log log = gson.fromJson(gson.toJson(logMap, typeMap), Log.class);
             logs.add(log);
