@@ -10,6 +10,7 @@ import { UserAllComponent } from './components/issued-certificates/user-certific
 import { UserRevokedComponent } from './components/issued-certificates/user-certificates/user-revoked/user-revoked.component';
 import { CaAllComponent } from './components/issued-certificates/ca-certificates/ca-all/ca-all.component';
 import { CaRevokedComponent } from './components/issued-certificates/ca-certificates/ca-revoked/ca-revoked.component';
+import { AuthenticationGuard } from './keycloak/authentication.guard';
 
 
 const routes: Routes = [
@@ -20,15 +21,21 @@ const routes: Routes = [
   },
   {
     path: 'home',
-    component: HomeComponent
+    component: HomeComponent,
+    canActivate: [AuthenticationGuard],
+    data: {roles: ['admin']}
   },
   {
     path: 'new-certificate',
-    component: NewCertificateComponent
+    component: NewCertificateComponent,
+    canActivate: [AuthenticationGuard],
+    data: {roles: ['admin']}
   },
   {
     path: 'issued-certificates',
     component: IssuedCertificatesComponent,
+    canActivate: [AuthenticationGuard],
+    data: {roles: ['admin']},
     children:[
       {
         path : 'user-certificates',
@@ -62,7 +69,9 @@ const routes: Routes = [
   },
   {
     path: 'certificate-requests',
-    component: CertificateRequestsComponent
+    component: CertificateRequestsComponent,
+    canActivate: [AuthenticationGuard],
+    data: {roles: ['admin']}
   },
 
 ];

@@ -12,7 +12,7 @@ export class AuthenticationGuard extends KeycloakAuthGuard implements CanActivat
   }
 
   isAccessAllowed(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
-
+    
     return new Promise((resolve, reject) => {
       if (!this.authenticated) {
         this.keycloakAngular.login().catch(e => console.error(e));
