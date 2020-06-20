@@ -55,17 +55,19 @@ public class StartupService {
         if (initApp) {
             log.info("Init app activated, creating keystore and ocsp certificates");
             keystoreService.tryCreateKeyStore();
-            initOcsp();
+            initCerts();
         }
     }
 
-    public void initOcsp() {
+    public void initCerts() {
         createRootCert();
         createOcspCert();
         ocspService.setOcspSigner("2");
         createSslIssuer();
         createSslServerCert();
         createSslClientCert();
+        createAngularCert();
+        createKeycloakCert();
     }
 
     public void createRootCert() {
@@ -281,5 +283,102 @@ public class StartupService {
         certificateService.create(createCertificateDto);
     }
 
+    public void createAngularCert() {
 
+        log.info("Creating Angular certificate");
+
+        Security.addProvider(new BouncyCastleProvider());
+        NameDto nameDto = new NameDto();
+        nameDto.setCommonName("ssl-angular");
+        nameDto.setDomainComponent("localhost");
+
+        KeyUsageDto keyUsageDto = new KeyUsageDto();
+        keyUsageDto.setDigitalSignature(true);
+        keyUsageDto.setKeyEncipherment(true);
+
+        ExtendedKeyUsageDto extendedKeyUsageDto = new ExtendedKeyUsageDto();
+        extendedKeyUsageDto.setServerAuth(true);
+
+
+        SubjectAlternativeNameDto sanDto = new SubjectAlternativeNameDto(
+                Arrays.asList("localhost"),
+                Arrays.asList("127.0.0.1")
+        );
+
+        List<AbstractExtensionDto> extensionDtos = new ArrayList<>() {
+            {
+                add(keyUsageDto);
+                add(extendedKeyUsageDto);
+                add(new AuthorityInfoAccessDto());
+                add(new AuthorityKeyIdentifierDto());
+                add(new SubjectKeyIdentifierDto());
+                add(sanDto);
+            }
+        };
+
+        CreateCertificateDto createCertificateDto = new CreateCertificateDto(
+                "RSA",
+                2048,
+                "SHA256withRSA",
+                "04-05-2020 00:00",
+                "05-05-2021 00:00",
+                false,
+                "6",
+                nameDto,
+                extensionDtos,
+                "3",
+                null
+        );
+        certificateService.create(createCertificateDto);
+    }
+
+    public void createKeycloakCert() {
+
+        log.info("Creating Keycloak certificate");
+
+        Security.addProvider(new BouncyCastleProvider());
+        NameDto nameDto = new NameDto();
+        nameDto.setCommonName("ssl-keycloak");
+        nameDto.setDomainComponent("localhost");
+
+        KeyUsageDto keyUsageDto = new KeyUsageDto();
+        keyUsageDto.setDigitalSignature(true);
+        keyUsageDto.setKeyEncipherment(true);
+
+        ExtendedKeyUsageDto extendedKeyUsageDto = new ExtendedKeyUsageDto();
+        extendedKeyUsageDto.setServerAuth(true);
+
+
+        SubjectAlternativeNameDto sanDto = new SubjectAlternativeNameDto(
+                Arrays.asList("localhost"),
+                Arrays.asList("127.0.0.1")
+        );
+
+        List<AbstractExtensionDto> extensionDtos = new ArrayList<>() {
+            {
+                add(keyUsageDto);
+                add(extendedKeyUsageDto);
+                add(new AuthorityInfoAccessDto());
+                add(new AuthorityKeyIdentifierDto());
+                add(new SubjectKeyIdentifierDto());
+                add(sanDto);
+            }
+        };
+
+        CreateCertificateDto createCertificateDto = new CreateCertificateDto(
+                "RSA",
+                2048,
+                "SHA256withRSA",
+                "04-05-2020 00:00",
+                "05-05-2021 00:00",
+                false,
+                "7",
+                nameDto,
+                extensionDtos,
+                "3",
+                null
+        );
+        certificateService.create(createCertificateDto);
+    }
+    
 }

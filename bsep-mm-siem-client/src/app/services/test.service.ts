@@ -15,6 +15,6 @@ export class TestService {
   }
 
   securedTest(): Observable<any> {
-    return this.http.get('https://localhost:8443/api/test/hello', { responseType: 'text' });
+    return this.http.get('https://localhost:8441/api/test/hello', { responseType: 'text' });
   }
 }

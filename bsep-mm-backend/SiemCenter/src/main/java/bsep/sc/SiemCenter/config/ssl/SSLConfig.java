@@ -71,12 +71,17 @@ public class SSLConfig {
         String keyStorePath = resourceLoader.getResource("classpath:keystore.jks").getFile().getAbsolutePath();
 
         Connector connector = new Connector(TomcatServletWebServerFactory.DEFAULT_PROTOCOL);
-        connector.setPort(8443);
+        connector.setPort(8441);
         connector.setScheme("https");
         connector.setSecure(true);
         connector.setAttribute("SSLEnabled", "true");
 
         SSLHostConfig sslHostConfig = new SSLHostConfig();
+
+        sslHostConfig.setCertificateVerification("none");
+        sslHostConfig.setRevocationEnabled(false);
+        sslHostConfig.setSslProtocol("TLS");
+
 
         // SERVER CERTIFICATE CONFIGURATION
         sslHostConfig.setCertificateKeystoreFile(keyStorePath);

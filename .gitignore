@@ -2,4 +2,5 @@ bsep-mm-backend/PublicKeyInfrastructure/src/main/resources/pki_keystore.jks
 bsep-mm-backend/PublicKeyInfrastructure/src/main/resources/pki_revocations.crl
 bsep-mm-frontend/.vscode/launch.json
 
-logs/
+logs/*
+bsep-mm-siem-client/certs/*

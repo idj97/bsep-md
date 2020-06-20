@@ -3,7 +3,6 @@ package bsep.pki.PublicKeyInfrastructure.controller;
 import bsep.pki.PublicKeyInfrastructure.dto.*;
 import bsep.pki.PublicKeyInfrastructure.service.CertificateService;
 import bsep.pki.PublicKeyInfrastructure.utility.X500Service;
-import lombok.extern.apachecommons.CommonsLog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -58,13 +57,13 @@ public class CertificateController {
         return new ResponseEntity<>(certificateService.revoke(revocationDto), HttpStatus.OK);
     }
 
-    @GetMapping("/download/{serialNumber}")
-    public ResponseEntity<InputStreamResource> downloadRequestedCertificate(@PathVariable String serialNumber) {
+    @GetMapping("/cer/{serial-number}")
+    public ResponseEntity<InputStreamResource> downloadRequestedCertificate(@PathVariable("serial-number") String serialNumber) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
         headers.add("Pragma", "no-cache");
         headers.add("Expires", "0");
-        headers.setContentDispositionFormData("attachment", "ceritifacte.cer");
+        headers.setContentDispositionFormData("attachment", "certificate.cer");
 
         return new ResponseEntity<>(
                 certificateService.getCertFileBySerialNumber(serialNumber),
@@ -79,7 +78,7 @@ public class CertificateController {
         headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
         headers.add("Pragma", "no-cache");
         headers.add("Expires", "0");
-        headers.setContentDispositionFormData("attachment", "cert.p12");
+        headers.setContentDispositionFormData("attachment", "certificate.p12");
 
         return new ResponseEntity<>(
                 certificateService.getCertPKCS12BySerialNumber(serialNumber),
