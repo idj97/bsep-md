@@ -25,7 +25,7 @@ def create_firewall():
             log = " ".join([timestamp, status, interface, source_ip, destination_ip])
             util.save_firewall_log(log)
             print(log)
-            sleep(0.1)
+            sleep(2)
     Thread(target=firewall_simulator).start()
 
 
@@ -46,9 +46,8 @@ def create_brute_force_attacker(n):
 def create_ddos_attackers(n):
     for i in range(n):
         index = randint(0, len(attacker_ips) - 1)
-
         ip = attacker_ips.pop(index)
-        Thread(target=dos_user, args=[ip])
+        Thread(target=dos_user, args=[ip]).start()
 
 
 def is_arg_present(args, key):
