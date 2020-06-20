@@ -1,6 +1,37 @@
 {
   "win": {
+    "files": [
+      {
+        "path": "System",
+        "readFrequency": 5000,
+        "patterns": [
+          {
+            "pattern": "%{SYSLOGTIMESTAMP:timestamp} %{HOSTNAME:machineName} %{NUMBER:eventId} %{WORD:eventType} %{WORD:source} %{GREEDYDATA}"
+          }
+        ]
+      },
+      {
+        "path": "Application",
+        "readFrequency": 5000,
+        "patterns": [
+          {
+            "pattern": "%{SYSLOGTIMESTAMP:timestamp} %{HOSTNAME:machineName} %{NUMBER:eventId} %{WORD:eventType} %{WORD:source} %{GREEDYDATA}"
+          }
+        ]
+      },
+      {
+        "path": "Security",
+        "readFrequency": 6000,
+        "patterns": [
+          {
+            "pattern": "%{SYSLOGTIMESTAMP:timestamp} %{HOSTNAME:machineName} %{NUMBER:eventId} %{WORD:eventType} %{WORD:source} %{GREEDYDATA}"
+          }
+        ]
+      }
 
+
+
+    ]
   },
   "linux": {
     "files": [

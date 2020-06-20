@@ -15,6 +15,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -85,7 +86,7 @@ public class LinuxLogReader implements Runnable {
             if (!added) {
                 continue;
             }
-
+            logMap.put("genericTimestamp", new Date());
             logMap.put("eventType", logPattern.getType());
             logMap.put("eventName", logPattern.getName());
             logMap.put("message", line);

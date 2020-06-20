@@ -9,13 +9,17 @@ import lombok.*;
 @ToString
 public class Log {
     private String timestamp = "";
+    private String genericTimestamp = "";
     private String machineIp = "";
     private String machineOS = "";
+    private String machineName = "";
     private String agentInfo = "";
     private String eventName = "";
     private String eventType = "";
     private String message = "";
+    private String eventId = "";
 
+    private String source = "";
     private String sourceIp = "";
     private String sourcePort = "";
     private String protocol = "";
@@ -25,4 +29,5 @@ public class Log {
     private String workingDir = "";
     private String sourceUser = "";
     private String targetUser = "";
+
 }
