@@ -3,7 +3,7 @@ package bsep.pki.PublicKeyInfrastructure.certs;
 import bsep.pki.PublicKeyInfrastructure.dto.CreateCertificateDto;
 import bsep.pki.PublicKeyInfrastructure.dto.NameDto;
 import bsep.pki.PublicKeyInfrastructure.dto.extensions.*;
-import bsep.pki.PublicKeyInfrastructure.service.CertService;
+import bsep.pki.PublicKeyInfrastructure.service.CertificateService;
 import bsep.pki.PublicKeyInfrastructure.utility.KeyStoreService;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Assert;
@@ -28,7 +28,7 @@ public class X509CreationTest {
     Date now = new Date();
 
     @Autowired
-    private CertService certService;
+    private CertificateService certificateService;
 
     @Autowired
     private KeyStoreService keyStoreService;
@@ -66,7 +66,7 @@ public class X509CreationTest {
                 null,
                 null
         );
-        certService.create(createCertificateDto);
+        certificateService.create(createCertificateDto);
 
     }
 
@@ -105,7 +105,7 @@ public class X509CreationTest {
                 "1",
                 null
         );
-        certService.create(createCertificateDto);
+        certificateService.create(createCertificateDto);
     }
 
     @Test
@@ -145,9 +145,9 @@ public class X509CreationTest {
                 "2",
                 null
         );
-        certService.create(createCertificateDto);
+        certificateService.create(createCertificateDto);
 
-        Assert.assertEquals(2, certService.getCaCertificates().size());
+        Assert.assertEquals(2, certificateService.getCaCertificates().size());
 
     }
 
@@ -191,7 +191,7 @@ public class X509CreationTest {
         );
 
         try {
-            certService.create(createCertificateDto);
+            certificateService.create(createCertificateDto);
             Assert.fail();
         } catch (Exception e) {
             Assert.assertTrue(true);
@@ -211,7 +211,7 @@ public class X509CreationTest {
                 null
         );
         try {
-            certService.create(createCertificateDto);
+            certificateService.create(createCertificateDto);
             Assert.fail();
         } catch (Exception e) {
             Assert.assertTrue(true);
@@ -232,7 +232,7 @@ public class X509CreationTest {
                 null
         );
         try {
-            certService.create(createCertificateDto);
+            certificateService.create(createCertificateDto);
             Assert.fail();
         } catch (Exception e) {
             Assert.assertTrue(true);
@@ -254,7 +254,7 @@ public class X509CreationTest {
                 null
         );
         try {
-            certService.create(createCertificateDto);
+            certificateService.create(createCertificateDto);
             Assert.fail();
         } catch (Exception e) {
             Assert.assertTrue(true);

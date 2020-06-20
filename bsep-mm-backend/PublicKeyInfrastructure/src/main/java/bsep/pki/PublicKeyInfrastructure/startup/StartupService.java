@@ -26,15 +26,6 @@ public class StartupService {
     @Autowired
     private KeyStoreService keystoreService;
 
-    @Autowired
-    private RootCAService rootCAService;
-
-    @Autowired
-    private CAService caService;
-
-    @Autowired
-    private CRLService crlService;
-
     @Value("${app.init}")
     private Boolean initApp;
 
@@ -43,6 +34,10 @@ public class StartupService {
 
     @Autowired
     private DateService dateService;
+
+    @Autowired
+    private OcspService ocspService;
+
 
     @EventListener
     public void onStartup(ContextRefreshedEvent contextRefreshedEvent) {
@@ -61,22 +56,17 @@ public class StartupService {
             log.info("Init app activated, creating keystore and ocsp certificates");
             keystoreService.tryCreateKeyStore();
             initOcsp();
-            //rootCAService.tryCreateRootCA();
-
-            //caService.tryCreateCA(1L, CAType.SIEM_AGENT_ISSUER, CertificateType.SIEM_AGENT_ISSUER);
-            //caService.tryCreateCA(1L, CAType.SIEM_CENTER_ISSUER, CertificateType.SIEM_CENTER_ISSUER);
-
-            //crlService.createCRL();
-            //crlService.revokeCertificate(new RevocationDto(null, 1L, RevokeReason.KEY_COMPROMISE, null));
-            //crlService.revokeCertificate(new RevocationDto(null, 2L, RevokeReason.PRIVILEGE_WITHDRAWN, null));
         }
     }
 
-    @Autowired
-    private CertService certService;
-
-    @Autowired
-    private OcspService ocspService;
+    public void initOcsp() {
+        createRootCert();
+        createOcspCert();
+        ocspService.setOcspSigner("2");
+        createSslIssuer();
+        createSslServerCert();
+        createSslClientCert();
+    }
 
     public void createRootCert() {
         log.info("Creating root certificate");
@@ -112,7 +102,7 @@ public class StartupService {
                 null,
                 null
         );
-        certService.create(createCertificateDto);
+        certificateService.create(createCertificateDto);
     }
 
     public void createOcspCert() {
@@ -151,7 +141,7 @@ public class StartupService {
                 "1",
                 null
         );
-        certService.create(createCertificateDto);
+        certificateService.create(createCertificateDto);
     }
 
     public void createSslIssuer() {
@@ -191,7 +181,7 @@ public class StartupService {
                 "1",
                 null
         );
-        certService.create(createCertificateDto);
+        certificateService.create(createCertificateDto);
     }
 
     public void createSslServerCert() {
@@ -240,7 +230,7 @@ public class StartupService {
                 "3",
                 null
         );
-        certService.create(createCertificateDto);
+        certificateService.create(createCertificateDto);
     }
 
     public void createSslClientCert() {
@@ -288,15 +278,8 @@ public class StartupService {
                 "3",
                 null
         );
-        certService.create(createCertificateDto);
+        certificateService.create(createCertificateDto);
     }
 
-    public void initOcsp() {
-        createRootCert();
-        createOcspCert();
-        ocspService.setOcspSigner("2");
-        createSslIssuer();
-        createSslServerCert();
-        createSslClientCert();
-    }
+
 }

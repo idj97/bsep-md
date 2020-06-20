@@ -1,8 +1,6 @@
 package bsep.pki.PublicKeyInfrastructure.controller;
 
 import bsep.pki.PublicKeyInfrastructure.dto.*;
-import bsep.pki.PublicKeyInfrastructure.service.CRLService;
-import bsep.pki.PublicKeyInfrastructure.service.CertService;
 import bsep.pki.PublicKeyInfrastructure.service.CertificateService;
 import bsep.pki.PublicKeyInfrastructure.utility.X500Service;
 import lombok.extern.apachecommons.CommonsLog;
@@ -21,16 +19,8 @@ import java.util.List;
 @RequestMapping("/api/certificates")
 public class CertificateController {
 
-    //TODO: delete CRL service
-    @Autowired
-    private CRLService crlService;
-
-    //TODO: Join certificateService and certService
     @Autowired
     private CertificateService certificateService;
-
-    @Autowired
-    private CertService certService;
 
     @Autowired
     private X500Service x500Service;
@@ -44,7 +34,7 @@ public class CertificateController {
     @GetMapping("/authorities")
     @PreAuthorize("hasRole('admin')")
     public ResponseEntity<List<CertificateDto>> getCaCertificates() {
-        return new ResponseEntity<>(certService.getCaCertificates(), HttpStatus.OK);
+        return new ResponseEntity<>(certificateService.getCaCertificates(), HttpStatus.OK);
     }
 
     @PostMapping("/simple-search")
@@ -56,7 +46,7 @@ public class CertificateController {
     @PostMapping
     @PreAuthorize("hasRole('admin')")
     public ResponseEntity<CertificateDto> createCertificate(@RequestBody @Valid CreateCertificateDto createCertificateDto) {
-        return new ResponseEntity<>(certService.create(createCertificateDto), HttpStatus.OK);
+        return new ResponseEntity<>(certificateService.create(createCertificateDto), HttpStatus.OK);
     }
 
     //TODO: correct REST revoke endpoints
@@ -65,7 +55,7 @@ public class CertificateController {
     @PostMapping("/revoke")
     @PreAuthorize("hasRole('admin')")
     public ResponseEntity<CertificateDto> revoke(@RequestBody @Valid RevocationDto revocationDto) {
-        return new ResponseEntity<>(crlService.revoke(revocationDto), HttpStatus.OK);
+        return new ResponseEntity<>(certificateService.revoke(revocationDto), HttpStatus.OK);
     }
 
     @GetMapping("/download/{serialNumber}")
