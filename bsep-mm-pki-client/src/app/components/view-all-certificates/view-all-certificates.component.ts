@@ -127,10 +127,21 @@ export class ViewAllCertificatesComponent implements OnInit {
     issuerStatus.isSelected = !issuerStatus.isSelected;
   }
 
-  downloadCertificate(item: any): void {
-    this.certificateService.downloadCertificate(item.serialNumber).subscribe(
+  downloadCertificatePkcs12(item: any): void {
+    this.certificateService.downloadCertificatePkcs12(item.serialNumber).subscribe(
       data => {
         saveAs(data, `${item.commonName}.p12`);
+      },
+      error => {
+        console.log(error);
+      }
+    );
+  }
+
+  downloadCertificateCer(item: any): void {
+    this.certificateService.downloadCertificateCer(item.serialNumber).subscribe(
+      data => {
+        saveAs(data, `${item.commonName}.cer`);
       },
       error => {
         console.log(error);

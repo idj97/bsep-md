@@ -46,8 +46,12 @@ export class CertificateService {
     return this.http.post<any>('api/certificates', data);
   }
 
-  downloadCertificate(serialNumber: string): Observable<any> {
+  downloadCertificatePkcs12(serialNumber: string): Observable<any> {
     return this.http.get<any>(`api/certificates/pkcs12/${serialNumber}`, {responseType: 'blob' as 'json'});
+  }
+
+  downloadCertificateCer(serialNumber: string): Observable<any> {
+    return this.http.get<any>(`api/certificates/cer/${serialNumber}`, {responseType: 'blob' as 'json'});
   }
 
 }
