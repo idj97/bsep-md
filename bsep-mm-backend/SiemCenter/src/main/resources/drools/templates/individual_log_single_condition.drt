@@ -1,0 +1,29 @@
+template header
+ruleName
+attribute
+comparator
+valueToCompare
+alarmName
+alarmDescription
+alarmType
+
+package drools.templates;
+
+import bsep.sc.SiemCenter.events.LogEvent;
+import bsep.sc.SiemCenter.events.Alarm;
+import bsep.sc.SiemCenter.events.AlarmType;
+import java.util.Date;
+
+template "Individual log with single condition template"
+
+rule "@{ruleName}"
+    no-loop true
+    when
+        $log: LogEvent($src: machineSource, @{attribute} @{comparator} "@{valueToCompare}")
+        not ( Alarm(machineSource == $src && name == "@{alarmName}") )
+    then
+        System.out.println("@{ruleName}");
+        insert(new Alarm($src, "@{alarmName}", "@{alarmDescription}", AlarmType.@{alarmType}, new Date()));
+end
+
+end template
