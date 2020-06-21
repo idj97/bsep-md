@@ -38,7 +38,7 @@ public class RestTemplateConfig {
             return true;
         };
 
-        String keyStorePath = resourceLoader.getResource("keystore.jks").getFile().getAbsolutePath();
+        String keyStorePath = resourceLoader.getResource("classpath:keystore.jks").getFile().getAbsolutePath();
 
         SSLContextBuilder builder = SSLContexts.custom();
 

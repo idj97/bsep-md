@@ -26,15 +26,6 @@ public class StartupService {
     @Autowired
     private KeyStoreService keystoreService;
 
-    @Autowired
-    private RootCAService rootCAService;
-
-    @Autowired
-    private CAService caService;
-
-    @Autowired
-    private CRLService crlService;
-
     @Value("${app.init}")
     private Boolean initApp;
 
@@ -43,6 +34,10 @@ public class StartupService {
 
     @Autowired
     private DateService dateService;
+
+    @Autowired
+    private OcspService ocspService;
+
 
     @EventListener
     public void onStartup(ContextRefreshedEvent contextRefreshedEvent) {
@@ -60,23 +55,20 @@ public class StartupService {
         if (initApp) {
             log.info("Init app activated, creating keystore and ocsp certificates");
             keystoreService.tryCreateKeyStore();
-            initOcsp();
-            //rootCAService.tryCreateRootCA();
-
-            //caService.tryCreateCA(1L, CAType.SIEM_AGENT_ISSUER, CertificateType.SIEM_AGENT_ISSUER);
-            //caService.tryCreateCA(1L, CAType.SIEM_CENTER_ISSUER, CertificateType.SIEM_CENTER_ISSUER);
-
-            //crlService.createCRL();
-            //crlService.revokeCertificate(new RevocationDto(null, 1L, RevokeReason.KEY_COMPROMISE, null));
-            //crlService.revokeCertificate(new RevocationDto(null, 2L, RevokeReason.PRIVILEGE_WITHDRAWN, null));
+            initCerts();
         }
     }
 
-    @Autowired
-    private CertService certService;
-
-    @Autowired
-    private OcspService ocspService;
+    public void initCerts() {
+        createRootCert();
+        createOcspCert();
+        ocspService.setOcspSigner("2");
+        createSslIssuer();
+        createSslServerCert();
+        createSslClientCert();
+        createAngularCert();
+        createKeycloakCert();
+    }
 
     public void createRootCert() {
         log.info("Creating root certificate");
@@ -112,7 +104,7 @@ public class StartupService {
                 null,
                 null
         );
-        certService.create(createCertificateDto);
+        certificateService.create(createCertificateDto);
     }
 
     public void createOcspCert() {
@@ -151,7 +143,7 @@ public class StartupService {
                 "1",
                 null
         );
-        certService.create(createCertificateDto);
+        certificateService.create(createCertificateDto);
     }
 
     public void createSslIssuer() {
@@ -191,7 +183,7 @@ public class StartupService {
                 "1",
                 null
         );
-        certService.create(createCertificateDto);
+        certificateService.create(createCertificateDto);
     }
 
     public void createSslServerCert() {
@@ -240,7 +232,7 @@ public class StartupService {
                 "3",
                 null
         );
-        certService.create(createCertificateDto);
+        certificateService.create(createCertificateDto);
     }
 
     public void createSslClientCert() {
@@ -288,15 +280,105 @@ public class StartupService {
                 "3",
                 null
         );
-        certService.create(createCertificateDto);
+        certificateService.create(createCertificateDto);
     }
 
-    public void initOcsp() {
-        createRootCert();
-        createOcspCert();
-        ocspService.setOcspSigner("2");
-        createSslIssuer();
-        createSslServerCert();
-        createSslClientCert();
+    public void createAngularCert() {
+
+        log.info("Creating Angular certificate");
+
+        Security.addProvider(new BouncyCastleProvider());
+        NameDto nameDto = new NameDto();
+        nameDto.setCommonName("ssl-angular");
+        nameDto.setDomainComponent("localhost");
+
+        KeyUsageDto keyUsageDto = new KeyUsageDto();
+        keyUsageDto.setDigitalSignature(true);
+        keyUsageDto.setKeyEncipherment(true);
+
+        ExtendedKeyUsageDto extendedKeyUsageDto = new ExtendedKeyUsageDto();
+        extendedKeyUsageDto.setServerAuth(true);
+
+
+        SubjectAlternativeNameDto sanDto = new SubjectAlternativeNameDto(
+                Arrays.asList("localhost"),
+                Arrays.asList("127.0.0.1")
+        );
+
+        List<AbstractExtensionDto> extensionDtos = new ArrayList<>() {
+            {
+                add(keyUsageDto);
+                add(extendedKeyUsageDto);
+                add(new AuthorityInfoAccessDto());
+                add(new AuthorityKeyIdentifierDto());
+                add(new SubjectKeyIdentifierDto());
+                add(sanDto);
+            }
+        };
+
+        CreateCertificateDto createCertificateDto = new CreateCertificateDto(
+                "RSA",
+                2048,
+                "SHA256withRSA",
+                "04-05-2020 00:00",
+                "05-05-2021 00:00",
+                false,
+                "6",
+                nameDto,
+                extensionDtos,
+                "3",
+                null
+        );
+        certificateService.create(createCertificateDto);
     }
+
+    public void createKeycloakCert() {
+
+        log.info("Creating Keycloak certificate");
+
+        Security.addProvider(new BouncyCastleProvider());
+        NameDto nameDto = new NameDto();
+        nameDto.setCommonName("ssl-keycloak");
+        nameDto.setDomainComponent("localhost");
+
+        KeyUsageDto keyUsageDto = new KeyUsageDto();
+        keyUsageDto.setDigitalSignature(true);
+        keyUsageDto.setKeyEncipherment(true);
+
+        ExtendedKeyUsageDto extendedKeyUsageDto = new ExtendedKeyUsageDto();
+        extendedKeyUsageDto.setServerAuth(true);
+
+
+        SubjectAlternativeNameDto sanDto = new SubjectAlternativeNameDto(
+                Arrays.asList("localhost"),
+                Arrays.asList("127.0.0.1")
+        );
+
+        List<AbstractExtensionDto> extensionDtos = new ArrayList<>() {
+            {
+                add(keyUsageDto);
+                add(extendedKeyUsageDto);
+                add(new AuthorityInfoAccessDto());
+                add(new AuthorityKeyIdentifierDto());
+                add(new SubjectKeyIdentifierDto());
+                add(sanDto);
+            }
+        };
+
+        CreateCertificateDto createCertificateDto = new CreateCertificateDto(
+                "RSA",
+                2048,
+                "SHA256withRSA",
+                "04-05-2020 00:00",
+                "05-05-2021 00:00",
+                false,
+                "7",
+                nameDto,
+                extensionDtos,
+                "3",
+                null
+        );
+        certificateService.create(createCertificateDto);
+    }
+    
 }

@@ -7,8 +7,7 @@ import bsep.pki.PublicKeyInfrastructure.dto.extensions.*;
 import bsep.pki.PublicKeyInfrastructure.exception.ApiBadRequestException;
 import bsep.pki.PublicKeyInfrastructure.exception.ApiServiceUnavailableException;
 import bsep.pki.PublicKeyInfrastructure.model.enums.RevokeReason;
-import bsep.pki.PublicKeyInfrastructure.service.CRLService;
-import bsep.pki.PublicKeyInfrastructure.service.CertService;
+import bsep.pki.PublicKeyInfrastructure.service.CertificateService;
 import bsep.pki.PublicKeyInfrastructure.service.OcspService;
 import bsep.pki.PublicKeyInfrastructure.utility.KeyStoreService;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
@@ -52,13 +51,10 @@ public class OcspTest {
     private KeyStoreService keyStoreService;
 
     @Autowired
-    private CertService certService;
+    private CertificateService certificateService;
 
     @Autowired
     private OcspService ocspService;
-
-    @Autowired
-    private CRLService crlService;
 
     @Test
     public void createOcspRequest() throws OCSPException, OperatorCreationException, CertificateEncodingException, IOException {
@@ -144,7 +140,7 @@ public class OcspTest {
                 null,
                 null
         );
-        certService.create(createCertificateDto);
+        certificateService.create(createCertificateDto);
     }
 
     public void createOcspCert() {
@@ -181,7 +177,7 @@ public class OcspTest {
                 "1",
                 null
         );
-        certService.create(createCertificateDto);
+        certificateService.create(createCertificateDto);
     }
 
     public void createEndCert() {
@@ -219,7 +215,7 @@ public class OcspTest {
                 "1",
                 null
         );
-        certService.create(createCertificateDto);
+        certificateService.create(createCertificateDto);
     }
 
     public OCSPReq createOcspReq(X509CertificateHolder certHolder) {
@@ -298,7 +294,7 @@ public class OcspTest {
         createEndCert();
 
         ocspService.setOcspSigner("2");
-        crlService.revoke(new RevocationDto(
+        certificateService.revoke(new RevocationDto(
                 null,
                 null,
                 "3",

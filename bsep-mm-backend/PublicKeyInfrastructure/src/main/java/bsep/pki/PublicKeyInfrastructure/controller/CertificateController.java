@@ -1,11 +1,8 @@
 package bsep.pki.PublicKeyInfrastructure.controller;
 
 import bsep.pki.PublicKeyInfrastructure.dto.*;
-import bsep.pki.PublicKeyInfrastructure.service.CRLService;
-import bsep.pki.PublicKeyInfrastructure.service.CertService;
 import bsep.pki.PublicKeyInfrastructure.service.CertificateService;
 import bsep.pki.PublicKeyInfrastructure.utility.X500Service;
-import lombok.extern.apachecommons.CommonsLog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -21,16 +18,8 @@ import java.util.List;
 @RequestMapping("/api/certificates")
 public class CertificateController {
 
-    //TODO: delete CRL service
-    @Autowired
-    private CRLService crlService;
-
-    //TODO: Join certificateService and certService
     @Autowired
     private CertificateService certificateService;
-
-    @Autowired
-    private CertService certService;
 
     @Autowired
     private X500Service x500Service;
@@ -44,7 +33,7 @@ public class CertificateController {
     @GetMapping("/authorities")
     @PreAuthorize("hasRole('admin')")
     public ResponseEntity<List<CertificateDto>> getCaCertificates() {
-        return new ResponseEntity<>(certService.getCaCertificates(), HttpStatus.OK);
+        return new ResponseEntity<>(certificateService.getCaCertificates(), HttpStatus.OK);
     }
 
     @PostMapping("/simple-search")
@@ -56,7 +45,7 @@ public class CertificateController {
     @PostMapping
     @PreAuthorize("hasRole('admin')")
     public ResponseEntity<CertificateDto> createCertificate(@RequestBody @Valid CreateCertificateDto createCertificateDto) {
-        return new ResponseEntity<>(certService.create(createCertificateDto), HttpStatus.OK);
+        return new ResponseEntity<>(certificateService.create(createCertificateDto), HttpStatus.OK);
     }
 
     //TODO: correct REST revoke endpoints
@@ -65,16 +54,16 @@ public class CertificateController {
     @PostMapping("/revoke")
     @PreAuthorize("hasRole('admin')")
     public ResponseEntity<CertificateDto> revoke(@RequestBody @Valid RevocationDto revocationDto) {
-        return new ResponseEntity<>(crlService.revoke(revocationDto), HttpStatus.OK);
+        return new ResponseEntity<>(certificateService.revoke(revocationDto), HttpStatus.OK);
     }
 
-    @GetMapping("/download/{serialNumber}")
-    public ResponseEntity<InputStreamResource> downloadRequestedCertificate(@PathVariable String serialNumber) {
+    @GetMapping("/cer/{serial-number}")
+    public ResponseEntity<InputStreamResource> downloadRequestedCertificate(@PathVariable("serial-number") String serialNumber) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
         headers.add("Pragma", "no-cache");
         headers.add("Expires", "0");
-        headers.setContentDispositionFormData("attachment", "ceritifacte.cer");
+        headers.setContentDispositionFormData("attachment", "certificate.cer");
 
         return new ResponseEntity<>(
                 certificateService.getCertFileBySerialNumber(serialNumber),
@@ -89,7 +78,7 @@ public class CertificateController {
         headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
         headers.add("Pragma", "no-cache");
         headers.add("Expires", "0");
-        headers.setContentDispositionFormData("attachment", "cert.p12");
+        headers.setContentDispositionFormData("attachment", "certificate.p12");
 
         return new ResponseEntity<>(
                 certificateService.getCertPKCS12BySerialNumber(serialNumber),

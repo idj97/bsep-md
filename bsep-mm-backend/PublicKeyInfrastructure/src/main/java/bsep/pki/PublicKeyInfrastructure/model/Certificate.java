@@ -24,9 +24,6 @@ public class Certificate {
     @Column(nullable = false, unique = true)
     private String serialNumber;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    private CA issuedForCA;
-
     @OneToMany(mappedBy = "issuedByCertificate", cascade = CascadeType.ALL)
     private Set<Certificate> issuerForCertificates = new HashSet<>();
 

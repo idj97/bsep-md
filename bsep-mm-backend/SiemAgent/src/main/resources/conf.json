@@ -1,0 +1,91 @@
+{
+  "win": {
+    "files": [
+      {
+        "path": "System",
+        "readFrequency": 5000,
+        "patterns": [
+          {
+            "pattern": "%{SYSLOGTIMESTAMP:timestamp} %{HOSTNAME:machineName} %{NUMBER:eventId} %{WORD:eventType} %{WORD:source} %{GREEDYDATA}"
+          }
+        ]
+      },
+      {
+        "path": "Application",
+        "readFrequency": 5000,
+        "patterns": [
+          {
+            "pattern": "%{SYSLOGTIMESTAMP:timestamp} %{HOSTNAME:machineName} %{NUMBER:eventId} %{WORD:eventType} %{WORD:source} %{GREEDYDATA}"
+          }
+        ]
+      },
+      {
+        "path": "Security",
+        "readFrequency": 6000,
+        "patterns": [
+          {
+            "pattern": "%{SYSLOGTIMESTAMP:timestamp} %{HOSTNAME:machineName} %{NUMBER:eventId} %{WORD:eventType} %{WORD:source} %{GREEDYDATA}"
+          }
+        ]
+      }
+
+
+
+    ]
+  },
+  "linux": {
+    "files": [
+      {
+        "path": "/var/log/auth.log",
+        "readFrequency": 5000,
+        "patterns": [
+          {
+            "name": "SUDO_OK",
+            "type": "info",
+            "pattern": "%{SYSLOGTIMESTAMP:timestamp} %{HOSTNAME:machineName} %{WORD:action}:\\s*%{USERNAME:sourceUser} : TTY.*PWD=%{PATH:workingDir}.*USER=%{USER:targetUser}.*COMMAND=%{PATH:command}"
+          },
+          {
+            "name": "SUDO_FAIL",
+            "type": "warning",
+            "pattern": "%{SYSLOGTIMESTAMP:timestamp} %{HOSTNAME:machineName} %{WORD:action}:\\s*%{USERNAME:sourceUser}.*incorrect password.*PWD=%{PATH:workingDir}.*USER=%{USER:targetUser}.*COMMAND=%{PATH:command}"
+          },
+          {
+            "name": "SU_OK",
+            "type": "info",
+            "pattern": "%{SYSLOGTIMESTAMP:timestamp} %{HOSTNAME:machineName} %{WORD:action}.*Successful.*for %{USER:targetUser}.*by %{USER:sourceUser}"
+          },
+          {
+            "name": "SU_FAIL",
+            "type": "warning",
+            "pattern": "%{SYSLOGTIMESTAMP:timestamp} %{HOSTNAME:machineName} %{WORD:action}.*FAILED.*for %{USER:targetUser}.*by %{USER:sourceUser}"
+          },
+          {
+            "name": "SSH_OK",
+            "type": "info",
+            "pattern": "%{SYSLOGTIMESTAMP:timestamp} %{HOSTNAME:machineName} %{WORD:action}.*: Accepted password for %{USER:targetUser} from %{IP:sourceIp} port %{NUMBER:sourcePort} %{WORD:protocol}"
+          },
+          {
+            "name": "SSH_FAIL",
+            "type": "warning",
+            "pattern": "%{SYSLOGTIMESTAMP:timestamp} %{HOSTNAME:machineName} %{WORD:action}.*: Failed password for %{USER:targetUser} from %{IP:sourceIp} port %{NUMBER:sourcePort} %{WORD:protocol}"
+          },
+          {
+            "name": "ADDED_USER_OK",
+            "type": "info",
+            "pattern": "%{SYSLOGTIMESTAMP:timestamp} %{HOSTNAME:machineName} %{WORD:action}.*: new user: name=%{USER:targetUser}.*"
+          },
+          {
+            "name": "REMOVED_USER_OK",
+            "type": "info",
+            "pattern": "%{SYSLOGTIMESTAMP:timestamp} %{HOSTNAME:machineName} %{WORD:action}.* delete user '%{USER:targetUser}'"
+          }
+        ]
+      },
+      {
+        "path": "/var/log/syslog",
+        "readFrequency": 10000,
+        "patterns": []
+      }
+    ]
+  }
+}

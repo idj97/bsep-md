@@ -1,0 +1,18 @@
+{
+	
+	"/agents/*":{
+		"target": "https://localhost:8442",
+		"secure": false,
+		"changeOrigin": true,
+		"logLevel": "debug",
+		"pathRewrite": { "^/agents" : "https://localhost:8442/agents" }
+	},
+
+	"/unsecured/*": {
+		"target": "http://localhost:8082",
+		"secure": false,
+		"changeOrigin": true,
+		"logLevel": "debug",
+		"pathRewrite": { "^/unsecured" : "http://localhost:8082/unsecured" }
+	}
+}
