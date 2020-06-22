@@ -29,3 +29,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+#keystore
+/src/main/resources/keystore.jks
+/src/main/resources/truststore.jks

@@ -1,18 +1,17 @@
 {
-	
-	"/agents/*":{
-		"target": "https://localhost:8442",
+	"/api/*":{
+		"target": "https://localhost:8441",
 		"secure": false,
 		"changeOrigin": true,
 		"logLevel": "debug",
-		"pathRewrite": { "^/agents" : "https://localhost:8442/agents" }
+		"pathRewrite": { "^/api" : "https://localhost:8441/api" }
 	},
 
 	"/unsecured/*": {
-		"target": "http://localhost:8082",
+		"target": "https://localhost:8441",
 		"secure": false,
 		"changeOrigin": true,
 		"logLevel": "debug",
-		"pathRewrite": { "^/unsecured" : "http://localhost:8082/unsecured" }
+		"pathRewrite": { "^/unsecured" : "https://localhost:8441/unsecured" }
 	}
 }
