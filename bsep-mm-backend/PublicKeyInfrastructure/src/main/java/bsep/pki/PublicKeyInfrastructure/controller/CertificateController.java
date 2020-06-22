@@ -57,7 +57,7 @@ public class CertificateController {
         return new ResponseEntity<>(certificateService.revoke(revocationDto), HttpStatus.OK);
     }
 
-    @GetMapping("/cer/{serial-number}")
+    @GetMapping("/download/{serial-number}")
     public ResponseEntity<InputStreamResource> downloadRequestedCertificate(@PathVariable("serial-number") String serialNumber) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Cache-Control", "no-cache, no-store, must-revalidate");

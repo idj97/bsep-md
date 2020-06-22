@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  KEYCLOAK_URL: 'http://localhost:8080/auth',
+  KEYCLOAK_URL: 'https://localhost:8443/auth',
   KEYCLOAK_REALM: 'BSEP-MM-SIEM-CENTER',
   KEYCLOAK_CLIENTID: 'bsep-siem-center-client'
 };

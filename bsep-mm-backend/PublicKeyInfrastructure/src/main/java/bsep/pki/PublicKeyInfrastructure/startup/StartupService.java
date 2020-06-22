@@ -64,9 +64,9 @@ public class StartupService {
         createOcspCert();
         ocspService.setOcspSigner("2");
         createSslIssuer();
-        createSslServerCert();
-        createSslClientCert();
-        createAngularCert();
+        createSiemCenterServerCert();
+        createSiemAgentCert();
+        createSiemAngularCert();
         createKeycloakCert();
     }
 
@@ -186,13 +186,13 @@ public class StartupService {
         certificateService.create(createCertificateDto);
     }
 
-    public void createSslServerCert() {
+    public void createSiemCenterServerCert() {
 
-        log.info("Creating SSL server certificate");
+        log.info("Creating siem SSL server certificate");
 
         Security.addProvider(new BouncyCastleProvider());
         NameDto nameDto = new NameDto();
-        nameDto.setCommonName("ssl-server");
+        nameDto.setCommonName("ssl-siem-server");
         nameDto.setDomainComponent("localhost");
 
         KeyUsageDto keyUsageDto = new KeyUsageDto();
@@ -235,13 +235,13 @@ public class StartupService {
         certificateService.create(createCertificateDto);
     }
 
-    public void createSslClientCert() {
+    public void createSiemAgentCert() {
 
-        log.info("Creating SSL Client certificate");
+        log.info("Creating siem agent SSL certificate");
 
         Security.addProvider(new BouncyCastleProvider());
         NameDto nameDto = new NameDto();
-        nameDto.setCommonName("ssl-client");
+        nameDto.setCommonName("ssl-siem-agent");
         nameDto.setDomainComponent("localhost");
 
         KeyUsageDto keyUsageDto = new KeyUsageDto();
@@ -283,13 +283,13 @@ public class StartupService {
         certificateService.create(createCertificateDto);
     }
 
-    public void createAngularCert() {
+    public void createSiemAngularCert() {
 
-        log.info("Creating Angular certificate");
+        log.info("Creating siem Angular SSL certificate");
 
         Security.addProvider(new BouncyCastleProvider());
         NameDto nameDto = new NameDto();
-        nameDto.setCommonName("ssl-angular");
+        nameDto.setCommonName("ssl-siem-angular");
         nameDto.setDomainComponent("localhost");
 
         KeyUsageDto keyUsageDto = new KeyUsageDto();

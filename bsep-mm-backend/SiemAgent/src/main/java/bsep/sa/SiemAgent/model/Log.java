@@ -27,13 +27,12 @@ public class Log {
     private String sourceIp = "";
     private String sourcePort = "";
     private String protocol = "";
-    private String duration;
-    private String size;
+    private String duration = "";
+    private String size = "";
 
     private String action = "";
     private String command = "";
     private String workingDir = "";
     private String sourceUser = "";
     private String targetUser = "";
-
 }
