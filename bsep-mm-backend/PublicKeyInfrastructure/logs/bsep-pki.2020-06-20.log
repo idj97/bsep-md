@@ -1,5 +1,0 @@
-2020-06-20 22:58:05,428 INFO org.springframework.boot.StartupInfoLogger [main] Starting PublicKeyInfrastructureApplication on aes with PID 5418 (/home/aes/programming/bsep/bsep-md/bsep-mm-backend/PublicKeyInfrastructure/target/classes started by aes in /home/aes/programming/bsep/bsep-md/bsep-mm-backend/PublicKeyInfrastructure)
-2020-06-20 22:58:05,433 DEBUG org.springframework.boot.StartupInfoLogger [main] Running with Spring Boot v2.2.6.RELEASE, Spring v5.2.5.RELEASE
-2020-06-20 22:58:05,434 INFO org.springframework.boot.SpringApplication [main] No active profile set, falling back to default profiles: default
-2020-06-20 22:58:24,508 INFO org.springframework.boot.StartupInfoLogger [main] Started PublicKeyInfrastructureApplication in 21.623 seconds (JVM running for 24.401)
-2020-06-20 23:31:44,020 ERROR bsep.pki.PublicKeyInfrastructure.exception.ApiExceptionHandler [http-nio-127.0.0.1-8081-exec-6] An exception has occurred:  class bsep.pki.PublicKeyInfrastructure.exception.ApiBadRequestException; Common name not available; 400 BAD_REQUEST
