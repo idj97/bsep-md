@@ -49,11 +49,13 @@ public class RuleService {
         String drl = converter.compile(ruleData, template);
 
         String combinedDrl = combinePreviousRules(drl); // add previous rules to drl
-        ruleRepository.save(new Rule(drl, ruleTemplate.getRuleName())); // save new rule
 
         System.out.print(combinedDrl); // print out combined rules
         kieSessionTemplate.createSessionFromDRL(combinedDrl);
+
+        ruleRepository.save(new Rule(drl, ruleTemplate.getRuleName())); // save new rule if it is valid
         return drl;
+
     }
 
 

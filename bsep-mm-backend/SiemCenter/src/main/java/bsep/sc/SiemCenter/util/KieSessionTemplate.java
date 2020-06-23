@@ -1,5 +1,6 @@
 package bsep.sc.SiemCenter.util;
 
+import bsep.sc.SiemCenter.exception.ApiRuleInvalidException;
 import bsep.sc.SiemCenter.model.Rule;
 import bsep.sc.SiemCenter.repository.RuleRepository;
 import org.kie.api.KieBaseConfiguration;
@@ -29,12 +30,18 @@ public class KieSessionTemplate {
         Results results = kieHelper.verify();
 
         if (results.hasMessages(Message.Level.WARNING, Message.Level.ERROR)){
+
             List<Message> messages = results.getMessages(Message.Level.WARNING, Message.Level.ERROR);
+            StringBuilder sb = new StringBuilder();
+            sb.append("<p> Rule creation failed. </p>");
+
             for (Message message : messages) {
-                System.out.println("Error: "+ message.getText());
+                sb.append("<p>");
+                sb.append(message.getText());
+                sb.append("</p>");
             }
 
-            throw new IllegalStateException("Compilation errors were found. Check the logs.");
+            throw new ApiRuleInvalidException(sb.toString());
         }
 
         templateSession =  kieHelper.build(kieBaseConfiguration).newKieSession();
