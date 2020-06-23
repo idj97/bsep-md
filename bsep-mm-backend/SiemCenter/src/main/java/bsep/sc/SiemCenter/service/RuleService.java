@@ -70,7 +70,6 @@ public class RuleService {
     }
 
     public int insertLogEvent(LogEvent logEvent) {
-
         if(kieSessionTemplate.getTemplateSession() == null) {
             throw new ApiNotFoundException("No rules have been found");
         }
@@ -78,6 +77,4 @@ public class RuleService {
         kieSessionTemplate.getTemplateSession().insert(logEvent);
         return kieSessionTemplate.getTemplateSession().fireAllRules(); // return number of alarms activated
     }
-
-
 }

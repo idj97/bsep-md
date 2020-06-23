@@ -1,7 +1,7 @@
 package bsep.sa.SiemAgent.readers;
 
 import bsep.sa.SiemAgent.model.Log;
-import bsep.sa.SiemAgent.model.LogFile;
+import bsep.sa.SiemAgent.model.LogSource;
 import bsep.sa.SiemAgent.model.LogPattern;
 import bsep.sa.SiemAgent.service.LogSenderScheduler;
 import com.google.gson.Gson;
@@ -20,11 +20,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class LinuxLogReader implements Runnable {
-    private LogFile logFile;
+public class FileLogReader implements Runnable {
+    private LogSource logFile;
     private LogSenderScheduler logSenderScheduler;
 
-    public LinuxLogReader(LogFile logFile, LogSenderScheduler logSenderScheduler) {
+    public FileLogReader(LogSource logFile, LogSenderScheduler logSenderScheduler) {
         super();
         this.logFile = logFile;
         this.logSenderScheduler = logSenderScheduler;
@@ -32,9 +32,9 @@ public class LinuxLogReader implements Runnable {
 
     @Override
     public void run() {
-        System.out.println("Started reader for" + logFile.getPath());
+        System.out.println("Started reader for" + logFile.getSource());
         try {
-            FileReader fr = new FileReader(logFile.getPath());
+            FileReader fr = new FileReader(logFile.getSource());
             BufferedReader br = new BufferedReader(fr);
             jumpToEnd(br);
 
@@ -86,10 +86,14 @@ public class LinuxLogReader implements Runnable {
             if (!added) {
                 continue;
             }
-            logMap.put("genericTimestamp", new Date());
+
+            System.out.println(new Date());
+            logMap.put("genericTimestamp", new Date().getTime());
             logMap.put("eventType", logPattern.getType());
             logMap.put("eventName", logPattern.getName());
-            logMap.put("message", line);
+            logMap.put("rawText", line);
+            logMap.put("logSource", logFile.getSource());
+            logMap.put("sourceType", logFile.getType());
 
             Log log = gson.fromJson(gson.toJson(logMap, typeMap), Log.class);
             logs.add(log);

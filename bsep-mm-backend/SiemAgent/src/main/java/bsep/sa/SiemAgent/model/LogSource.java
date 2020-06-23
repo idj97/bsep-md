@@ -12,8 +12,9 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class LogFile {
-    private String path;
+public class LogSource {
+    private String type;
+    private String source;
     private Long readFrequency; // milliseconds
     private List<LogPattern> logPatterns = new LinkedList<>();
 }

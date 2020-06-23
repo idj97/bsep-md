@@ -20,15 +20,18 @@ public class Log {
     private String eventName = "";
     private String eventType = "";
     private String message = "";
-    private String logFilePath = "";
+    private String logSource = "";
+    private String logType = "";
     private String rawText = "";
 
     private String source = "";
     private String sourceIp = "";
     private String sourcePort = "";
     private String protocol = "";
-    private String duration = "";
-    private String size = "";
+    private String duration = "0";
+    private String size = "0";
+    private String serverThreadsUsage = "0.0";
+    private String serverCoresUsage = "0.0";
 
     private String action = "";
     private String command = "";

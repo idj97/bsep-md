@@ -1,8 +1,6 @@
 package bsep.sc.SiemCenter.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -14,26 +12,43 @@ import java.util.UUID;
 @Getter
 @Setter
 public class Log {
-
     @Id
     private UUID id;
 
-    private Integer facility;
-    private Integer severity;
+    private String timestamp;
+    private Long genericTimestamp;
+    private Date genericTimestampDate;
+    private Date dateReceived;
 
-    private String machineSource;
-    private String machineOs;
+    private String machineIp;
+    private String machineOS;
+    private String machineName;
+    private String agentInfo;
 
+    private String eventId;
+    private String eventName;
+    private String eventType;
+    private String message;
+    private String logSource;
+    private String rawText;
+
+    private String source;
     private String sourceIp;
     private String sourcePort;
+    private String protocol;
+    private Integer duration = 0;
+    private Integer size = 0;
+    private Double serverThreadsUsage = 0.0;
+    private Double serverCoresUsage = 0.0;
 
-    private String eventType; // warn, info, err
-    private Date createdAt;
-    private Date dateReceived;
+    private String action;
+    private String command;
+    private String workingDir;
+    private String sourceUser;
+    private String targetUser;
 
     public Log() {
         this.id = UUID.randomUUID();
+        this.dateReceived = new Date();
     }
-
-
 }
