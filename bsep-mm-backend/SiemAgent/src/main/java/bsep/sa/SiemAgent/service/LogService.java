@@ -6,13 +6,18 @@ import bsep.sa.SiemAgent.model.LogPattern;
 import bsep.sa.SiemAgent.readers.FileLogReader;
 import bsep.sa.SiemAgent.readers.WindowsLogReader;
 import bsep.sa.SiemAgent.util.ConfigurationUtil;
+import bsep.sa.SiemAgent.util.KeyStoreUtil;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.security.PrivateKey;
+import java.security.Signature;
+import java.util.Base64;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -26,8 +31,14 @@ public class LogService {
     private LogSenderScheduler logSenderScheduler;
     private String os = System.getProperty("os.name");
 
+    @Autowired
+    private ResourceLoader resourceLoader;
+
     @Value("${agent.info}")
     private String agentInfo;
+
+    @Value("${signing.algorithm}")
+    private String signingAlgorithm;
 
     @PostConstruct
     public void startReaders() throws Exception {
@@ -84,5 +95,21 @@ public class LogService {
         log.setMachineOS(os);
         log.setMachineIp(configurationUtil.getPublicIp());
         log.setAgentInfo(agentInfo);
+    }
+
+    public void signLog(Log log) {
+        try {
+            String keystorePath = resourceLoader.getResource("classpath:keystore.jks").getURL().getPath();
+            PrivateKey privateKey = (PrivateKey) KeyStoreUtil.getKey(keystorePath, "ssl-client", "");
+
+            Signature sig = Signature.getInstance("SHA1withRSA");
+            sig.initSign(privateKey);
+            sig.update(log.toString().getBytes());
+            String signature = Base64.getEncoder().encodeToString(sig.sign());
+            log.setSigningAlgorithm(signingAlgorithm);
+            log.setSignature(signature);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

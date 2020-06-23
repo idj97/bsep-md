@@ -5,7 +5,6 @@ import bsep.sc.SiemCenter.service.DateService;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.bouncycastle.cert.dane.DANECertificateFetcher;
 
 @Setter
 @Getter

@@ -38,4 +38,7 @@ public class Log {
     private String workingDir = "";
     private String sourceUser = "";
     private String targetUser = "";
+
+    private String signingAlgorithm;
+    private String signature;
 }

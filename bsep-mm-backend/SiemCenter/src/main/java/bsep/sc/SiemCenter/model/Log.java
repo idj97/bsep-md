@@ -47,6 +47,9 @@ public class Log {
     private String sourceUser;
     private String targetUser;
 
+    private String signingAlgorithm;
+    private String signature;
+
     public Log() {
         this.id = UUID.randomUUID();
         this.dateReceived = new Date();
