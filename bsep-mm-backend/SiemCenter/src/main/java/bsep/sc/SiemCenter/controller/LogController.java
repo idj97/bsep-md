@@ -1,8 +1,8 @@
 package bsep.sc.SiemCenter.controller;
 
-import bsep.sc.SiemCenter.dto.LogSearchDTO;
 import bsep.sc.SiemCenter.dto.PageDTO;
-import bsep.sc.SiemCenter.model.Log;
+import bsep.sc.SiemCenter.dto.logs.LogDTO;
+import bsep.sc.SiemCenter.dto.logs.LogSearchDTO;
 import bsep.sc.SiemCenter.service.LogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,7 +20,7 @@ public class LogController {
     private LogService logService;
 
     @PostMapping("/search")
-    public ResponseEntity<PageDTO<Log>> searchLogs(@RequestBody LogSearchDTO logSearchDTO) {
+    public ResponseEntity<PageDTO<LogDTO>> searchLogs(@RequestBody LogSearchDTO logSearchDTO) {
         return new ResponseEntity<>(logService.searchLogs(logSearchDTO), HttpStatus.OK);
     }
 }

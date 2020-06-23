@@ -1,7 +1,5 @@
 package bsep.sc.SiemCenter.controller;
 
-import bsep.sc.SiemCenter.dto.LogSearchDTO;
-import bsep.sc.SiemCenter.dto.PageDTO;
 import bsep.sc.SiemCenter.model.Log;
 import bsep.sc.SiemCenter.service.LogService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -16,7 +16,7 @@ public class Log {
     private UUID id;
 
     private String timestamp;
-    private Long genericTimestamp;
+    private String genericTimestamp;
     private Date genericTimestampDate;
     private Date dateReceived;
 

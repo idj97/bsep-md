@@ -6,17 +6,25 @@ import org.springframework.stereotype.Service;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 @Service
 public class DateService {
 
-    public Date getDate(String dateStr) {
+    public Date getDate(String dateStr, String timezone) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+        sdf.setTimeZone(TimeZone.getTimeZone(timezone));
         try {
             return sdf.parse(dateStr);
         } catch (ParseException e) {
-            throw new ApiBadRequestException("Invalid date format.");
+            throw new ApiBadRequestException("Invalid date format/timezone.");
         }
+    }
+
+    public String getString(Date date, String timezone) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+        sdf.setTimeZone(TimeZone.getTimeZone(timezone));
+        return sdf.format(date);
     }
 
     public Date getMinDate() {
@@ -25,12 +33,6 @@ public class DateService {
 
     public Date getMaxDate() {
         return new Date(Long.MAX_VALUE);
-    }
-
-    public String toMongoFormat(Date date) {
-        SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
-        SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm:ss");
-        return sdfDate.format(date) + "T" + sdfTime.format(date);
     }
 
 }

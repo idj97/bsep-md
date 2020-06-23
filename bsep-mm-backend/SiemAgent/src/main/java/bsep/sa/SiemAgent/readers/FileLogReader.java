@@ -15,6 +15,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.text.DateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -87,7 +90,6 @@ public class FileLogReader implements Runnable {
                 continue;
             }
 
-            System.out.println(new Date());
             logMap.put("genericTimestamp", new Date().getTime());
             logMap.put("eventType", logPattern.getType());
             logMap.put("eventName", logPattern.getName());

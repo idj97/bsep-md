@@ -1,6 +1,6 @@
 package bsep.sc.SiemCenter;
 
-import bsep.sc.SiemCenter.dto.LogSearchDTO;
+import bsep.sc.SiemCenter.dto.logs.LogSearchDTO;
 import bsep.sc.SiemCenter.repository.LogRepository;
 import bsep.sc.SiemCenter.service.DateService;
 import bsep.sc.SiemCenter.service.LogService;
@@ -51,8 +51,9 @@ public class MongoRepoTest {
         logSearchDTO.setPageNum(0);
         logSearchDTO.setPageSize(10);
         logSearchDTO.setMachineName("aes");
-        logSearchDTO.setLowerGenericTimestamp(dateService.getDate("22.06.2020 20:55:00"));
-        logSearchDTO.setUpperGenericTimestamp(dateService.getDate("22.06.2020 21:15:00"));
+        logSearchDTO.setTimezone("CEST");
+        logSearchDTO.setLowerGenericTimestamp("22.06.2020 20:55:00");
+        logSearchDTO.setUpperGenericTimestamp("22.06.2020 21:15:00");
 
         Assert.assertEquals(3, logService.searchLogs(logSearchDTO).getItems().size());
     }

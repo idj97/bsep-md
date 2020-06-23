@@ -1,11 +1,13 @@
-package bsep.sc.SiemCenter.dto;
+package bsep.sc.SiemCenter.dto.logs;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import javax.validation.constraints.Positive;
 import java.util.Date;
 
@@ -16,10 +18,15 @@ public class LogSearchDTO {
     @NotNull @Positive private Integer pageNum;
     @NotNull @Positive private Integer pageSize;
 
-    @JsonFormat(pattern = "dd.MM.yyyy HH:mm:ss") private Date lowerGenericTimestamp;
-    @JsonFormat(pattern = "dd.MM.yyyy HH:mm:ss") private Date upperGenericTimestamp;
-    @JsonFormat(pattern = "dd.MM.yyyy HH:mm:ss") private Date lowerRecievedAt;
-    @JsonFormat(pattern = "dd.MM.yyyy HH:mm:ss") private Date upperRecievedAt;
+    @NotBlank String timezone;
+    @JsonFormat(pattern = "dd.MM.yyyy HH:mm:ss") private String lowerGenericTimestamp = "";
+    @JsonFormat(pattern = "dd.MM.yyyy HH:mm:ss") private String upperGenericTimestamp = "";
+    @JsonFormat(pattern = "dd.MM.yyyy HH:mm:ss") private String lowerRecievedAt = "";
+    @JsonFormat(pattern = "dd.MM.yyyy HH:mm:ss") private String upperRecievedAt = "";
+    @Null private Date lowerGenericTimestampDate;
+    @Null private Date upperGenericTimestampDate;
+    @Null private Date lowerRecievedAtDate;
+    @Null private Date upperRecievedAtDate;
 
     private String timestamp = "";
     private String machineIp = "";

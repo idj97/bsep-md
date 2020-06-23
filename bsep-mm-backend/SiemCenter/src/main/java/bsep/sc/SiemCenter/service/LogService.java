@@ -1,6 +1,7 @@
 package bsep.sc.SiemCenter.service;
 
-import bsep.sc.SiemCenter.dto.LogSearchDTO;
+import bsep.sc.SiemCenter.dto.logs.LogDTO;
+import bsep.sc.SiemCenter.dto.logs.LogSearchDTO;
 import bsep.sc.SiemCenter.dto.PageDTO;
 import bsep.sc.SiemCenter.model.Log;
 import bsep.sc.SiemCenter.repository.LogRepository;
@@ -10,8 +11,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class LogService {
@@ -23,19 +26,20 @@ public class LogService {
     private DateService dateService;
 
     public void addLogs(List<Log> logs) {
-        logs.forEach(log -> log.setGenericTimestampDate(new Date(log.getGenericTimestamp())));
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+        logs.forEach(log -> log.setGenericTimestampDate(new Date(Long.parseLong(log.getGenericTimestamp()))));
         logRepository.saveAll(logs);
     }
 
-    public PageDTO<Log> searchLogs(LogSearchDTO logSearchDTO) {
+    public PageDTO<LogDTO> searchLogs(LogSearchDTO logSearchDTO) {
         Pageable pageable = PageRequest.of(logSearchDTO.getPageNum(), logSearchDTO.getPageSize());
-        logSearchDTO = validateDates(logSearchDTO);
+        logSearchDTO = setSearchDates(logSearchDTO);
         Page<Log> logPage = logRepository.search(
                 logSearchDTO.getTimestamp(),
-                logSearchDTO.getLowerGenericTimestamp(),
-                logSearchDTO.getUpperGenericTimestamp(),
-                logSearchDTO.getLowerRecievedAt(),
-                logSearchDTO.getUpperRecievedAt(),
+                logSearchDTO.getLowerGenericTimestampDate(),
+                logSearchDTO.getUpperGenericTimestampDate(),
+                logSearchDTO.getLowerRecievedAtDate(),
+                logSearchDTO.getUpperRecievedAtDate(),
                 logSearchDTO.getMachineIp(),
                 logSearchDTO.getMachineOS(),
                 logSearchDTO.getMachineName(),
@@ -57,42 +61,49 @@ public class LogService {
                 logSearchDTO.getTargetUser(),
                 pageable);
 
-        PageDTO<Log> logPageDTO = new PageDTO<Log>(
+        String timezone = logSearchDTO.getTimezone();
+        List<LogDTO> logDTOS = logPage.getContent().stream()
+                .map(log -> new LogDTO(log, timezone))
+                .collect(Collectors.toList());
+
+        PageDTO<LogDTO> logPageDTO = new PageDTO<>(
                 logPage.getTotalPages(),
                 logPage.getTotalElements(),
-                logPage.getContent());
+                logDTOS);
 
         return logPageDTO;
     }
 
-    public LogSearchDTO validateDates(LogSearchDTO logSearchDTO) {
-        System.out.println(dateService.getMinDate());
-        System.out.println(dateService.getMaxDate());
+    public LogSearchDTO setSearchDates(LogSearchDTO logSearchDTO) {
+        String lowerGenericTimestamp = logSearchDTO.getLowerGenericTimestamp();
+        String upperGenericTimestamp = logSearchDTO.getUpperGenericTimestamp();
+        String lowerRecievedAt = logSearchDTO.getLowerRecievedAt();
+        String upperRecievedAt = logSearchDTO.getUpperRecievedAt();
+        String timezone = logSearchDTO.getTimezone();
 
-        System.out.println(logSearchDTO.getLowerGenericTimestamp());
-        if (logSearchDTO.getLowerGenericTimestamp() == null) {
-            logSearchDTO.setLowerGenericTimestamp(dateService.getMinDate());
+        if (lowerGenericTimestamp.equals("")) {
+            logSearchDTO.setLowerGenericTimestampDate(dateService.getMinDate());
+        } else {
+            logSearchDTO.setLowerGenericTimestampDate(dateService.getDate(lowerGenericTimestamp, timezone));
         }
-        System.out.println(logSearchDTO.getLowerGenericTimestamp());
 
-        System.out.println(logSearchDTO.getUpperGenericTimestamp());
-        if (logSearchDTO.getUpperGenericTimestamp() == null) {
-            logSearchDTO.setUpperGenericTimestamp(dateService.getMaxDate());
+        if (upperGenericTimestamp.equals("")) {
+            logSearchDTO.setUpperGenericTimestampDate(dateService.getMaxDate());
+        } else {
+            logSearchDTO.setUpperGenericTimestampDate(dateService.getDate(upperGenericTimestamp, timezone));
         }
-        System.out.println(logSearchDTO.getUpperGenericTimestamp());
 
-
-        System.out.println(logSearchDTO.getLowerRecievedAt());
-        if (logSearchDTO.getLowerRecievedAt() == null) {
-            logSearchDTO.setLowerRecievedAt(dateService.getMinDate());
+        if (lowerRecievedAt.equals("")) {
+            logSearchDTO.setLowerRecievedAtDate(dateService.getMinDate());
+        } else {
+            logSearchDTO.setLowerRecievedAtDate(dateService.getDate(lowerRecievedAt, timezone));
         }
-        System.out.println(logSearchDTO.getLowerRecievedAt());
 
-        System.out.println(logSearchDTO.getUpperRecievedAt());
-        if (logSearchDTO.getUpperRecievedAt() == null) {
-            logSearchDTO.setUpperRecievedAt(dateService.getMaxDate());
+        if (upperRecievedAt.equals("")) {
+            logSearchDTO.setUpperRecievedAtDate(dateService.getMaxDate());
+        } else {
+            logSearchDTO.setUpperRecievedAtDate(dateService.getDate(upperRecievedAt, timezone));
         }
-        System.out.println(logSearchDTO.getUpperRecievedAt());
 
         return logSearchDTO;
     }
