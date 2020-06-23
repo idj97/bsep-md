@@ -30,7 +30,6 @@ public class RuleService {
 
 
     public String createRule(RuleTemplate ruleTemplate, String templateName) {
-
         InputStream template = RuleService.class.getResourceAsStream(templatePath + templateName + ".drt");
 
         if(template == null) {
@@ -58,7 +57,6 @@ public class RuleService {
 
 
     public String combinePreviousRules(String newDrl) {
-
         StringBuilder sb = new StringBuilder();
         sb.append(newDrl); // append first rule with imports
         for(Rule rule: ruleRepository.findAll()) {
