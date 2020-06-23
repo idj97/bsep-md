@@ -1,0 +1,19 @@
+<div class="container">
+
+    <div class="row menu-holder">
+        <div [ngClass]="defaultClicked ? 'col-6 left-col menu-clicked' : 'col-6 left-col'"
+            routerLink="./view" (click)="menuClicked(true)">
+            View rules
+        </div>
+        <div [ngClass]="defaultClicked ? 'col-6 left-col' : 'col-6 left-col menu-clicked'" 
+            routerLink="./new" (click)="menuClicked(false)">
+            New rule
+        </div>
+    </div>
+
+    <div class="content-holder">
+        <router-outlet></router-outlet>
+    </div>
+    
+
+</div>

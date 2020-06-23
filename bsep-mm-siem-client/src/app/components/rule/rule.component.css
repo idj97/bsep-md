@@ -1,0 +1,43 @@
+.menu-holder {
+    position: relative;
+    padding: 1ex;
+    text-align: center;
+    font-size: 16px;
+}
+
+.menu-clicked {
+    background-color: lightgray !important; 
+    color: black !important;
+}
+
+.col-6 {
+    background-color: #21252b;
+    color: white;
+    padding: 1ex;
+}
+
+
+.left-col:hover {
+    background-color: lightgray;
+    color: black;
+}
+
+.left-col:focus {
+    outline: 0;
+}
+
+
+.right-col:hover {
+    background-color: lightgray;
+    color: black;
+}
+
+.right-col:focus {
+    outline: 0;
+    
+}
+
+.content-holder {
+    position: relative;
+    margin-top: 15ex;
+}

@@ -44,6 +44,7 @@ public class KieSessionTemplate {
             throw new ApiRuleInvalidException(sb.toString());
         }
 
+        templateSession.dispose();
         templateSession =  kieHelper.build(kieBaseConfiguration).newKieSession();
     }
 

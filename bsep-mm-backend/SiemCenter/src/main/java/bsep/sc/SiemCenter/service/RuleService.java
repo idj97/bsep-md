@@ -1,5 +1,6 @@
 package bsep.sc.SiemCenter.service;
 
+import bsep.sc.SiemCenter.dto.RuleDto;
 import bsep.sc.SiemCenter.dto.RuleTemplate;
 import bsep.sc.SiemCenter.events.LogEvent;
 import bsep.sc.SiemCenter.exception.ApiBadRequestException;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class RuleService {
@@ -29,8 +31,20 @@ public class RuleService {
     private String templatePath;
 
 
+    public List<RuleDto> getAllRules() {
+
+        return ruleRepository
+                .findAll()
+                .stream()
+                .map(rule -> new RuleDto(rule.getId(), rule.getRuleName(), rule.getRuleContent()))
+                .collect(Collectors.toList());
+
+    }
+
+
     public String createRule(RuleTemplate ruleTemplate, String templateName) {
         InputStream template = RuleService.class.getResourceAsStream(templatePath + templateName + ".drt");
+
 
         if(template == null) {
             throw new ApiBadRequestException("Invalid template name");
@@ -73,6 +87,7 @@ public class RuleService {
         if(kieSessionTemplate.getTemplateSession() == null) {
             throw new ApiNotFoundException("No rules have been found");
         }
+
 
         kieSessionTemplate.getTemplateSession().insert(logEvent);
         return kieSessionTemplate.getTemplateSession().fireAllRules(); // return number of alarms activated
