@@ -1,0 +1,262 @@
+<form name="logSearchForm" #ncf="ngForm">
+    <div class="row col-12 search-fields-info">Search fields accept regular expressions</div>
+    <div class="row search-fields-holder" [ngClass]="{show : showSearchFields}">
+        <div class="input-holder d-flex align-items-center col-4" 
+            [ngClass]="{blurred : activeInput != timestamp.valueAccessor._elementRef.nativeElement.dataset.index, 
+            focused : activeInput == timestamp.valueAccessor._elementRef.nativeElement.dataset.index || 
+            !isEmpty(timestamp.valueAccessor._elementRef.nativeElement.dataset.index)}">
+            <p class="input-text-value">Timestamp</p>
+            <input type="text" class="input-styled" (keypress)="typed()"
+            (blur)="blurInput($event, timestamp.valueAccessor._elementRef.nativeElement.dataset.index)" 
+            (focus)="focusInput($event, timestamp.valueAccessor._elementRef.nativeElement.dataset.index)"
+                [(ngModel)]="logSearchDTO.timestamp" name="timestamp"
+                #timestamp="ngModel" data-index="0">
+        </div>
+        <div class="input-holder d-flex align-items-center col-4" 
+            [ngClass]="{blurred : activeInput != machineIP.valueAccessor._elementRef.nativeElement.dataset.index, 
+            focused : activeInput == machineIP.valueAccessor._elementRef.nativeElement.dataset.index || 
+            !isEmpty(machineIP.valueAccessor._elementRef.nativeElement.dataset.index)}">
+            <p class="input-text-value">Machine IP</p>
+            <input type="text" class="input-styled" 
+            (blur)="blurInput($event, machineIP.valueAccessor._elementRef.nativeElement.dataset.index)" 
+            (focus)="focusInput($event, machineIP.valueAccessor._elementRef.nativeElement.dataset.index)"
+                [(ngModel)]="logSearchDTO.machineIP" name="machineIP"
+                #machineIP="ngModel" data-index="1">
+        </div>
+        <div class="input-holder d-flex align-items-center col-4" 
+            [ngClass]="{blurred : activeInput != machineOS.valueAccessor._elementRef.nativeElement.dataset.index, 
+            focused : activeInput == machineOS.valueAccessor._elementRef.nativeElement.dataset.index || 
+            !isEmpty(machineOS.valueAccessor._elementRef.nativeElement.dataset.index)}">
+            <p class="input-text-value">Machine OS</p>
+            <input type="text" class="input-styled" 
+            (blur)="blurInput($event, machineOS.valueAccessor._elementRef.nativeElement.dataset.index)" 
+            (focus)="focusInput($event, machineOS.valueAccessor._elementRef.nativeElement.dataset.index)"
+                [(ngModel)]="logSearchDTO.machineOS" name="machineOS"
+                #machineOS="ngModel" data-index="2">
+        </div>
+        <div class="input-holder d-flex align-items-center col-4" 
+            [ngClass]="{blurred : activeInput != machineName.valueAccessor._elementRef.nativeElement.dataset.index, 
+            focused : activeInput == machineName.valueAccessor._elementRef.nativeElement.dataset.index || 
+            !isEmpty(machineName.valueAccessor._elementRef.nativeElement.dataset.index)}">
+            <p class="input-text-value">Machine Name</p>
+            <input type="text" class="input-styled" 
+            (blur)="blurInput($event, machineName.valueAccessor._elementRef.nativeElement.dataset.index)" 
+            (focus)="focusInput($event, machineName.valueAccessor._elementRef.nativeElement.dataset.index)"
+                [(ngModel)]="logSearchDTO.machineName" name="machineName"
+                #machineName="ngModel" data-index="3">
+        </div>
+        <div class="input-holder d-flex align-items-center col-4" 
+            [ngClass]="{blurred : activeInput != agentInfo.valueAccessor._elementRef.nativeElement.dataset.index, 
+            focused : activeInput == agentInfo.valueAccessor._elementRef.nativeElement.dataset.index || 
+            !isEmpty(agentInfo.valueAccessor._elementRef.nativeElement.dataset.index)}">
+            <p class="input-text-value">Agent Info</p>
+            <input type="text" class="input-styled" 
+            (blur)="blurInput($event, agentInfo.valueAccessor._elementRef.nativeElement.dataset.index)" 
+            (focus)="focusInput($event, agentInfo.valueAccessor._elementRef.nativeElement.dataset.index)"
+                [(ngModel)]="logSearchDTO.agentInfo" name="agentInfo"
+                #agentInfo="ngModel" data-index="4">
+        </div>
+        <div class="input-holder d-flex align-items-center col-4" 
+            [ngClass]="{blurred : activeInput != eventID.valueAccessor._elementRef.nativeElement.dataset.index, 
+            focused : activeInput == eventID.valueAccessor._elementRef.nativeElement.dataset.index || 
+            !isEmpty(eventID.valueAccessor._elementRef.nativeElement.dataset.index)}">
+            <p class="input-text-value">Event ID</p>
+            <input type="text" class="input-styled" 
+            (blur)="blurInput($event, eventID.valueAccessor._elementRef.nativeElement.dataset.index)" 
+            (focus)="focusInput($event, eventID.valueAccessor._elementRef.nativeElement.dataset.index)"
+                [(ngModel)]="logSearchDTO.eventID" name="eventID"
+                #eventID="ngModel" data-index="5">
+        </div>
+        <div class="input-holder d-flex align-items-center col-4" 
+            [ngClass]="{blurred : activeInput != eventName.valueAccessor._elementRef.nativeElement.dataset.index, 
+            focused : activeInput == eventName.valueAccessor._elementRef.nativeElement.dataset.index || 
+            !isEmpty(eventName.valueAccessor._elementRef.nativeElement.dataset.index)}">
+            <p class="input-text-value">Event Name</p>
+            <input type="text" class="input-styled" 
+            (blur)="blurInput($event, eventName.valueAccessor._elementRef.nativeElement.dataset.index)" 
+            (focus)="focusInput($event, eventName.valueAccessor._elementRef.nativeElement.dataset.index)"
+                [(ngModel)]="logSearchDTO.eventName" name="eventName"
+                #eventName="ngModel" data-index="6">
+        </div>
+        <div class="input-holder d-flex align-items-center col-4" 
+            [ngClass]="{blurred : activeInput != eventType.valueAccessor._elementRef.nativeElement.dataset.index, 
+            focused : activeInput == eventType.valueAccessor._elementRef.nativeElement.dataset.index || 
+            !isEmpty(eventType.valueAccessor._elementRef.nativeElement.dataset.index)}">
+            <p class="input-text-value">Event Type</p>
+            <input type="text" class="input-styled" 
+            (blur)="blurInput($event, eventType.valueAccessor._elementRef.nativeElement.dataset.index)" 
+            (focus)="focusInput($event, eventType.valueAccessor._elementRef.nativeElement.dataset.index)"
+                [(ngModel)]="logSearchDTO.eventType" name="eventType"
+                #eventType="ngModel" data-index="7">
+        </div>
+        <div class="input-holder d-flex align-items-center col-4" 
+            [ngClass]="{blurred : activeInput != message.valueAccessor._elementRef.nativeElement.dataset.index, 
+            focused : activeInput == message.valueAccessor._elementRef.nativeElement.dataset.index || 
+            !isEmpty(message.valueAccessor._elementRef.nativeElement.dataset.index)}">
+            <p class="input-text-value">Message</p>
+            <input type="text" class="input-styled" 
+            (blur)="blurInput($event, message.valueAccessor._elementRef.nativeElement.dataset.index)" 
+            (focus)="focusInput($event, message.valueAccessor._elementRef.nativeElement.dataset.index)"
+                [(ngModel)]="logSearchDTO.message" name="message"
+                #message="ngModel" data-index="8">
+        </div>
+        <div class="input-holder d-flex align-items-center col-4" 
+            [ngClass]="{blurred : activeInput != logSource.valueAccessor._elementRef.nativeElement.dataset.index, 
+            focused : activeInput == logSource.valueAccessor._elementRef.nativeElement.dataset.index || 
+            !isEmpty(logSource.valueAccessor._elementRef.nativeElement.dataset.index)}">
+            <p class="input-text-value">Log Source</p>
+            <input type="text" class="input-styled" 
+            (blur)="blurInput($event, logSource.valueAccessor._elementRef.nativeElement.dataset.index)" 
+            (focus)="focusInput($event, logSource.valueAccessor._elementRef.nativeElement.dataset.index)"
+                [(ngModel)]="logSearchDTO.logSource" name="logSource"
+                #logSource="ngModel" data-index="9">
+        </div>
+        <div class="input-holder d-flex align-items-center col-4" 
+            [ngClass]="{blurred : activeInput != rawText.valueAccessor._elementRef.nativeElement.dataset.index, 
+            focused : activeInput == rawText.valueAccessor._elementRef.nativeElement.dataset.index || 
+            !isEmpty(rawText.valueAccessor._elementRef.nativeElement.dataset.index)}">
+            <p class="input-text-value">Raw Text</p>
+            <input type="text" class="input-styled" 
+            (blur)="blurInput($event, rawText.valueAccessor._elementRef.nativeElement.dataset.index)" 
+            (focus)="focusInput($event, rawText.valueAccessor._elementRef.nativeElement.dataset.index)"
+                [(ngModel)]="logSearchDTO.rawText" name="rawText"
+                #rawText="ngModel" data-index="10">
+        </div>
+        <div class="input-holder d-flex align-items-center col-4" 
+            [ngClass]="{blurred : activeInput != source.valueAccessor._elementRef.nativeElement.dataset.index, 
+            focused : activeInput == source.valueAccessor._elementRef.nativeElement.dataset.index || 
+            !isEmpty(source.valueAccessor._elementRef.nativeElement.dataset.index)}">
+            <p class="input-text-value">Source</p>
+            <input type="text" class="input-styled" 
+            (blur)="blurInput($event, source.valueAccessor._elementRef.nativeElement.dataset.index)" 
+            (focus)="focusInput($event, source.valueAccessor._elementRef.nativeElement.dataset.index)"
+                [(ngModel)]="logSearchDTO.source" name="source"
+                #source="ngModel" data-index="11">
+        </div>
+        <div class="input-holder d-flex align-items-center col-4" 
+            [ngClass]="{blurred : activeInput != sourceIP.valueAccessor._elementRef.nativeElement.dataset.index, 
+            focused : activeInput == sourceIP.valueAccessor._elementRef.nativeElement.dataset.index || 
+            !isEmpty(sourceIP.valueAccessor._elementRef.nativeElement.dataset.index)}">
+            <p class="input-text-value">Source IP</p>
+            <input type="text" class="input-styled" 
+            (blur)="blurInput($event, sourceIP.valueAccessor._elementRef.nativeElement.dataset.index)" 
+            (focus)="focusInput($event, sourceIP.valueAccessor._elementRef.nativeElement.dataset.index)"
+                [(ngModel)]="logSearchDTO.sourceIP" name="sourceIP"
+                #sourceIP="ngModel" data-index="12">
+        </div>
+        <div class="input-holder d-flex align-items-center col-4" 
+            [ngClass]="{blurred : activeInput != sourcePort.valueAccessor._elementRef.nativeElement.dataset.index, 
+            focused : activeInput == sourcePort.valueAccessor._elementRef.nativeElement.dataset.index || 
+            !isEmpty(sourcePort.valueAccessor._elementRef.nativeElement.dataset.index)}">
+            <p class="input-text-value">Source Port</p>
+            <input type="text" class="input-styled" 
+            (blur)="blurInput($event, sourcePort.valueAccessor._elementRef.nativeElement.dataset.index)" 
+            (focus)="focusInput($event, sourcePort.valueAccessor._elementRef.nativeElement.dataset.index)"
+                [(ngModel)]="logSearchDTO.sourcePort" name="sourcePort"
+                #sourcePort="ngModel" data-index="13">
+        </div>
+        <div class="input-holder d-flex align-items-center col-4" 
+            [ngClass]="{blurred : activeInput != protocol.valueAccessor._elementRef.nativeElement.dataset.index, 
+            focused : activeInput == protocol.valueAccessor._elementRef.nativeElement.dataset.index || 
+            !isEmpty(protocol.valueAccessor._elementRef.nativeElement.dataset.index)}">
+            <p class="input-text-value">Protocol</p>
+            <input type="text" class="input-styled" 
+            (blur)="blurInput($event, protocol.valueAccessor._elementRef.nativeElement.dataset.index)" 
+            (focus)="focusInput($event, protocol.valueAccessor._elementRef.nativeElement.dataset.index)"
+                [(ngModel)]="logSearchDTO.protocol" name="protocol"
+                #protocol="ngModel" data-index="14">
+        </div>
+        <div class="input-holder d-flex align-items-center col-4" 
+            [ngClass]="{blurred : activeInput != action.valueAccessor._elementRef.nativeElement.dataset.index, 
+            focused : activeInput == action.valueAccessor._elementRef.nativeElement.dataset.index || 
+            !isEmpty(action.valueAccessor._elementRef.nativeElement.dataset.index)}">
+            <p class="input-text-value">Action</p>
+            <input type="text" class="input-styled" 
+            (blur)="blurInput($event, action.valueAccessor._elementRef.nativeElement.dataset.index)" 
+            (focus)="focusInput($event, action.valueAccessor._elementRef.nativeElement.dataset.index)"
+                [(ngModel)]="logSearchDTO.action" name="action"
+                #action="ngModel" data-index="15">
+        </div>
+        <div class="input-holder d-flex align-items-center col-4" 
+            [ngClass]="{blurred : activeInput != command.valueAccessor._elementRef.nativeElement.dataset.index, 
+            focused : activeInput == command.valueAccessor._elementRef.nativeElement.dataset.index || 
+            !isEmpty(command.valueAccessor._elementRef.nativeElement.dataset.index)}">
+            <p class="input-text-value">Command</p>
+            <input type="text" class="input-styled" 
+            (blur)="blurInput($event, command.valueAccessor._elementRef.nativeElement.dataset.index)" 
+            (focus)="focusInput($event, command.valueAccessor._elementRef.nativeElement.dataset.index)"
+                [(ngModel)]="logSearchDTO.command" name="command"
+                #command="ngModel" data-index="16">
+        </div>
+        <div class="input-holder d-flex align-items-center col-4" 
+            [ngClass]="{blurred : activeInput != workingDir.valueAccessor._elementRef.nativeElement.dataset.index, 
+            focused : activeInput == workingDir.valueAccessor._elementRef.nativeElement.dataset.index || 
+            !isEmpty(workingDir.valueAccessor._elementRef.nativeElement.dataset.index)}">
+            <p class="input-text-value">Working Dir</p>
+            <input type="text" class="input-styled" 
+            (blur)="blurInput($event, workingDir.valueAccessor._elementRef.nativeElement.dataset.index)" 
+            (focus)="focusInput($event, workingDir.valueAccessor._elementRef.nativeElement.dataset.index)"
+                [(ngModel)]="logSearchDTO.workingDir" name="workingDir"
+                #workingDir="ngModel" data-index="17">
+        </div>
+        <div class="input-holder d-flex align-items-center col-4" 
+            [ngClass]="{blurred : activeInput != sourceUser.valueAccessor._elementRef.nativeElement.dataset.index, 
+            focused : activeInput == sourceUser.valueAccessor._elementRef.nativeElement.dataset.index || 
+            !isEmpty(sourceUser.valueAccessor._elementRef.nativeElement.dataset.index)}">
+            <p class="input-text-value">Source User</p>
+            <input type="text" class="input-styled" 
+            (blur)="blurInput($event, sourceUser.valueAccessor._elementRef.nativeElement.dataset.index)" 
+            (focus)="focusInput($event, sourceUser.valueAccessor._elementRef.nativeElement.dataset.index)"
+                [(ngModel)]="logSearchDTO.sourceUser" name="sourceUser"
+                #sourceUser="ngModel" data-index="18">
+        </div>
+        <div class="input-holder d-flex align-items-center col-4" 
+            [ngClass]="{blurred : activeInput != lowerGenericTimestamp.valueAccessor._elementRef.nativeElement.dataset.index, 
+            focused : activeInput == lowerGenericTimestamp.valueAccessor._elementRef.nativeElement.dataset.index || 
+            !isEmpty(lowerGenericTimestamp.valueAccessor._elementRef.nativeElement.dataset.index)}">
+            <p class="input-text-value">Lower Generic Timestamp</p>
+            <input type="text" class="input-styled" 
+            (blur)="blurInput($event, lowerGenericTimestamp.valueAccessor._elementRef.nativeElement.dataset.index)" 
+            (focus)="focusInput($event, lowerGenericTimestamp.valueAccessor._elementRef.nativeElement.dataset.index)"
+                [(ngModel)]="logSearchDTO.lowerGenericTimestamp" name="lowerGenericTimestamp"
+                #lowerGenericTimestamp="ngModel" data-index="19">
+        </div>
+        <div class="input-holder d-flex align-items-center col-4" 
+            [ngClass]="{blurred : activeInput != upperGenericTimestamp.valueAccessor._elementRef.nativeElement.dataset.index, 
+            focused : activeInput == upperGenericTimestamp.valueAccessor._elementRef.nativeElement.dataset.index || 
+            !isEmpty(upperGenericTimestamp.valueAccessor._elementRef.nativeElement.dataset.index)}">
+            <p class="input-text-value">Upper Generic Timestamp</p>
+            <input type="text" class="input-styled" 
+            (blur)="blurInput($event, upperGenericTimestamp.valueAccessor._elementRef.nativeElement.dataset.index)" 
+            (focus)="focusInput($event, upperGenericTimestamp.valueAccessor._elementRef.nativeElement.dataset.index)"
+                [(ngModel)]="logSearchDTO.upperGenericTimestamp" name="upperGenericTimestamp"
+                #upperGenericTimestamp="ngModel" data-index="20">
+        </div>
+        <div class="input-holder d-flex align-items-center col-4" 
+            [ngClass]="{blurred : activeInput != lowerRecievedAt.valueAccessor._elementRef.nativeElement.dataset.index, 
+            focused : activeInput == lowerRecievedAt.valueAccessor._elementRef.nativeElement.dataset.index || 
+            !isEmpty(lowerRecievedAt.valueAccessor._elementRef.nativeElement.dataset.index)}">
+            <p class="input-text-value">Lower Recieved At</p>
+            <input type="text" class="input-styled" 
+            (blur)="blurInput($event, lowerRecievedAt.valueAccessor._elementRef.nativeElement.dataset.index)" 
+            (focus)="focusInput($event, lowerRecievedAt.valueAccessor._elementRef.nativeElement.dataset.index)"
+                [(ngModel)]="logSearchDTO.lowerRecievedAt" name="lowerRecievedAt"
+                #lowerRecievedAt="ngModel" data-index="21">
+        </div>
+        <div class="input-holder d-flex align-items-center col-4" 
+            [ngClass]="{blurred : activeInput != upperRecievedAt.valueAccessor._elementRef.nativeElement.dataset.index, 
+            focused : activeInput == upperRecievedAt.valueAccessor._elementRef.nativeElement.dataset.index || 
+            !isEmpty(upperRecievedAt.valueAccessor._elementRef.nativeElement.dataset.index)}">
+            <p class="input-text-value">Upper Recieved At</p>
+            <input type="text" class="input-styled" 
+            (blur)="blurInput($event, upperRecievedAt.valueAccessor._elementRef.nativeElement.dataset.index)" 
+            (focus)="focusInput($event, upperRecievedAt.valueAccessor._elementRef.nativeElement.dataset.index)"
+                [(ngModel)]="logSearchDTO.upperRecievedAt" name="upperRecievedAt"
+                #upperRecievedAt="ngModel" data-index="22">
+        </div>
+    </div>
+    <div class="row col-12 show-search-fields-button d-flex justify-content-center" (click)="toggleSearchFields()"> 
+        <fa-icon *ngIf="showSearchFields" [icon]="faArrowUp"></fa-icon>
+        <fa-icon *ngIf="!showSearchFields" [icon]="faArrowDown"></fa-icon>
+    </div>
+</form>
