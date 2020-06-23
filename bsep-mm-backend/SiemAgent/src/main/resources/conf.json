@@ -1,8 +1,9 @@
 {
   "win": {
-    "files": [
+    "sources": [
       {
-        "path": "System",
+        "type": "windows-log",
+        "source": "System",
         "readFrequency": 5000,
         "patterns": [
           {
@@ -11,7 +12,8 @@
         ]
       },
       {
-        "path": "Application",
+        "type": "windows-log",
+        "source": "Application",
         "readFrequency": 5000,
         "patterns": [
           {
@@ -20,7 +22,8 @@
         ]
       },
       {
-        "path": "Security",
+        "type": "windows-log",
+        "source": "Security",
         "readFrequency": 6000,
         "patterns": [
           {
@@ -28,15 +31,13 @@
           }
         ]
       }
-
-
-
     ]
   },
   "linux": {
-    "files": [
+    "sources": [
       {
-        "path": "/var/log/auth.log",
+        "type": "file",
+        "source": "/var/log/auth.log",
         "readFrequency": 5000,
         "patterns": [
           {
@@ -82,7 +83,8 @@
         ]
       },
       {
-        "path": "/var/log/syslog",
+        "type": "file",
+        "source": "/var/log/syslog",
         "readFrequency": 10000,
         "patterns": []
       }

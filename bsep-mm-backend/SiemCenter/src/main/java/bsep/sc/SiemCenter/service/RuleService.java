@@ -30,7 +30,6 @@ public class RuleService {
 
 
     public String createRule(RuleTemplate ruleTemplate, String templateName) {
-
         InputStream template = RuleService.class.getResourceAsStream(templatePath + templateName + ".drt");
 
         if(template == null) {
@@ -60,7 +59,6 @@ public class RuleService {
 
 
     public String combinePreviousRules(String newDrl) {
-
         StringBuilder sb = new StringBuilder();
         sb.append(newDrl); // append first rule with imports
         for(Rule rule: ruleRepository.findAll()) {
@@ -72,7 +70,6 @@ public class RuleService {
     }
 
     public int insertLogEvent(LogEvent logEvent) {
-
         if(kieSessionTemplate.getTemplateSession() == null) {
             throw new ApiNotFoundException("No rules have been found");
         }
@@ -80,6 +77,4 @@ public class RuleService {
         kieSessionTemplate.getTemplateSession().insert(logEvent);
         return kieSessionTemplate.getTemplateSession().fireAllRules(); // return number of alarms activated
     }
-
-
 }

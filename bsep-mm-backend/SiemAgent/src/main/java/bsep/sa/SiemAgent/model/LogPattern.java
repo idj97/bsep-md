@@ -11,8 +11,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class LogPattern {
     private String name;
-    private Integer severity;
-    private Integer facility;
     private String type;
     private String pattern;
 }

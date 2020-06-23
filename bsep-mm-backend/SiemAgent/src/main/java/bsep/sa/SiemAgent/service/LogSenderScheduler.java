@@ -29,6 +29,7 @@ public class LogSenderScheduler {
 
     public void addLog(Log log) {
         logService.setMachineInfoToLog(log);
+        logService.signLog(log);
         System.out.println(log);
         logs.add(log);
         realTimeSendLog();
@@ -44,7 +45,9 @@ public class LogSenderScheduler {
                 logsToSend.add(logs.poll());
             }
 
-            //send(logsToSend);
+            if (logsToSend.size() > 0) {
+                send(logsToSend);
+            }
         }
     }
 
@@ -53,13 +56,13 @@ public class LogSenderScheduler {
             Log log = logs.poll();
             List<Log> logsToSend = new LinkedList<>();
             logsToSend.add(log);
-            //send(logsToSend);
+            send(logsToSend);
         }
     }
 
     public void send(List<Log> logs) {
         restTemplate.exchange(
-                "https://localhost:8081/agents/logs",
+                "https://localhost:8442/agents/api/logs",
                 HttpMethod.POST,
                 new HttpEntity(logs),
                 String.class);

@@ -1,17 +1,15 @@
 package bsep.sa.SiemAgent.readers;
 
 import bsep.sa.SiemAgent.model.Log;
-import bsep.sa.SiemAgent.model.LogFile;
+import bsep.sa.SiemAgent.model.LogSource;
 import bsep.sa.SiemAgent.model.LogPattern;
 import bsep.sa.SiemAgent.service.LogSenderScheduler;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.sun.jna.Memory;
-import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.platform.win32.*;
 import com.sun.jna.ptr.IntByReference;
-import com.sun.jna.ptr.PointerByReference;
 import io.krakens.grok.api.Grok;
 import io.krakens.grok.api.GrokCompiler;
 import io.krakens.grok.api.Match;
@@ -19,18 +17,17 @@ import io.krakens.grok.api.Match;
 import java.lang.reflect.Type;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
-import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class WindowsLogReader implements Runnable {
 
-    private LogFile logFile;
+    private LogSource logFile;
     private LogSenderScheduler logSenderScheduler;
 
     private WinNT.EVENTLOGRECORD newestRecord;
 
-    public WindowsLogReader(LogFile logfile, LogSenderScheduler logSenderScheduler) {
+    public WindowsLogReader(LogSource logfile, LogSenderScheduler logSenderScheduler) {
         this.logFile = logfile;
         this.logSenderScheduler = logSenderScheduler;
     }
@@ -40,13 +37,13 @@ public class WindowsLogReader implements Runnable {
 
         while (true) {
             try {
-                new Advapi32Util.EventLogIterator(logFile.getPath());
+                new Advapi32Util.EventLogIterator(logFile.getSource());
             }
             catch (Exception e) {
-                System.out.println("A required privilege is not held by the client when accessing " + logFile.getPath() + ".");
+                System.out.println("A required privilege is not held by the client when accessing " + logFile.getSource() + ".");
                 break;
             }
-            WinNT.EVENTLOGRECORD tempRecord = this.getNewestEvent(logFile.getPath());
+            WinNT.EVENTLOGRECORD tempRecord = this.getNewestEvent(logFile.getSource());
 
             if (newestRecord == null || !tempRecord.dataEquals(newestRecord)) {
                 newestRecord = tempRecord;
@@ -157,7 +154,7 @@ public class WindowsLogReader implements Runnable {
                 }
             }
 
-            logMap.put("genericTimestamp", new Date());
+            logMap.put("genericTimestamp", new Date().getTime());
             logMap.put("message", line);
 
             Log log = gson.fromJson(gson.toJson(logMap, typeMap), Log.class);
