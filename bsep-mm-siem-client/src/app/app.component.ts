@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
-import { faCoffee, faFile, faPlus, faKey, faHome, faDoorOpen, faMailBulk, faChartBar } from '@fortawesome/free-solid-svg-icons';
+import { faCoffee, faBell, faBook, faDesktop, faHome, faDoorOpen, faMailBulk, faChartBar } from '@fortawesome/free-solid-svg-icons';
 import { KeycloakService } from 'keycloak-angular';
 import { Subscription } from 'rxjs';
 
@@ -20,9 +20,9 @@ export class AppComponent {
 
   //ICONS
   faCoffee = faCoffee;
-  faFile = faFile;
-  faPlus = faPlus;
-  faKey = faKey;
+  faBell = faBell;
+  faBook = faBook;
+  faDesktop = faDesktop;
   faHome = faHome;
   faDoorOpen = faDoorOpen;
   faMailBulk = faMailBulk;

@@ -2,7 +2,7 @@
     <div class="col-12 navigation-bar-top">
         <div class="row">
             <div class="logo col-6 d-flex align-items-center">
-                <div><fa-icon [icon]="faKey" class="navigation-bar-icon"></fa-icon>Security information and event management</div>
+                <div><fa-icon [icon]="faDesktop" class="navigation-bar-icon"></fa-icon>Security information and event management</div>
             </div>
             <div class="col-6 d-flex align-items-center justify-content-end" style="padding-right: 0px !important;">
                 <div class="logout navigation-bar-top-button" (click)="logout()"><fa-icon [icon]="faDoorOpen" class="navigation-bar-icon"></fa-icon> Logout</div>
@@ -24,11 +24,11 @@
             Manage
         </div>
         <div class="navigation-item" [ngClass]="{'selected' : getUrl() == 'log-events'}" routerLink="/log-events">
-            <fa-icon [icon]="faPlus" class="navigation-icon"></fa-icon> View Log Events
+            <fa-icon [icon]="faBook" class="navigation-icon"></fa-icon> View Log Events
         </div>
 
         <div class="navigation-item" [ngClass]="{'selected' : getUrl() == 'alarm-events'}" routerLink="/alarm-events">
-            <fa-icon [icon]="faFile" class="navigation-icon"></fa-icon> View Alarm Events
+            <fa-icon [icon]="faBell" class="navigation-icon"></fa-icon> View Alarm Events
         </div>
 
         <div class="navigation-item" [ngClass]="{'selected' : getUrl() == 'rules'}" routerLink="/rules">
