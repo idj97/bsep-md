@@ -34,7 +34,7 @@ public class WindowsLogReader implements Runnable {
 
     @Override
     public void run() {
-
+        System.out.println("Started reader for " + logFile.getSource());
         while (true) {
             try {
                 new Advapi32Util.EventLogIterator(logFile.getSource());

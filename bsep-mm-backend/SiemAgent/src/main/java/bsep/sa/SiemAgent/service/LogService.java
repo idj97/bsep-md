@@ -48,7 +48,7 @@ public class LogService {
             if (logSource.getType().equals("file")) {
                 FileLogReader logReader = new FileLogReader(logSource, logSenderScheduler);
                 new Thread(logReader).start();
-            } else if (logSource.equals("windows-log")) {
+            } else if (logSource.getType().equals("windows-log")) {
                 WindowsLogReader wlogReader = new WindowsLogReader(logSource, logSenderScheduler);
                 new Thread(wlogReader).start();
             }

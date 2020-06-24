@@ -22,7 +22,14 @@ public class SSLTrustManager implements X509TrustManager {
 
     public SSLTrustManager() {
         super();
-        classpath = System.getProperty("java.class.path").split(":")[0];
+        String os = System.getProperty("os.name");
+        if (os.toLowerCase().contains("linux")) {
+            classpath = System.getProperty("java.class.path").split(":")[0];
+
+        }
+        else if (os.toLowerCase().contains("win")) {
+            classpath = System.getProperty("java.class.path").split(";")[0];
+        }
         trustStorePath = classpath + "/truststore.jks";
         trustStorePassword = "";
         ocspCertAlias = "ocsp";

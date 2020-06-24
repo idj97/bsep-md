@@ -35,7 +35,7 @@ public class FileLogReader implements Runnable {
 
     @Override
     public void run() {
-        System.out.println("Started reader for" + logFile.getSource());
+        System.out.println("Started reader for " + logFile.getSource());
         try {
             FileReader fr = new FileReader(logFile.getSource());
             BufferedReader br = new BufferedReader(fr);

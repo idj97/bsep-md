@@ -9,10 +9,13 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Repository
 public interface LogRepository extends MongoRepository<Log, UUID> {
+
+    List<Log> findByDateReceivedBetween(Date startDate, Date endDate);
 
     @Query("{$and:[" +
             "{$or: [{timestamp: {$regex: ?0}}, {$expr: {$eq:[?0,'']}}]}," +

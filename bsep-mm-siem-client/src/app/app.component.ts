@@ -4,6 +4,7 @@ import { Title } from '@angular/platform-browser';
 import { faCoffee, faFile, faPlus, faKey, faHome, faDoorOpen, faMailBulk, faChartBar } from '@fortawesome/free-solid-svg-icons';
 import { KeycloakService } from 'keycloak-angular';
 import { Subscription } from 'rxjs';
+import { LogDialogService } from './services/log-dialog.service';
 
 @Component({
   selector: 'app-root',
@@ -14,7 +15,7 @@ import { Subscription } from 'rxjs';
 export class AppComponent {
 
   private activated: boolean = false;
-  private subscription: Subscription;
+  private logSubscription: Subscription;
 
   title = 'BSEP | SIEM';
 
@@ -29,15 +30,27 @@ export class AppComponent {
   faChartBar = faChartBar;
 
   constructor(private router: Router, private titleService: Title,
-              private keyCloakSvc: KeycloakService) {
+              private keyCloakSvc: KeycloakService,
+              private logDialogService: LogDialogService) {
     titleService.setTitle(this.title);
   }
 
   ngOnInit() {
+    this.logSubscription = this.logDialogService.receiveLog().subscribe(
+      data => {
+        this.activated = data.isOpened;
+      }
+    );
   }
 
   ngOnDestroy() {
-    
+    this.logSubscription.unsubscribe();
+  }
+
+  closeDialogs() {
+    this.logDialogService.sendLog({
+      open: false
+    });
   }
 
 

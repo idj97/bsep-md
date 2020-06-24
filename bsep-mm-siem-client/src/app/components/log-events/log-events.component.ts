@@ -1,6 +1,9 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { UtilityService } from 'src/app/services/utility.service';
+import { Component, OnInit, ViewChild, HostListener } from '@angular/core';
 import { faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
+import { UtilityService } from 'src/app/services/utility.service';
+import { SearchLogs } from 'src/app/dtos/search-logs.dto';
+import { LogEventsService } from 'src/app/services/log-events.service';
+import { LogDialogService } from 'src/app/services/log-dialog.service';
 
 @Component({
   selector: 'app-log-events',
@@ -13,17 +16,45 @@ export class LogEventsComponent implements OnInit {
   faArrowUp = faArrowUp;
   faArrowDown = faArrowDown;
 
-  private logSearchDTO: any = {};
+  private logSearchDTO: SearchLogs = new SearchLogs();
   private activeInput = -1;
-  private showSearchFields: boolean = true;
+  private showSearchFields: boolean = false;
+  private data: any = {
+    items: []
+  };
+  private pageIncrementing: boolean = false;
 
   private timeout = null;
 
   @ViewChild("ncf", {static: false}) logSearchForm: any;
 
-  constructor(private utilityService: UtilityService) { }
+  constructor(private utilityService: UtilityService,
+              private logEventsService: LogEventsService,
+              private logDialogService: LogDialogService) { }
 
   ngOnInit() {
+    this.updateLogs();
+  }
+
+  selectLog(item: any): void {
+    this.logDialogService.sendLog(
+      {
+        isOpened: true,
+        item: item
+      }
+    );
+  }
+
+  updateLogs() : void {
+    this.logEventsService.postSearchLogs(this.logSearchDTO).subscribe(
+      data => {
+        console.log(data);
+        this.data = data;
+      },
+      error => {
+        console.log(error);
+      }
+    )
   }
 
 
@@ -56,11 +87,39 @@ export class LogEventsComponent implements OnInit {
     this.showSearchFields = !this.showSearchFields;
   }
 
-  typed() {
+  textFieldsChanged() {
     clearTimeout(this.timeout);
+    console.log(this.logSearchDTO.timezone);
     this.timeout = setTimeout(() => {
-      console.log("dsadadsa");
-    }, 1000);
+      this.logSearchDTO.pageNum = 0;
+      this.updateLogs();
+    }, 700);
+  }
+
+  @HostListener('window:mousewheel', ['$events'])
+  onScroll(event) {
+    if (this.pageIncrementing) return;
+    let element = document.getElementById('app-main-content');
+    let perc = (element.scrollTop + element.offsetHeight) / element.scrollHeight;
+    console.log(perc);
+    if (perc > 0.90 && this.logSearchDTO.pageNum < this.data.totalPages) {
+      this.pageIncrementing = true;
+      this.logSearchDTO.pageNum++
+      this.logEventsService.postSearchLogs(this.logSearchDTO).subscribe(
+        data => {
+          data.items.forEach(element => {
+            this.data.items.push(element);
+          });
+          
+        },
+        error => {
+          console.log(error);
+        }
+      ).add(() => {
+        this.pageIncrementing = false;
+      });;
+    }
+    
   }
 
 }

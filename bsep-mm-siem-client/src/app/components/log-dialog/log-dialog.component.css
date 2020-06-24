@@ -1,0 +1,37 @@
+.log-dialog-component {
+    position: fixed;
+    top: 0;
+    right: -550px;
+    font-size: 16px;
+    width: 520px;
+    background: #292e34;
+    height: 100vh;
+    box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.5);
+    z-index: 999999;
+    transition: .4s;
+    overflow-y: auto;
+}
+
+.log-dialog-component.activated {
+    right: 0;
+}
+
+.log-dialog-component .separator > div {
+    width: 100px;
+    height: 1px;
+    background: white;
+}
+
+.log-dialog-item {
+    padding: 6px 25px;
+    font-size: 14px;
+    letter-spacing: 1px;
+    word-wrap: break-word;
+}
+
+.log-dialog-header {
+    font-size: 22px;
+    padding: 25px;
+    letter-spacing: 2px;
+    font-weight: 700;
+}

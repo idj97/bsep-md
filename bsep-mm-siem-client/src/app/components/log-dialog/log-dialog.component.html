@@ -1,0 +1,86 @@
+<div class="log-dialog-component" [ngClass]="{'activated' : activated}">
+    <div class="log-dialog-header">Log Details</div>
+    <div class="separator pl-4">
+        <div></div>
+    </div>
+    <div class="mt-4"></div>
+    <div class="row" style="margin: 0 !important;" *ngIf="item">
+        <div class="col-12 log-dialog-item">
+            Agent Info: {{item.agentInfo}}
+        </div>
+        <div class="col-12 log-dialog-item">
+            Generic Timestamp: {{item.genericTimestampDate}}
+        </div>
+        <div class="col-12 log-dialog-item">
+            Action: {{item.action}}
+        </div>
+        <div class="col-12 log-dialog-item">
+            Command: {{item.command}}
+        </div>
+        <div class="col-12 log-dialog-item">
+            Date Received: {{item.dateReceived}}
+        </div>
+        <div class="col-12 log-dialog-item">
+            Duration: {{item.duration}}
+        </div>
+        <div class="col-12 log-dialog-item">
+            Event ID: {{item.eventId}}
+        </div>
+        <div class="col-12 log-dialog-item">
+            Event Name: {{item.eventName}}
+        </div>
+        <div class="col-12 log-dialog-item">
+            Log Source: {{item.logSource}}
+        </div>
+        <div class="col-12 log-dialog-item">
+            Machine IP: {{item.machineIp}}
+        </div>
+        <div class="col-12 log-dialog-item">
+            Machine Name: {{item.machineName}}
+        </div>
+        <div class="col-12 log-dialog-item">
+            Machine OS: {{item.machineOS}}
+        </div>
+        <div class="col-12 log-dialog-item">
+            Message: {{item.message}}
+        </div>
+        <div class="col-12 log-dialog-item">
+            Protocol: {{item.protocol}}
+        </div>
+        <div class="col-12 log-dialog-item">
+            Raw Text: {{item.rawText}}
+        </div>
+        <div class="col-12 log-dialog-item">
+            Server Cores Usage: {{item.serverCoresUsage}}
+        </div>
+        <div class="col-12 log-dialog-item">
+            Server Threads Usage: {{item.serverThreadsUsage}}
+        </div>
+        <div class="col-12 log-dialog-item">
+            Size: {{item.size}}
+        </div>
+        <div class="col-12 log-dialog-item">
+            Source: {{item.source}}
+        </div>
+        <div class="col-12 log-dialog-item">
+            Source IP: {{item.sourceIp}}
+        </div>
+        <div class="col-12 log-dialog-item">
+            Source Port: {{item.sourcePort}}
+        </div>
+        <div class="col-12 log-dialog-item">
+            Source User: {{item.sourceUser}}
+        </div>
+        <div class="col-12 log-dialog-item">
+            Target User: {{item.targetUser}}
+        </div>
+        <div class="col-12 log-dialog-item">
+            Timestamp: {{item.timestamp}}
+        </div>
+        <div class="col-12 log-dialog-item">
+            Working Dir: {{item.workingDir}}
+        </div>
+
+    </div>
+    
+</div>

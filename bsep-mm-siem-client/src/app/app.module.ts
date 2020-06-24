@@ -13,6 +13,8 @@ import { AlarmEventsComponent } from './components/alarm-events/alarm-events.com
 import { AlarmsComponent } from './components/alarms/alarms.component';
 import { ReportsComponent } from './components/reports/reports.component';
 import { FormsModule } from '@angular/forms';
+import { LogDialogComponent } from './components/log-dialog/log-dialog.component';
+import { ChartsModule } from 'ng2-charts';
 
 @NgModule({
   declarations: [
@@ -21,7 +23,8 @@ import { FormsModule } from '@angular/forms';
     LogEventsComponent,
     AlarmEventsComponent,
     AlarmsComponent,
-    ReportsComponent
+    ReportsComponent,
+    LogDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -30,6 +33,7 @@ import { FormsModule } from '@angular/forms';
     FontAwesomeModule,
     KeycloakAngularModule,
     FormsModule,
+    ChartsModule,
   ],
   providers: [
     {

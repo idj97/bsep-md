@@ -41,7 +41,7 @@
         
     </div>
 
-    <div class="main-content col-md-9">
+    <div id="app-main-content" class="main-content col-md-9">
         <router-outlet></router-outlet>
     </div>
 
@@ -55,3 +55,7 @@
         </p>
     </div>
 </div>
+
+
+<div (click)="closeDialogs()" class="teaser" [ngClass]="{'activated': activated}"></div>
+<div class="log-dialog-component" app-log-dialog></div>
