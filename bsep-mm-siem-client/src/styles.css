@@ -1,1 +1,113 @@
-/* You can add global styles to this file, and also import other style files */
+@font-face {
+    font-family: Montserrat;
+    src: url("assets/fonts/OpenSans-Light.ttf");
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: Montserrat;
+    src: url("assets/fonts/OpenSans-Regular.ttf");
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: Montserrat;
+    src: url("assets/fonts/OpenSans-SemiBold.ttf");
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: Montserrat;
+    src: url("assets/fonts/OpenSans-Bold.ttf");
+    font-weight: 700;
+}
+
+body {
+    font-family: Montserrat;
+    font-weight: normal;
+    margin: 0;
+    background: black;
+    color: white;
+    font-size: 13px;
+}
+
+.input-holder {
+    background: #2e3238;
+    color: white;
+    height: 90px;
+    transition: .3s background;
+}
+
+.input-holder:hover {
+    background: #3b414d;
+}
+
+.input-holder.focused {
+    background: #22282e;
+}
+
+.input-holder.blurred .input-text-value{
+    top: 50%;
+    font-size: 14px;
+}
+
+.input-holder.focused .input-text-value{
+    top: 18px;
+    font-size: 12px;
+    color: rgb(54, 224, 224);
+}
+
+.input-holder.disabled {
+    opacity: .5;
+}
+
+.input-holder.label {
+    background: #191b1f;
+    opacity: .95;
+}
+
+.input-holder.label:hover {
+    background: #191b1f;
+    opacity: .95;
+}
+
+.input-holder small {
+    position: absolute;
+    left: 20px;
+    top: calc(50% + 28px);
+    transform: translateY(-50%);
+    color: red;
+    font-size: 13px;
+}
+
+.input-text-value {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    transition: .3s;
+}
+
+.input-holder.blurred .input-text-value{
+    top: 50%;
+    font-size: 14px;
+}
+
+.input-holder.focused .input-text-value{
+    top: 18px;
+    font-size: 12px;
+    color: rgb(54, 224, 224);
+}
+
+.input-styled {
+    position: relative;
+    border: none;
+    padding: 10px;
+    outline: none;
+    background: transparent;
+    font-size: 13px;
+    font-weight: 700;
+    width: 100%;
+    color: inherit;
+}

@@ -1,22 +1,32 @@
 package bsep.sc.SiemCenter.controller;
 
-import bsep.sc.SiemCenter.dto.RuleTemplate;
 import bsep.sc.SiemCenter.dto.rules.RuleDTO;
-import bsep.sc.SiemCenter.events.LogEvent;
 import bsep.sc.SiemCenter.service.RuleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/rule")
+@RequestMapping("/api/rule")
 public class RuleController {
 
     @Autowired
     private RuleService ruleService;
 
-    // TODO: figure out why post is forbidden
+    @Value("${drools.templates.simple.path}")
+    private String simpleTemplatePath;
+
+    @Value("${drools.templates.cep.path}")
+    private String cepTemplatePath;
+
+    @GetMapping
+    public ResponseEntity<List<RuleDTO>> getAllRules() {
+        return ResponseEntity.ok(ruleService.getAllRules());
+    }
 
     @PostMapping
     public ResponseEntity create(@RequestBody RuleDTO ruleDTO) {
@@ -30,14 +40,13 @@ public class RuleController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @GetMapping("/create/{templateName}")
-    public ResponseEntity<String> createRule(@RequestBody RuleTemplate ruleTemplate, @PathVariable String templateName) {
-        return ResponseEntity.ok(ruleService.createRule(ruleTemplate, templateName));
+    @GetMapping("/simple-template")
+    public ResponseEntity<String> getSimpleTemplate() {
+        return ResponseEntity.ok(ruleService.getTemplate(simpleTemplatePath));
     }
 
-    @GetMapping("/insert") // TODO: PutMApping
-    public ResponseEntity<Integer> insertLogEvent(@RequestBody LogEvent logEvent) {
-        return ResponseEntity.ok(ruleService.insertLogEvent(logEvent));
+    @GetMapping("/cep-template")
+    public ResponseEntity<String> getCepTemplate() {
+        return ResponseEntity.ok(ruleService.getTemplate(cepTemplatePath));
     }
-
 }

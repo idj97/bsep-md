@@ -1,2 +1,57 @@
+<div class="main-holder row">
+    <div class="col-12 navigation-bar-top">
+        <div class="row">
+            <div class="logo col-6 d-flex align-items-center">
+                <div><fa-icon [icon]="faKey" class="navigation-bar-icon"></fa-icon>Security information and event management</div>
+            </div>
+            <div class="col-6 d-flex align-items-center justify-content-end" style="padding-right: 0px !important;">
+                <div class="logout navigation-bar-top-button" (click)="logout()"><fa-icon [icon]="faDoorOpen" class="navigation-bar-icon"></fa-icon> Logout</div>
+            </div>
+        </div>
+    </div>
+    <div class="navigation-bar col-md-3">
+        <div class="navigation-info">
+            Information
+        </div>
+        <div class="navigation-item" [ngClass]="{'selected' : getUrl() == '' || getUrl() == 'home'}" 
+        routerLink="/home">
+            <fa-icon [icon]="faHome" class="navigation-icon"></fa-icon> Home
+        </div>
 
-<router-outlet></router-outlet>
+        <div class="delimiter"></div>
+    
+        <div class="navigation-info">
+            Manage
+        </div>
+        <div class="navigation-item" [ngClass]="{'selected' : getUrl() == 'log-events'}" routerLink="/log-events">
+            <fa-icon [icon]="faPlus" class="navigation-icon"></fa-icon> View Log Events
+        </div>
+
+        <div class="navigation-item" [ngClass]="{'selected' : getUrl() == 'alarm-events'}" routerLink="/alarm-events">
+            <fa-icon [icon]="faFile" class="navigation-icon"></fa-icon> View Alarm Events
+        </div>
+
+        <div class="navigation-item" [ngClass]="{'selected' : getUrl() == 'rules'}" routerLink="/rules">
+            <fa-icon [icon]="faMailBulk" class="navigation-icon"></fa-icon> Rules
+        </div>
+
+        <div class="navigation-item" [ngClass]="{'selected' : getUrl() == 'reports'}" routerLink="/reports">
+            <fa-icon [icon]="faChartBar" class="navigation-icon"></fa-icon> Reports
+        </div>
+        
+    </div>
+
+    <div class="main-content col-md-9">
+        <router-outlet></router-outlet>
+    </div>
+
+</div>
+
+<!-- Toaster used to display messages -->
+<div class="card text-white bg-dark mb-3" id="toaster">
+    <div class="card-header" id="toaster-header"></div>
+    <div class="card-body">
+        <p class="card-text" id="toaster-message">
+        </p>
+    </div>
+</div>

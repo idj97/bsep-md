@@ -10,6 +10,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class RuleDTO {
     private UUID id;
     private String ruleName;
