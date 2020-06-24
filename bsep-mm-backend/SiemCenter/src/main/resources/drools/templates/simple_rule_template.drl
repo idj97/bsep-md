@@ -1,0 +1,17 @@
+package drools.rules;
+
+import bsep.sc.SiemCenter.events.LogEvent;
+import bsep.sc.SiemCenter.events.Alarm;
+import bsep.sc.SiemCenter.events.AlarmType;
+import java.util.Date;
+
+rule "*ENTER_NAME*"
+    no-loop true
+    enabled true
+    when
+        $log1: LogEvent($src: machineSource, *ADD CONDITION*)
+        not ( Alarm(machineSource == $src) )
+    then
+        System.out.println("Rule name")
+        insert(new Alarm());
+end

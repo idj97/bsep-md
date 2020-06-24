@@ -1,18 +1,24 @@
 
 <div class="row rule-editor-menu">
-    <div class="col-md-3 menu-item">Generate simple template </div>
-    <div class="col-md-3 menu-item">Generate CEP template </div>
-    <div class="col-md-3 offset-md-3 menu-item">Upload</div>
+    <div class="col-md-3 menu-item" (click)="getSimpleTemplate()">Generate simple template </div>
+    <div class="col-md-3 menu-item" (click)="getCepTemplate()">Generate CEP template </div>
+    <div class="col-md-3 offset-md-3 menu-item" (click)="createRule()">
+        Upload
+        <div *ngIf="sendingRequest" class="spinner-grow text-light" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
 </div>
+
 
 <div ace-editor #editor
     id="rule-editor"
-    [(text)]="ruleContent"
+    [(text)]="ruleData.ruleContent"
     [mode]="'text'" 
     [theme]="'monokai'"
     [options]="options"
     [readOnly]="readOnly"
     [autoUpdateContent]="true" 
-    [durationBeforeCallback]="800">
+    [durationBeforeCallback]="100">
 </div>
 

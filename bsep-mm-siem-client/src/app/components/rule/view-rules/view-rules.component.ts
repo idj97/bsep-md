@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Rule } from 'src/app/dtos/rule.dto';
+import { RuleDto } from 'src/app/dtos/rule.dto';
 import { RuleService } from 'src/app/services/rule.service';
 import { ToasterService } from 'src/app/services/toaster.service';
 
@@ -10,14 +10,14 @@ import { ToasterService } from 'src/app/services/toaster.service';
 })
 export class ViewRulesComponent implements OnInit {
 
-  private rules: Array<Rule>;
+  private rules: Array<RuleDto>;
   waitingForRequest: boolean;
 
   constructor(
     private ruleService: RuleService,
     private toasterSvc: ToasterService
     ) {
-    this.rules = new Array<Rule>();
+    this.rules = new Array<RuleDto>();
   }
 
   ngOnInit() {
