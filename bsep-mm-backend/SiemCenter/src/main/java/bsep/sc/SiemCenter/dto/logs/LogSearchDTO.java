@@ -5,17 +5,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
-import javax.validation.constraints.Positive;
+import javax.validation.constraints.*;
 import java.util.Date;
 
 @Getter
 @Setter
 @NoArgsConstructor
 public class LogSearchDTO {
-    @NotNull @Positive private Integer pageNum;
+    @NotNull @PositiveOrZero private Integer pageNum;
     @NotNull @Positive private Integer pageSize;
 
     @NotBlank String timezone;

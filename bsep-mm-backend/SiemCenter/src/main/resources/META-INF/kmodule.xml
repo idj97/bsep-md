@@ -2,8 +2,8 @@
 <kmodule xmlns="http://jboss.org/kie/6.0.0/kmodule"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-    <kbase name="SiemCenterBase" eventProcessingMode="stream" packages="drools.templates">
-        <ksession name="SCTemplateSession" />
-    </kbase>
+<!--    <kbase name="SiemCenterBase" eventProcessingMode="stream" packages="drools.templates">-->
+<!--        <ksession name="SCTemplateSession" />-->
+<!--    </kbase>-->
 
 </kmodule>
