@@ -2,6 +2,7 @@ package bsep.sc.SiemCenter.util;
 
 import bsep.sc.SiemCenter.model.Rule;
 import bsep.sc.SiemCenter.repository.RuleRepository;
+import bsep.sc.SiemCenter.service.drools.KieSessionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -16,7 +17,7 @@ public class Startup {
     private RuleRepository ruleRepository;
 
     @Autowired
-    private KieSessionTemplate kieSessionTemplate;
+    private KieSessionService kieSessionService;
 
     @EventListener(ApplicationReadyEvent.class)
     private void createSessionWithOldRules() {
@@ -36,7 +37,7 @@ public class Startup {
                 firstRule = false;
             }
 
-            kieSessionTemplate.createSessionFromDRL(sb.toString());
+//            kieSessionService.addRule(sb.toString());
         }
 
     }

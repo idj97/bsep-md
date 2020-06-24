@@ -1,11 +1,10 @@
 package bsep.sc.SiemCenter.controller;
 
-import bsep.sc.SiemCenter.dto.RuleDto;
-import bsep.sc.SiemCenter.dto.RuleTemplate;
-import bsep.sc.SiemCenter.events.LogEvent;
+import bsep.sc.SiemCenter.dto.rules.RuleDTO;
 import bsep.sc.SiemCenter.service.RuleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,39 +24,29 @@ public class RuleController {
     private String cepTemplatePath;
 
     @GetMapping
-    public ResponseEntity<List<RuleDto>> getAllRules() {
+    public ResponseEntity<List<RuleDTO>> getAllRules() {
         return ResponseEntity.ok(ruleService.getAllRules());
     }
 
+    @PostMapping
+    public ResponseEntity create(@RequestBody RuleDTO ruleDTO) {
+        ruleService.create(ruleDTO);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{ruleName}")
+    public ResponseEntity remove(@PathVariable String ruleName) {
+        ruleService.remove(ruleName);
+        return new ResponseEntity(HttpStatus.OK);
+    }
 
     @GetMapping("/simple-template")
     public ResponseEntity<String> getSimpleTemplate() {
         return ResponseEntity.ok(ruleService.getTemplate(simpleTemplatePath));
     }
 
-
     @GetMapping("/cep-template")
-    public ResponseEntity<String> getCepTemplate()
-    {
+    public ResponseEntity<String> getCepTemplate() {
         return ResponseEntity.ok(ruleService.getTemplate(cepTemplatePath));
     }
-
-
-    @PostMapping
-    public ResponseEntity<Boolean> createRule(@RequestBody RuleDto ruleDto) {
-        return ResponseEntity.ok(ruleService.createRule(ruleDto));
-    }
-
-    /*
-    @PostMapping("/{templateName}")
-    public ResponseEntity<String> createRule(@RequestBody RuleTemplate ruleTemplate, @PathVariable String templateName) {
-        return ResponseEntity.ok(ruleService.createRule(ruleTemplate, templateName));
-    }*/
-
-    /*
-    @PutMapping("/insert") // TODO: PutMApping
-    public ResponseEntity<Integer> insertLogEvent(@RequestBody LogEvent logEvent) {
-        return ResponseEntity.ok(ruleService.insertLogEvent(logEvent));
-    }*/
-
 }
