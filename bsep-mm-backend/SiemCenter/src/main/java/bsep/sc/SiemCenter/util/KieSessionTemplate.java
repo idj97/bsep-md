@@ -33,12 +33,11 @@ public class KieSessionTemplate {
 
             List<Message> messages = results.getMessages(Message.Level.WARNING, Message.Level.ERROR);
             StringBuilder sb = new StringBuilder();
-            sb.append("<p> Rule creation failed. </p>");
+            sb.append("Rule creation failed.\n");
 
             for (Message message : messages) {
-                sb.append("<p>");
                 sb.append(message.getText());
-                sb.append("</p>");
+                sb.append("\n");
             }
 
             throw new ApiRuleInvalidException(sb.toString());

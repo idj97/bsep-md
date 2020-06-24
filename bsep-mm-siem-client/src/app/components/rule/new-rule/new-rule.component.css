@@ -5,6 +5,20 @@
     border-radius: 10px;
 }
 
+.log-menu {
+    font-size: 15px;
+    background-color: #333;
+    border-radius: 10px;
+    color: white;
+    margin: 0;
+    margin-bottom: 5px;
+    padding: 8px;
+}
+
+.log-content {
+    padding: 1ex;
+}
+
 .rule-editor-menu {
     position: relative;
     text-align: center;

@@ -54,9 +54,10 @@ public class RuleController {
         return ResponseEntity.ok(ruleService.createRule(ruleTemplate, templateName));
     }*/
 
+    /*
     @PutMapping("/insert") // TODO: PutMApping
     public ResponseEntity<Integer> insertLogEvent(@RequestBody LogEvent logEvent) {
         return ResponseEntity.ok(ruleService.insertLogEvent(logEvent));
-    }
+    }*/
 
 }

@@ -21,14 +21,14 @@ export class NewRuleComponent implements OnInit {
   readOnly: boolean = false;
   options: any = {maxLines: 1000, showInvisibles: false}
 
-  sendingRequest: boolean;
+  sendingRequest: boolean = false;
+  errorMessage: string = '';
 
   constructor(
     private ruleService: RuleService,
     private toasterSvc: ToasterService
     ) { 
     this.ruleData = new RuleDto();
-    this.sendingRequest = false;
   }
 
   ngOnInit() {
@@ -78,9 +78,12 @@ export class NewRuleComponent implements OnInit {
     this.ruleService.createNewRule(this.ruleData).subscribe(
       data => {
         this.toasterSvc.showMessage('Info', data);
+        this.errorMessage = '';
       },
       err => {
         this.toasterSvc.showErrorMessage(err);
+        this.errorMessage = err.error.message;
+        console.log(err.error.message);
       }
     ).add(
       () => {
