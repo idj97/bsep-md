@@ -1,4 +1,5 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-rule',
@@ -7,16 +8,27 @@ import { Component, OnInit, AfterViewInit } from '@angular/core';
 })
 export class RuleComponent implements OnInit {
 
-  defaultClicked: boolean; // default menu button clicked
+  selectedMenuItem: number; // identifies the menu item
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit() {
-    this.defaultClicked = true;
+    this.changeMenuColor();
   }
 
-  menuClicked(value: boolean) {
-    this.defaultClicked = value;
+  changeMenuColor() {
+
+    if (this.router.url.includes('rules/view')) {
+      this.selectedMenuItem = 0;
+    } else {
+      this.selectedMenuItem = 1;
+    }
+
   }
+
+  changeSelectedMenu(id: number) {
+    this.selectedMenuItem = id;
+  }
+
 
 }

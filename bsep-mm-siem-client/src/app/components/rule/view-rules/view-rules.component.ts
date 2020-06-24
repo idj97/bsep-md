@@ -11,6 +11,7 @@ import { ToasterService } from 'src/app/services/toaster.service';
 export class ViewRulesComponent implements OnInit {
 
   private rules: Array<Rule>;
+  waitingForRequest: boolean;
 
   constructor(
     private ruleService: RuleService,
@@ -20,6 +21,7 @@ export class ViewRulesComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.waitingForRequest = true;
     this.getAllRules();
   }
 
@@ -30,6 +32,10 @@ export class ViewRulesComponent implements OnInit {
       },
       err => {
         this.toasterSvc.showErrorMessage(err);
+      }
+    ).add(
+      () => {
+        this.waitingForRequest = false;
       }
     );
   }

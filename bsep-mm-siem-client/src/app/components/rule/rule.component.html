@@ -1,12 +1,12 @@
 <div class="container">
 
     <div class="row menu-holder">
-        <div [ngClass]="defaultClicked ? 'col-6 left-col menu-clicked' : 'col-6 left-col'"
-            routerLink="./view" (click)="menuClicked(true)">
+        <div [ngClass]="selectedMenuItem == 0 ? 'col-6 left-col menu-clicked' : 'col-6 left-col'"
+            routerLink="./view" (click)="changeSelectedMenu(0)">
             View rules
         </div>
-        <div [ngClass]="defaultClicked ? 'col-6 left-col' : 'col-6 left-col menu-clicked'" 
-            routerLink="./new" (click)="menuClicked(false)">
+        <div [ngClass]="selectedMenuItem == 1 ? 'col-6 left-col menu-clicked' : 'col-6 left-col'" 
+            routerLink="./new" (click)="changeSelectedMenu(1)">
             New rule
         </div>
     </div>

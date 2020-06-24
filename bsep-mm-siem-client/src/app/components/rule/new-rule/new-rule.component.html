@@ -1,1 +1,18 @@
-<p>new-rule works!</p>
+
+<div class="row rule-editor-menu">
+    <div class="col-md-3 menu-item">Generate simple template </div>
+    <div class="col-md-3 menu-item">Generate CEP template </div>
+    <div class="col-md-3 offset-md-3 menu-item">Upload</div>
+</div>
+
+<div ace-editor #editor
+    id="rule-editor"
+    [(text)]="ruleContent"
+    [mode]="'text'" 
+    [theme]="'monokai'"
+    [options]="options"
+    [readOnly]="readOnly"
+    [autoUpdateContent]="true" 
+    [durationBeforeCallback]="800">
+</div>
+

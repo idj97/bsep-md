@@ -5,6 +5,8 @@ import { ViewRulesComponent } from './view-rules/view-rules.component';
 import { NewRuleComponent } from './new-rule/new-rule.component';
 import { AppRoutingModule } from 'src/app/app-routing.module';
 import { HttpClientModule } from '@angular/common/http';
+import { AceEditorModule } from 'ng2-ace-editor';
+
 
 @NgModule({
     declarations: [
@@ -15,7 +17,8 @@ import { HttpClientModule } from '@angular/common/http';
     imports: [
       BrowserModule,
       AppRoutingModule,
-      HttpClientModule
+      HttpClientModule,
+      AceEditorModule
     ]
   })
   
