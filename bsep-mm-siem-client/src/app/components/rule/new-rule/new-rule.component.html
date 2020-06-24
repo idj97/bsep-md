@@ -14,7 +14,7 @@
 <div ace-editor #editor
     id="rule-editor"
     [(text)]="ruleData.ruleContent"
-    [mode]="'text'" 
+    [mode]= EditorMode
     [theme]="'monokai'"
     [options]="options"
     [readOnly]="readOnly"

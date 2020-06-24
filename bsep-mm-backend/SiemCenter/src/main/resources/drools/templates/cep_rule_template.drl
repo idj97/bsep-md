@@ -19,6 +19,6 @@ rule "*ENTER_NAME*"
             count($log2)
         )
     then
-        System.out.println("Rule name")
+        System.out.println("Rule name");
         insert(new Alarm());
 end

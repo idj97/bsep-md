@@ -48,7 +48,7 @@ public class KieSessionTemplate {
             templateSession.dispose();
         }
 
-        templateSession =  kieHelper.build(kieBaseConfiguration).newKieSession();
+        templateSession = kieHelper.build(kieBaseConfiguration).newKieSession();
     }
 
 
