@@ -5,21 +5,16 @@ import bsep.sc.SiemCenter.repository.LogRepository;
 import bsep.sc.SiemCenter.service.DateService;
 import bsep.sc.SiemCenter.service.LogService;
 import org.drools.compiler.lang.DrlDumper;
-import org.drools.compiler.lang.api.CEDescrBuilder;
-import org.drools.compiler.lang.api.DescrBuilder;
 import org.drools.compiler.lang.api.DescrFactory;
-import org.drools.compiler.lang.api.RuleDescrBuilder;
-import org.drools.compiler.lang.descr.PackageDescr;
-import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.compiler.lang.descr.*;
 import org.junit.Assert;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.ArrayList;
+import java.util.Collections;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -75,34 +70,83 @@ public class MongoRepoTest {
 //                .newImport()
                 .getDescr();
 
-        PackageDescr desc = DescrFactory.newPackage().newGlobal().type("Service").identifier("svc").end().name("drools.rules")
-                .newRule().name("Log rule")
-                .lhs()
 
-                .pattern("Log")
-                .id("$log", false)
-                .bind("$src", "machineIp", false)
-                .constraint("$src == 192.168.0.1")
-                .constraint("$ssda == asdasda")
-                .end()
 
-                .pattern("Log2")
-                .id("$log2", false)
-                .bind("$src2", "machineIp", false)
-                .constraint("$src2 == 192.168.0.1")
-                .constraint("$ssda2 == asdasda")
-                .end()
+        AndDescr lhs = new AndDescr();
+        String rhs = "System.out.println('Alert activated')";
 
-                .pattern("Number").constraint("intValue > 5").from()
-                    .accumulate()
-                        .source()
-                            .pattern("Asdsa").id("$log2", false).constraint("machineName == nme").end()
-                        .end()
-                        .function("count", null, false, "$log2")
-                    .end()
-                .end()
-                .end()
-                .rhs("sdasd").end().getDescr();
+        RuleDescr ruleDescr = new RuleDescr();
+        ruleDescr.setLhs(lhs);
+        ruleDescr.setConsequence(rhs);
+
+        pkg.addRule(ruleDescr);
+
+        PatternDescr patternDescr = new PatternDescr("LogEvent", "$log");
+        ExprConstraintDescr exprConstraintDescr = new ExprConstraintDescr("machineIp == 192.168.0.1");
+        patternDescr.addConstraint(exprConstraintDescr);
+        BindingDescr bindingDescr = new BindingDescr("$src", "machineIp", false);
+        patternDescr.addConstraint(bindingDescr);
+
+        PatternDescr accumulatedPattern = new PatternDescr("LogEvent", "$log2");
+        ExprConstraintDescr apConstraint = new ExprConstraintDescr("$src == machineIp");
+        accumulatedPattern.addConstraint(apConstraint);
+
+        BehaviorDescr windowDescr = new BehaviorDescr("window");
+
+        System.out.println(windowDescr.getType());
+        System.out.println(windowDescr.getSubType());
+        System.out.println(windowDescr.getNamespace());
+        System.out.println(windowDescr.getText());
+
+        windowDescr.setSubType("time");
+        windowDescr.setParameters(Collections.singletonList("1s"));
+        accumulatedPattern.addBehavior(windowDescr);
+
+        AccumulateDescr accumulateDescr = new AccumulateDescr();
+        accumulateDescr.setInputPattern(accumulatedPattern);
+        accumulateDescr.addFunction("count", null, false, new String[]{"$log2"});
+
+        PatternDescr numberDesc = new PatternDescr("Number");
+        ExprConstraintDescr numberDescConstraint = new ExprConstraintDescr("intValue > 5");
+
+        numberDesc.addConstraint(numberDescConstraint);
+        numberDesc.setSource(accumulateDescr);
+
+        lhs.addDescr(patternDescr);
+        lhs.addDescr(numberDesc);
+        lhs.addDescr(numberDesc);
+
+//        PackageDescr desc = DescrFactory.newPackage().newGlobal().type("Service").identifier("svc").end().name("drools.rules")
+//                .newRule().name("Log rule")
+//                .lhs()
+//
+//                .pattern("LogEvent")
+//                .id("$log", false)
+//                .bind("$src", "machineIp", false)
+//                .end()
+//
+//                .pattern("Log2")
+//                .id("$log2", false)
+//                .bind("$src2", "machineIp", false)
+//                .constraint("$src2 == 192.168.0.1")
+//                .constraint("$ssda2 == asdasda")
+//                .end()
+//
+//                .pattern("Number").constraint("intValue > 5").from()
+//                    .accumulate()
+//                        .source()
+//                            .pattern("LogEvent")
+//                            .id("$log2", false)
+//                            .constraint("$src == machineIp")
+//                            .behavior()
+//                            .type("window", "time")
+//                            .parameters(Arrays.asList("60s")).end().end()
+//                        .end()
+//                        .function("count", null, false, "$log2")
+//                    .end()
+//                .end()
+//                .end()
+//                .rhs("System.out.println('ALARM ACTIVATED'").end().getDescr();
 
 //        desc
 //                .pattern("Log")
@@ -127,8 +171,9 @@ public class MongoRepoTest {
 //                .bind("$src", "machineIp", false)
 //                .constraint("$src == 192.168.0.1").end().end();
                 //PackageDescr desc3 = ruleDesc.rhs("asjdakjsd").end().getDescr();
+
         DrlDumper dumper=new DrlDumper();
-        String drl=dumper.dump(desc);
+        String drl=dumper.dump(pkg);
 
 
 

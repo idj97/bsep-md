@@ -1,0 +1,31 @@
+
+<div class="row rule-editor-menu">
+    <div class="col-md-3 menu-item" (click)="getSimpleTemplate()">Generate simple template </div>
+    <div class="col-md-3 menu-item" (click)="getCepTemplate()">Generate CEP template </div>
+    <div class="col-md-3 offset-md-3 menu-item" (click)="createRule()">
+        Upload
+        <div *ngIf="sendingRequest" class="spinner-grow text-light" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+</div>
+
+<div class="row log-menu">
+    <div class="col-6 col-md-2 d-flex align-items-center">
+        <div> Log: </div>
+    </div>
+    <div class="col-12 col-md-10 log-content"> {{ errorMessage }} </div>
+</div>
+
+
+<div ace-editor #editor
+    id="rule-editor"
+    [(text)]="ruleData.ruleContent"
+    [mode]= EditorMode
+    [theme]="'monokai'"
+    [options]="options"
+    [readOnly]="readOnly"
+    [autoUpdateContent]="true" 
+    [durationBeforeCallback]="100">
+</div>
+

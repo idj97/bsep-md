@@ -2,12 +2,14 @@ package bsep.sc.SiemCenter.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.kie.api.definition.type.Role;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
 import java.util.UUID;
 
+@Role(Role.Type.EVENT)
 @Document
 @Getter
 @Setter
