@@ -19,7 +19,6 @@ public class RuleServiceTest {
 
     @Autowired
     private KieSessionService kieSessionService;
-
     @Test
     public void test() throws InterruptedException {
         String rule = "package rules;\n" +
@@ -29,24 +28,32 @@ public class RuleServiceTest {
                 "import bsep.sc.SiemCenter.events.AlarmType;\n" +
                 "import java.util.Date;\n" +
                 "\n" +
-                "rule \"@{ruleName}\"\n" +
-                "    timer(cron:0/1 * * * * ?) " +
+                "rule \"*ENTER_NAME*\"\n" +
+                "    no-loop true\n" +
+                "    enabled true\n" +
+                "    timer(cron:0/1 * * * * ?)\n" +
                 "    when\n" +
-                "        $i: Log()\n" +
+                "        $log1: Log($src: machineIp)\n" +
+                "        $c: Number(intValue >= 1) from accumulate(\n" +
+                "            $log2: Log(\n" +
+                "            ) over window:time(1m),\n" +
+                "            count($log2)\n" +
+                "        )\n" +
                 "    then\n" +
-                "        System.out.println(\"PRAVILO 1\");\n" +
-                "end";
+                "        System.out.println(\"Rule name\");\n" +
+                "        System.out.println($c);\n" +
+                "end\n";
 
         String ruleName = "testRule";
 
 
         kieSessionService.insertEvent(new Log());
-        Thread.sleep(20000);
+        Thread.sleep(5000);
 
         ruleService.create(new RuleDTO(ruleName, rule));
-        Thread.sleep(20000);
+        Thread.sleep(5000);
 
-        ruleService.remove("testRule");
+        //ruleService.remove("testRule");
     }
 
 }

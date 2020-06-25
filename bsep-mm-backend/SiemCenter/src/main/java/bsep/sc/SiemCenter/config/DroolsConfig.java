@@ -5,7 +5,9 @@ import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieScanner;
 import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.conf.KieBaseOption;
 import org.kie.api.runtime.KieContainer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -24,10 +26,7 @@ public class DroolsConfig {
         KieBase kieBase = kContainer.getKieBase();
 
         KieScanner kScanner = ks.newKieScanner(kContainer);
-
-        kScanner.start(5000);
+        kScanner.start(1000);
         return kieBase;
     }
-
-
 }

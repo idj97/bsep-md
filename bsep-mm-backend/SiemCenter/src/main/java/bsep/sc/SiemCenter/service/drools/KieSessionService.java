@@ -2,6 +2,7 @@ package bsep.sc.SiemCenter.service.drools;
 
 import bsep.sc.SiemCenter.exception.ApiBadRequestException;
 import bsep.sc.SiemCenter.exception.ApiRuleInvalidException;
+import org.apache.commons.io.FileUtils;
 import org.apache.maven.shared.invoker.*;
 import org.kie.api.KieBase;
 import org.kie.api.builder.Message;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -31,11 +33,26 @@ public class KieSessionService {
     @Value("${kjar.pom.path}")
     private String kjarPomPath;
 
+    @Value("${kjar.save.path}")
+    private String kjarSavePath;
+
+    @Value("${kjar.rule.path}")
+    private String kjarRulesPath;
+
     @PostConstruct
-    public void startup() {
+    public void startup() throws Exception {
+        moveKjarRules(kjarSavePath, kjarRulesPath);
+        updateKjar();
         kieSession = kieBase.newKieSession();
         startEngine();
         trackFacts();
+    }
+
+    @PreDestroy
+    public void shutdown() throws Exception {
+        System.out.println("PRE SHUTDOWN");
+        moveKjarRules(kjarRulesPath, kjarSavePath);
+        updateKjar();
     }
 
     public void insertEvent(Object object) {
@@ -50,20 +67,33 @@ public class KieSessionService {
         kieSession.halt();
     }
 
+    public void moveKjarRules(String src, String dest) throws Exception {
+        try {
+            File srcf = new File(src);
+            File destf = new File(dest);
+            if (srcf.exists() && !destf.exists()) {
+                FileUtils.moveDirectory(new File(src), new File(dest));
+            } else {
+                throw new Exception("CLEAN KJAR FOLDER.");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void updateKjar() {
         InvocationRequest request = new DefaultInvocationRequest();
+        request.setOutputHandler(new SilentOutHandler());
         request.setDebug(false);
         request.setPomFile(new File(kjarPomPath));
         request.setGoals(Arrays.asList("clean", "install"));
 
-        stopEngine();
         try {
             Invoker invoker = new DefaultInvoker();
             invoker.execute(request);
         } catch (MavenInvocationException e) {
             e.printStackTrace();
         }
-        startEngine();
     }
 
     public void addRule(String rule, String rulePath) {
