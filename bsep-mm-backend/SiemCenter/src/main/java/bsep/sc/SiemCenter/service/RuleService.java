@@ -32,15 +32,25 @@ public class RuleService {
     public void create(RuleDTO ruleDTO) {
         Optional<Rule> optionalRule = ruleRepository.findByRuleName(ruleDTO.getRuleName());
         if (!optionalRule.isPresent()) {
-            String ruleContent = ruleDTO.getRuleContent().replace("@{ruleName}", ruleDTO.getRuleName());
-            String rulePath = kjarRulesPath + ruleDTO.getRuleName() + ".drl";
 
-            Rule rule = new Rule(ruleContent, ruleDTO.getRuleName());
+            System.out.println("=====" + extractRuleName(ruleDTO.getRuleContent()) + "=====");
+            String rulePath = kjarRulesPath + ruleDTO.getRuleName().trim().replaceAll("\\s+","-") + ".drl";
+
+            Rule rule = new Rule(ruleDTO.getRuleContent(), ruleDTO.getRuleName());
             kieSessionService.addRule(ruleDTO.getRuleContent(), rulePath);
             ruleRepository.save(rule);
           } else {
-            throw new ApiBadRequestException("Rule name is already in use.");
+            throw new ApiBadRequestException("Rule identifier is already in use.");
         }
+    }
+
+    private String extractRuleName(String ruleContent) {
+
+        int ruleStart = ruleContent.indexOf("rule");
+        int ruleNameStart = ruleContent.indexOf("\"", ruleStart);
+        int ruleNameEnd = ruleContent.indexOf("\"", ruleNameStart+1);
+
+        return ruleContent.substring(ruleNameStart, ruleNameEnd);
     }
 
     public void remove(String ruleName) {

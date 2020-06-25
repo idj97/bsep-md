@@ -47,3 +47,12 @@
     border-radius: 10px;
     cursor: pointer;
 }
+
+.header-holder {
+    margin-bottom: 2ex;
+}
+
+.label-input {
+    padding: 1ex;
+    font-size: 15px;
+}

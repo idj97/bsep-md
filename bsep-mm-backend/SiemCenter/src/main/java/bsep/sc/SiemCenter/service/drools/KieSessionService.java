@@ -1,6 +1,7 @@
 package bsep.sc.SiemCenter.service.drools;
 
 import bsep.sc.SiemCenter.exception.ApiBadRequestException;
+import bsep.sc.SiemCenter.exception.ApiRuleInvalidException;
 import org.apache.maven.shared.invoker.*;
 import org.kie.api.KieBase;
 import org.kie.api.builder.Message;
@@ -100,10 +101,13 @@ public class KieSessionService {
 
         if (results.hasMessages(Message.Level.WARNING, Message.Level.ERROR)){
             List<Message> messages = results.getMessages(Message.Level.WARNING, Message.Level.ERROR);
+            StringBuilder sb = new StringBuilder();
+            sb.append("Rule validation failed. ");
             for (Message message : messages) {
-                System.out.println("Error: "+ message.getText());
+                sb.append(message.getText());
+                sb.append("; ");
             }
-            throw new ApiBadRequestException("Compilation errors were found. Check the logs.");
+            throw new ApiRuleInvalidException(sb.toString());
         }
     }
 

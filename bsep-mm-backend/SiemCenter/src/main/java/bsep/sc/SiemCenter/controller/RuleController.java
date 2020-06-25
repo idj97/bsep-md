@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -29,7 +30,7 @@ public class RuleController {
     }
 
     @PostMapping
-    public ResponseEntity create(@RequestBody RuleDTO ruleDTO) {
+    public ResponseEntity create(@Valid @RequestBody RuleDTO ruleDTO) {
         ruleService.create(ruleDTO);
         return new ResponseEntity(HttpStatus.OK);
     }

@@ -74,25 +74,32 @@ export class NewRuleComponent implements OnInit {
   createRule(): void {
 
     this.sendingRequest = true;
+    this.readOnly = true;
 
     this.ruleService.createNewRule(this.ruleData).subscribe(
       data => {
-        this.toasterSvc.showMessage('Info', data);
-        this.errorMessage = '';
+        this.errorMessage = 'Rule successfully added';
+        this.ruleData.ruleContent = '';
       },
       err => {
-        this.toasterSvc.showErrorMessage(err);
-        this.errorMessage = err.error.message;
-        console.log(err.error.message);
+        if (err.error.errors != null) { // validation exception
+          this.errorMessage = err.error.errors[0].defaultMessage;
+        } else { // other exception
+          this.errorMessage = err.error.message;
+        }
+        
       }
     ).add(
       () => {
         this.sendingRequest = false;
+        this.readOnly = false;
       }
     );
   }
 
   getSimpleTemplate(): void {
+
+    console.log(this.ruleData);
 
     this.ruleService.getSimpleTemplate().subscribe(
       data => {

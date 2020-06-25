@@ -6,6 +6,7 @@ import { NewRuleComponent } from './new-rule/new-rule.component';
 import { AppRoutingModule } from 'src/app/app-routing.module';
 import { HttpClientModule } from '@angular/common/http';
 import { AceEditorModule } from 'ng2-ace-editor';
+import { FormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -18,7 +19,8 @@ import { AceEditorModule } from 'ng2-ace-editor';
       BrowserModule,
       AppRoutingModule,
       HttpClientModule,
-      AceEditorModule
+      AceEditorModule,
+      FormsModule
     ]
   })
   

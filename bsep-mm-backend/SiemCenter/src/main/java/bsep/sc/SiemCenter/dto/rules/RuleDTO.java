@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotBlank;
 import java.util.UUID;
 
 @Getter
@@ -12,8 +13,13 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RuleDTO {
+
     private UUID id;
+
+    @NotBlank(message = "Rule identifier is required")
     private String ruleName;
+
+    @NotBlank(message = "Rule can not be empty")
     private String ruleContent;
 
     public RuleDTO(String ruleName, String ruleContent) {
