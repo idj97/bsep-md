@@ -16,13 +16,13 @@ public interface AlarmRepository extends MongoRepository<Alarm, UUID> {
 
     @Query("{$and:[" +
             "{timestamp:{$gte: ?0, $lte: ?1}}," +
-            "{$or: [{name: {$regex: ?2}}, {$expr: {$eq:[?3,'']}}]}," +
-            "{$or: [{description: {$regex: ?4}}, {$expr: {$eq:[?5,'']}}]}," +
-            "{$or: [{machineIp: {$regex: ?6}}, {$expr: {$eq:[?7,'']}}]}," +
-            "{$or: [{machineOS: {$regex: ?8}}, {$expr: {$eq:[?9,'']}}]}," +
-            "{$or: [{machineName: {$regex: ?10}}, {$expr: {$eq:[?11,'']}}]}," +
-            "{$or: [{agentInfo: {$regex: ?12}}, {$expr: {$eq:[?13,'']}}]}," +
-            "{$or: [{alarmType: {$regex: ?14}}, {$expr: {$eq:[?15,'']}}]}" +
+            "{$or: [{name: {$regex: ?2}}, {$expr: {$eq:[?2,'']}}]}," +
+            "{$or: [{description: {$regex: ?3}}, {$expr: {$eq:[?3,'']}}]}," +
+            "{$or: [{machineIp: {$regex: ?4}}, {$expr: {$eq:[?4,'']}}]}," +
+            "{$or: [{machineOS: {$regex: ?5}}, {$expr: {$eq:[?5,'']}}]}," +
+            "{$or: [{machineName: {$regex: ?6}}, {$expr: {$eq:[?6,'']}}]}," +
+            "{$or: [{agentInfo: {$regex: ?7}}, {$expr: {$eq:[?7,'']}}]}," +
+            "{$or: [{alarmType: {$regex: ?8}}, {$expr: {$eq:[?8,'']}}]}" +
             "]}")
     Page<Alarm> search(
             Date lowerTimestamp, Date upperTimestamp,

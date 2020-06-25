@@ -3,6 +3,7 @@ package bsep.sc.SiemCenter.dto.alarms;
 import bsep.sc.SiemCenter.dto.logs.LogDTO;
 import bsep.sc.SiemCenter.model.Alarm;
 import bsep.sc.SiemCenter.service.DateService;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @NoArgsConstructor
-@All
+@AllArgsConstructor
 public class AlarmDTO {
     private String name;
     private String description;
