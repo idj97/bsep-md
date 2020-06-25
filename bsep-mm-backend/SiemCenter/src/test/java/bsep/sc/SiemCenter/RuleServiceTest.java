@@ -1,14 +1,19 @@
 package bsep.sc.SiemCenter;
 
 import bsep.sc.SiemCenter.dto.rules.RuleDTO;
+import bsep.sc.SiemCenter.model.Alarm;
 import bsep.sc.SiemCenter.model.Log;
 import bsep.sc.SiemCenter.repository.AlarmRepository;
+import bsep.sc.SiemCenter.service.DateService;
 import bsep.sc.SiemCenter.service.RuleService;
 import bsep.sc.SiemCenter.service.drools.KieSessionService;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
@@ -23,6 +28,9 @@ public class RuleServiceTest {
 
     @Autowired
     private AlarmRepository alarmRepository;
+
+    @Autowired
+    private DateService dateService;
 
     @Test
     public void test() throws InterruptedException {
@@ -41,10 +49,10 @@ public class RuleServiceTest {
                 "    timer(cron:0/5 * * * * ?)\n" +
                 "    when\n" +
                 "        $log: Log($src: machineIp) and\n" +
-                "        $logs: List() from collect(Log(machineIp == $src) over window:time(5s)) and\n" +
-                "        $num: Number(intValue >= 3) from accumulate(\n" +
-                "            $log2: Log(machineIp == $src) over window:time(5s),\n" +
-                "            count($log2))\n" +
+                "        $logs: List(size >= 3) from collect(Log(machineIp == $src) over window:time(5s)) //and\n" +
+                "        //$num: Number(intValue >= 3) from accumulate(\n" +
+                "        //    $log2: Log(machineIp == $src) over window:time(5s),\n" +
+                "        //    count($log2))\n" +
                 "    then\n" +
                 "        alarmRepository.save(new Alarm(\n" +
                 "                \"alarm name\",\n" +
@@ -113,4 +121,22 @@ public class RuleServiceTest {
         //ruleService.remove("Test cep rule");
     }
 
+    @Test
+    public void testSearch() {
+        Page<Alarm> alarmPage = alarmRepository.search(
+                dateService.getMinDate(),
+                dateService.getMaxDate(),
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                PageRequest.of(0, 10)
+        );
+
+        System.out.println(alarmPage.getContent().size());
+        Assert.assertEquals(6, alarmPage.getTotalElements());
+    }
 }
