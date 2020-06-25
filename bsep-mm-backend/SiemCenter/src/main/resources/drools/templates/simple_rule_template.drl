@@ -5,11 +5,11 @@ import bsep.sc.SiemCenter.events.Alarm;
 import bsep.sc.SiemCenter.events.AlarmType;
 import java.util.Date;
 
-rule "*ENTER_NAME*"
+rule "Test simple rule"
     no-loop true
     enabled true
     when
-        $log1: LogEvent($src: machineSource, *ADD CONDITION*)
+        $log1: LogEvent($src: machineSource)
         not ( Alarm(machineSource == $src) )
     then
         System.out.println("Rule name");
