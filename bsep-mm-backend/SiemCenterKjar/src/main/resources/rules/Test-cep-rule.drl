@@ -13,10 +13,10 @@ rule "Test cep rule"
     timer(cron:0/5 * * * * ?)
     when
         $log: Log($src: machineIp) and
-        $logs: List() from collect(Log(machineIp == $src) over window:time(5s)) and
-        $num: Number(intValue >= 3) from accumulate(
-            $log2: Log(machineIp == $src) over window:time(5s),
-            count($log2))
+        $logs: List(size >= 3) from collect(Log(machineIp == $src) over window:time(5s)) //and
+        //$num: Number(intValue >= 3) from accumulate(
+        //    $log2: Log(machineIp == $src) over window:time(5s),
+        //    count($log2))
     then
         alarmRepository.save(new Alarm(
                 "alarm name",

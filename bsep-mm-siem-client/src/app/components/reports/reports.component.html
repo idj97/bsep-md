@@ -4,7 +4,7 @@
 
     <div class="col-12 report-header">Event Logs Report</div>
 
-    <div class="col-12 col-md-6" style="padding: 0 !important; margin: 0 !important;">
+    <div class="col-12 col-md-6 dark-blue-bg" style="padding: 0 !important; margin: 0 !important;">
         <div class="row total-logs-holder">
             <div class="col-8 log-item first d-flex align-items-center"><div>Total Logs:</div></div>
             <div class="col-4 log-item first result">{{totalLogs}}</div>
@@ -17,7 +17,7 @@
         </div>
         
     </div>
-    <div class="col-12 col-md-6 p-5">
+    <div class="col-12 col-md-6 p-5 dark-blue-bg">
         <canvas baseChart
             [options]="pieChartOptions"
             [data]="pieChartData"
@@ -47,7 +47,7 @@
             [colors]="clientchartColors">
         </canvas>
     </div>
-    <div class="col-12 col-md-12 p-5">
+    <div class="col-12 col-md-12 p-5 darker-blue-bg">
         <canvas baseChart  width="400" height="100"
             [datasets]="lineChartData"
             [labels]="lineChartLabels"
@@ -59,8 +59,60 @@
         
     </div>
     
+    <div class="col-12 report-header">Alarm Events Report</div>
 
-    <div class="col-12 col-md-6">
+    <div class="col-12 col-md-6 dark-blue-bg" style="padding: 0 !important; margin: 0 !important;">
+        <div class="row total-logs-holder">
+            <div class="col-8 log-item first d-flex align-items-center"><div>Total Alarms:</div></div>
+            <div class="col-4 log-item first result">{{totalAlarms}}</div>
+            <div class="col-8 log-item second d-flex align-items-center"><div>Total Alarms last month:</div></div>
+            <div class="col-4 log-item second result">{{alarmsLastMonth.length}}</div>
+            <div class="col-8 log-item second d-flex align-items-center"><div>Total Operating Systems last month:</div></div>
+            <div class="col-4 log-item second result">{{totalAlarmsOperatingSystems}}</div>
+            <div class="col-8 log-item second d-flex align-items-center"><div>Total Machines last month:</div></div>
+            <div class="col-4 log-item second result">{{totalAlarmsMachines}}</div>
+        </div>
+        
+    </div>
+    <div class="col-12 col-md-6 p-5 dark-blue-bg">
+        <canvas baseChart
+            [options]="alarmspieChartOptions"
+            [data]="alarmspieChartData"
+            [labels]="alarmspieChartLabels"
+            [chartType]="alarmspieChartType"
+            [colors]="alarmspieChartColors"
+            [legend]="alarmspieChartLegend">
+        </canvas>
+    </div>
+    <div class="col-12 col-md-6 p-5">
+        <canvas baseChart
+            [datasets]="alarmsmOSbarChartData"
+            [labels]="alarmsmOSbarChartLabels"
+            [options]="alarmsmOSbarChartOptions"
+            [legend]="alarmsmOSbarChartLegend"
+            [chartType]="alarmsmOSbarChartType"
+            [colors]="alarmsmOSchartColors">
+        </canvas>
+    </div>
+    <div class="col-12 col-md-6 p-5">
+        <canvas baseChart
+            [datasets]="alarmsclientbarChartData"
+            [labels]="alarmsclientbarChartLabels"
+            [options]="alarmsclientbarChartOptions"
+            [legend]="alarmsclientbarChartLegend"
+            [chartType]="alarmsclientbarChartType"
+            [colors]="alarmsclientchartColors">
+        </canvas>
+    </div>
+    <div class="col-12 col-md-12 p-5 darker-blue-bg">
+        <canvas baseChart  width="400" height="100"
+            [datasets]="alarmslineChartData"
+            [labels]="alarmslineChartLabels"
+            [legend]="alarmslineChartLegend"
+            [chartType]="alarmslineChartType"
+            [options]="alarmslineChartOptions"
+            [colors]="alarmslineChartColors">
+        </canvas>
         
     </div>
     

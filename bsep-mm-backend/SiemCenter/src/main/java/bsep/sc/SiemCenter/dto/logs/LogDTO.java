@@ -72,7 +72,14 @@ public class LogDTO {
         targetUser = log.getTargetUser();
 
         DateService dateService = new DateService();
-        genericTimestampDate = dateService.getString(log.getGenericTimestampDate(), timezone);
-        dateReceived = dateService.getString(log.getDateReceived(), timezone);
+        if (log.getGenericTimestampDate() != null)
+            genericTimestampDate = dateService.getString(log.getGenericTimestampDate(), timezone);
+        else
+            genericTimestampDate = "";
+
+        if (log.getDateReceived() != null)
+            dateReceived = dateService.getString(log.getDateReceived(), timezone);
+        else
+            dateReceived = "";
     }
 }

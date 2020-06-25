@@ -4,15 +4,15 @@
             <td>Common Name</td>
             <td>Valid From</td>
             <td>Valid Until</td>
-            <td colspan="3" *ngIf="!isRevoked">Action</td>
+            <td colspan="4" *ngIf="!isRevoked">Action</td>
             <td colspan="1" *ngIf="isRevoked">Revoke Reason</td>
-            <td colspan="2" *ngIf="isRevoked">Action</td>
+            <td colspan="3" *ngIf="isRevoked">Action</td>
         </tr>
         <tr *ngIf="data.length == 0">
-            <td colspan="6" class="nothing-to-display">Currently nothing to display</td>
+            <td colspan="7" class="nothing-to-display">Currently nothing to display</td>
         </tr>
         <tr *ngFor="let item of data; let i = index" class="certificate-row-data">
-            <td colspan="6">
+            <td colspan="7">
                 <div class="row data-division" [ngClass]="{'hovered' : elStatus[i].isHovered || elStatus[i].isSelected}" (mouseenter)="mouseEnter($event, i)" (mouseleave)="mouseLeave($event, i)">
                     <div class="col-12" style="padding: 0px !important;">
                         <table class="certificates-table-inner">
@@ -22,7 +22,8 @@
                                 <td>{{item.validUntil}}</td>
                                 <td *ngIf="!isRevoked" (click)="initRevokeDialog(item, i)" class="revoke-action">Revoke</td>
                                 <td *ngIf="isRevoked">{{item.revocation.revokeReason}}</td>
-                                <td class="revoke-action" (click)="downloadCertificateCer(item)">CER</td>
+                                <td class="revoke-action" (click)="downloadCertificateHEAD(item)">HEAD</td>
+                                <td class="revoke-action" (click)="downloadCertificateCHAIN(item)">CHAIN</td>
                                 <td class="revoke-action" (click)="downloadCertificatePkcs12(item)">PKCS12</td>
                             </tr>
                         </table>

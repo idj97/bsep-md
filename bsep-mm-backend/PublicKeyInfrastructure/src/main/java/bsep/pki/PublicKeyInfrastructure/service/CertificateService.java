@@ -20,6 +20,7 @@ import bsep.pki.PublicKeyInfrastructure.utility.UriService;
 import bsep.pki.PublicKeyInfrastructure.utility.X500Service;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.Extension;
+import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
@@ -33,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -317,6 +319,47 @@ public class CertificateService {
             }
 
             return new InputStreamResource(new ByteArrayInputStream(binary));
+        } else {
+            throw new ApiNotFoundException("Cert not found.");
+        }
+    }
+
+    public InputStreamResource getPemHeadFileBySerialNumber(String serialNumber) {
+        Optional<Certificate> optionalCertificate = certificateRepository.findBySerialNumber(serialNumber);
+        if (optionalCertificate.isPresent()) {
+            Certificate certificate = optionalCertificate.get();
+            X509Certificate x509Certificate = keyStoreService.getSingleCertificate(
+                    certificate.getSerialNumber());
+
+            StringWriter sw = new StringWriter();
+            try (JcaPEMWriter pw = new JcaPEMWriter(sw)) {
+                pw.writeObject(x509Certificate);
+            } catch (IOException e) {
+                throw new ApiInternalServerErrorException("pem generation failed.");
+            }
+
+            return new InputStreamResource(new ByteArrayInputStream(sw.toString().getBytes()));
+        } else {
+            throw new ApiNotFoundException("Cert not found.");
+        }
+    }
+
+    public InputStreamResource getPemChainFileBySerialNumber(String serialNumber) {
+        Optional<Certificate> optionalCertificate = certificateRepository.findBySerialNumber(serialNumber);
+        if (optionalCertificate.isPresent()) {
+            Certificate certificate = optionalCertificate.get();
+            X509Certificate[] x509CertificateChain = keyStoreService.getCertificateChain(
+                    certificate.getSerialNumber());
+
+            StringWriter sw = new StringWriter();
+            try (JcaPEMWriter pw = new JcaPEMWriter(sw)) {
+                for (X509Certificate cert : x509CertificateChain) {
+                    pw.writeObject(cert);
+                }
+            } catch (IOException e) {
+                throw new ApiInternalServerErrorException("pem generation failed.");
+            }
+            return new InputStreamResource(new ByteArrayInputStream(sw.toString().getBytes()));
         } else {
             throw new ApiNotFoundException("Cert not found.");
         }

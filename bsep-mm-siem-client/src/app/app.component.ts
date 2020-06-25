@@ -5,6 +5,7 @@ import { faCoffee, faBell, faBook, faDesktop, faHome, faDoorOpen, faMailBulk, fa
 import { KeycloakService } from 'keycloak-angular';
 import { Subscription } from 'rxjs';
 import { LogDialogService } from './services/log-dialog.service';
+import { AlarmDialogService } from './services/alarm-dialog.service';
 
 @Component({
   selector: 'app-root',
@@ -15,7 +16,9 @@ import { LogDialogService } from './services/log-dialog.service';
 export class AppComponent {
 
   private activated: boolean = false;
+  private alarmDialogActivated: boolean = false;
   private logSubscription: Subscription;
+  private alarmSubscription: Subscription;
 
   title = 'BSEP | SIEM';
 
@@ -31,7 +34,8 @@ export class AppComponent {
 
   constructor(private router: Router, private titleService: Title,
               private keyCloakSvc: KeycloakService,
-              private logDialogService: LogDialogService) {
+              private logDialogService: LogDialogService,
+              private alarmDialogService: AlarmDialogService) {
     titleService.setTitle(this.title);
   }
 
@@ -41,13 +45,26 @@ export class AppComponent {
         this.activated = data.isOpened;
       }
     );
+
+    this.alarmSubscription = this.alarmDialogService.receiveAlarm().subscribe(
+      data => {
+        this.alarmDialogActivated = data.isOpened;
+      }
+    );
   }
 
   ngOnDestroy() {
     this.logSubscription.unsubscribe();
+    this.alarmSubscription.unsubscribe();
   }
 
-  closeDialogs() {
+  closeAlarmDialogs() {
+    this.alarmDialogService.sendAlarm({
+      open: false
+    });
+  }
+
+  closeLogDialogs(): void {
     this.logDialogService.sendLog({
       open: false
     });
@@ -60,5 +77,9 @@ export class AppComponent {
 
   logout() {
     this.keyCloakSvc.logout();
+  }
+
+  get getUserRoles(): Array<string> {
+    return this.keyCloakSvc.getUserRoles();
   }
 }

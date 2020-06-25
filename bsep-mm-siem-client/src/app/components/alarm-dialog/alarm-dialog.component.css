@@ -1,0 +1,77 @@
+.alarm-dialog-component {
+    position: fixed;
+    top: 0;
+    right: -680px;
+    font-size: 16px;
+    width: 650px;
+    background: #292e34;
+    height: 100vh;
+    box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.5);
+    z-index: 999998;
+    transition: .4s;
+    overflow-y: auto;
+}
+
+.alarm-dialog-component.activated {
+    right: 0;
+}
+
+.alarm-dialog-component .separator > div {
+    width: 100px;
+    height: 1px;
+    background: white;
+}
+
+.alarm-dialog-item {
+    padding: 6px 25px;
+    font-size: 14px;
+    letter-spacing: 1px;
+    word-wrap: break-word;
+}
+
+.alarm-dialog-header {
+    font-size: 22px;
+    padding: 25px;
+    letter-spacing: 2px;
+    font-weight: 700;
+}
+
+.logs-holder {
+    margin: 0 !important;
+    padding: 0 !important;
+    
+}
+
+.logs-table {
+    width: 100%;
+    font-size: 14px;
+    table-layout: fixed;
+    text-align: center;
+    letter-spacing: 1px;
+    margin-top: 25px;
+}
+
+.logs-table tr:first-child {
+    background: #131c27;
+    color: white;
+}
+
+.logs-table tr:not(:first-child) {
+    background: #242c36;
+    color: white;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.logs-table tr:not(:first-child):hover {
+    background: #303842;
+}
+
+.logs-table td {
+    padding: 20px;
+}
+
+.logs-table th {
+    font-weight: 700;
+    padding: 20px;
+}

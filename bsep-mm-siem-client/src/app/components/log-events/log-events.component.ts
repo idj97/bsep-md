@@ -54,7 +54,7 @@ export class LogEventsComponent implements OnInit {
       error => {
         console.log(error);
       }
-    )
+    );
   }
 
 

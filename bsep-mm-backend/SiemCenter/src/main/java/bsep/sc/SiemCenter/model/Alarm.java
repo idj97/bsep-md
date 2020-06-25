@@ -1,12 +1,12 @@
 package bsep.sc.SiemCenter.model;
 
-import bsep.sc.SiemCenter.events.AlarmType;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Document
@@ -16,24 +16,30 @@ public class Alarm {
 
     @Id
     private UUID id;
-    private String machineSource;
-
     private String name;
     private String description;
-
-    private AlarmType alarmType;
-    private Date timeStamp;
+    private String machineIp;
+    private String machineOS;
+    private String machineName;
+    private String agentInfo;
+    private Date timestamp;
+    private String alarmType;
+    private List<Log> logs;
 
     public Alarm() {
         this.id = UUID.randomUUID();
     }
 
-    public Alarm(String machineSource, String name, String description, AlarmType alarmType, Date timeStamp) {
+    public Alarm(String name, String description, String alarmType, String machineIp, String machineOs, String machineName, String agentInfo, Date timestamp, List<Log> logs) {
         this.id = UUID.randomUUID();
-        this.machineSource = machineSource;
         this.name = name;
         this.description = description;
+        this.machineIp = machineIp;
+        this.machineOS = machineOs;
+        this.machineName = machineName;
+        this.agentInfo = agentInfo;
+        this.timestamp = timestamp;
         this.alarmType = alarmType;
-        this.timeStamp = timeStamp;
+        this.logs = logs;
     }
 }

@@ -18,6 +18,14 @@
     background: #202938;
 }
 
+.dark-blue-bg {
+    background: #161c27;
+}
+
+.darker-blue-bg {
+    background: #161c27;
+}
+
 .total-logs-holder .log-item.first.result {
     color: #5ac7a3;
     font-size: 36px;

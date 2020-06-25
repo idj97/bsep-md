@@ -24,15 +24,11 @@
             Manage
         </div>
         <div class="navigation-item" [ngClass]="{'selected' : getUrl() == 'new-certificate'}" routerLink="/new-certificate">
-            <fa-icon [icon]="faPlus" class="navigation-icon"></fa-icon> New Certificate Authority
+            <fa-icon [icon]="faPlus" class="navigation-icon"></fa-icon> New Certificate
         </div>
 
-        <div class="navigation-item" [ngClass]="{'selected' : getUrl() == 'issued-certificates'}" routerLink="/issued-certificates">
+        <div class="navigation-item" [ngClass]="{'selected' : getUrl() == 'issued-certificates'}" routerLink="/issued-certificates/user-certificates/all">
             <fa-icon [icon]="faFile" class="navigation-icon"></fa-icon> Issued Certificates
-        </div>
-
-        <div class="navigation-item" [ngClass]="{'selected' : getUrl() == 'certificate-requests'}" routerLink="/certificate-requests">
-            <fa-icon [icon]="faMailBulk" class="navigation-icon"></fa-icon> Certificate Requests
         </div>
         
     </div>

@@ -71,6 +71,36 @@ public class CertificateController {
                 HttpStatus.OK);
     }
 
+    @GetMapping("/pemHead/{serial-number}")
+    @PreAuthorize("hasRole('admin')")
+    public ResponseEntity<InputStreamResource> downloadPemHeadCertificate(@PathVariable("serial-number") String serialNumber) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+        headers.add("Pragma", "no-cache");
+        headers.add("Expires", "0");
+        headers.setContentDispositionFormData("attachment", "certificate.cer");
+
+        return new ResponseEntity<>(
+                certificateService.getPemHeadFileBySerialNumber(serialNumber),
+                headers,
+                HttpStatus.OK);
+    }
+
+    @GetMapping("/pemChain/{serial-number}")
+    @PreAuthorize("hasRole('admin')")
+    public ResponseEntity<InputStreamResource> downloadPemChainCertificate(@PathVariable("serial-number") String serialNumber) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+        headers.add("Pragma", "no-cache");
+        headers.add("Expires", "0");
+        headers.setContentDispositionFormData("attachment", "certificate.cer");
+
+        return new ResponseEntity<>(
+                certificateService.getPemChainFileBySerialNumber(serialNumber),
+                headers,
+                HttpStatus.OK);
+    }
+
     @GetMapping("/pkcs12/{serial-number}")
     @PreAuthorize("hasRole('admin')")
     public ResponseEntity<InputStreamResource> downloadPKCS12(@PathVariable("serial-number") String serialNumber) {

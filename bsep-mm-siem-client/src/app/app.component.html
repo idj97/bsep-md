@@ -31,7 +31,7 @@
             <fa-icon [icon]="faBell" class="navigation-icon"></fa-icon> View Alarm Events
         </div>
 
-        <div class="navigation-item" [ngClass]="{'selected' : getUrl() == 'rules'}" routerLink="/rules">
+        <div *ngIf="getUserRoles.includes('admin')" class="navigation-item" [ngClass]="{'selected' : getUrl() == 'rules'}" routerLink="/rules">
             <fa-icon [icon]="faMailBulk" class="navigation-icon"></fa-icon> Rules
         </div>
 
@@ -57,5 +57,7 @@
 </div>
 
 
-<div (click)="closeDialogs()" class="teaser" [ngClass]="{'activated': activated}"></div>
+<div (click)="closeLogDialogs()" class="teaser" [ngClass]="{'activated': activated}"></div>
+<div (click)="closeAlarmDialogs()" class="alarm-teaser" [ngClass]="{'activated': alarmDialogActivated}"></div>
 <div class="log-dialog-component" app-log-dialog></div>
+<div class="alarm-dialog-component" app-alarm-dialog></div>

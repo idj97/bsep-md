@@ -8,7 +8,6 @@ import { initializer } from './keycloak/app-init';
 import { HomeComponent } from './components/home/home.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { CertificateRequestsComponent } from './components/certificate-requests/certificate-requests.component';
 import { IssuedCertificatesComponent } from './components/issued-certificates/issued-certificates.component';
 import { NewCertificateComponent } from './components/new-certificate/new-certificate.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -22,7 +21,6 @@ import { RevokeDialogComponent } from './components/revoke-dialog/revoke-dialog.
 import { FormsModule } from '@angular/forms';
 import { DlDateTimeDateModule, DlDateTimePickerModule } from 'angular-bootstrap-datetimepicker';
 import { ViewAllCertificatesComponent } from './components/view-all-certificates/view-all-certificates.component';
-import { CertificateRequestDataComponent } from './components/certificate-requests/certificate-request-data/certificate-request-data.component';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { KeySizeDirective } from './validators/key-size.directive';
 import { ValidForDirective } from './validators/valid-for.directive';
@@ -31,7 +29,6 @@ import { ValidForDirective } from './validators/valid-for.directive';
   declarations: [
     AppComponent,
     HomeComponent,
-    CertificateRequestsComponent,
     IssuedCertificatesComponent,
     NewCertificateComponent,
     UserCertificatesComponent,
@@ -42,7 +39,6 @@ import { ValidForDirective } from './validators/valid-for.directive';
     UserAllComponent,
     RevokeDialogComponent,
     ViewAllCertificatesComponent,
-    CertificateRequestDataComponent,
     KeySizeDirective,
     ValidForDirective,
   ],

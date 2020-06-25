@@ -4,16 +4,113 @@
 
     <div class="row search-fields-holder" [ngClass]="{show : showSearchFields}">
         <div class="input-holder d-flex align-items-center col-4" 
-            [ngClass]="{blurred : activeInput != test.valueAccessor._elementRef.nativeElement.dataset.index, 
-            focused : activeInput == test.valueAccessor._elementRef.nativeElement.dataset.index || 
-            !isEmpty(test.valueAccessor._elementRef.nativeElement.dataset.index)}">
-            <p class="input-text-value">Test</p>
+            [ngClass]="{blurred : activeInput != name.valueAccessor._elementRef.nativeElement.dataset.index, 
+            focused : activeInput == name.valueAccessor._elementRef.nativeElement.dataset.index || 
+            !isEmpty(name.valueAccessor._elementRef.nativeElement.dataset.index)}">
+            <p class="input-text-value">Name:</p>
             <input type="text" class="input-styled" (keydown)="textFieldsChanged()"
-            (blur)="blurInput($event, test.valueAccessor._elementRef.nativeElement.dataset.index)" 
-            (focus)="focusInput($event, test.valueAccessor._elementRef.nativeElement.dataset.index)"
-                [(ngModel)]="alarmSearchDTO.test" name="test"
-                #test="ngModel" data-index="0">
+            (blur)="blurInput($event, name.valueAccessor._elementRef.nativeElement.dataset.index)" 
+            (focus)="focusInput($event, name.valueAccessor._elementRef.nativeElement.dataset.index)"
+                [(ngModel)]="alarmSearchDTO.name" name="name"
+                #name="ngModel" data-index="0">
         </div>
+
+        <div class="input-holder d-flex align-items-center col-4" 
+            [ngClass]="{blurred : activeInput != description.valueAccessor._elementRef.nativeElement.dataset.index, 
+            focused : activeInput == description.valueAccessor._elementRef.nativeElement.dataset.index || 
+            !isEmpty(description.valueAccessor._elementRef.nativeElement.dataset.index)}">
+            <p class="input-text-value">Description:</p>
+            <input type="text" class="input-styled" (keydown)="textFieldsChanged()"
+            (blur)="blurInput($event, description.valueAccessor._elementRef.nativeElement.dataset.index)" 
+            (focus)="focusInput($event, description.valueAccessor._elementRef.nativeElement.dataset.index)"
+                [(ngModel)]="alarmSearchDTO.description" name="description"
+                #description="ngModel" data-index="1">
+        </div>
+
+        <div class="input-holder d-flex align-items-center col-4" 
+            [ngClass]="{blurred : activeInput != machineIp.valueAccessor._elementRef.nativeElement.dataset.index, 
+            focused : activeInput == machineIp.valueAccessor._elementRef.nativeElement.dataset.index || 
+            !isEmpty(machineIp.valueAccessor._elementRef.nativeElement.dataset.index)}">
+            <p class="input-text-value">Machine IP:</p>
+            <input type="text" class="input-styled" (keydown)="textFieldsChanged()"
+            (blur)="blurInput($event, machineIp.valueAccessor._elementRef.nativeElement.dataset.index)" 
+            (focus)="focusInput($event, machineIp.valueAccessor._elementRef.nativeElement.dataset.index)"
+                [(ngModel)]="alarmSearchDTO.machineIp" name="machineIp"
+                #machineIp="ngModel" data-index="2">
+        </div>
+
+        <div class="input-holder d-flex align-items-center col-4" 
+            [ngClass]="{blurred : activeInput != machineOS.valueAccessor._elementRef.nativeElement.dataset.index, 
+            focused : activeInput == machineOS.valueAccessor._elementRef.nativeElement.dataset.index || 
+            !isEmpty(machineOS.valueAccessor._elementRef.nativeElement.dataset.index)}">
+            <p class="input-text-value">Machine OS:</p>
+            <input type="text" class="input-styled" (keydown)="textFieldsChanged()"
+            (blur)="blurInput($event, machineOS.valueAccessor._elementRef.nativeElement.dataset.index)" 
+            (focus)="focusInput($event, machineOS.valueAccessor._elementRef.nativeElement.dataset.index)"
+                [(ngModel)]="alarmSearchDTO.machineOS" name="machineOS"
+                #machineOS="ngModel" data-index="3">
+        </div>
+
+        <div class="input-holder d-flex align-items-center col-4" 
+            [ngClass]="{blurred : activeInput != machineName.valueAccessor._elementRef.nativeElement.dataset.index, 
+            focused : activeInput == machineName.valueAccessor._elementRef.nativeElement.dataset.index || 
+            !isEmpty(machineName.valueAccessor._elementRef.nativeElement.dataset.index)}">
+            <p class="input-text-value">Machine OS:</p>
+            <input type="text" class="input-styled" (keydown)="textFieldsChanged()"
+            (blur)="blurInput($event, machineName.valueAccessor._elementRef.nativeElement.dataset.index)" 
+            (focus)="focusInput($event, machineName.valueAccessor._elementRef.nativeElement.dataset.index)"
+                [(ngModel)]="alarmSearchDTO.machineName" name="machineName"
+                #machineName="ngModel" data-index="4">
+        </div>
+
+        <div class="input-holder d-flex align-items-center col-4" 
+            [ngClass]="{blurred : activeInput != agentInfo.valueAccessor._elementRef.nativeElement.dataset.index, 
+            focused : activeInput == agentInfo.valueAccessor._elementRef.nativeElement.dataset.index || 
+            !isEmpty(agentInfo.valueAccessor._elementRef.nativeElement.dataset.index)}">
+            <p class="input-text-value">Agent Info:</p>
+            <input type="text" class="input-styled" (keydown)="textFieldsChanged()"
+            (blur)="blurInput($event, agentInfo.valueAccessor._elementRef.nativeElement.dataset.index)" 
+            (focus)="focusInput($event, agentInfo.valueAccessor._elementRef.nativeElement.dataset.index)"
+                [(ngModel)]="alarmSearchDTO.agentInfo" name="agentInfo"
+                #agentInfo="ngModel" data-index="5">
+        </div>
+
+        <div class="input-holder d-flex align-items-center col-4" 
+            [ngClass]="{blurred : activeInput != lowerTimestamp.valueAccessor._elementRef.nativeElement.dataset.index, 
+            focused : activeInput == lowerTimestamp.valueAccessor._elementRef.nativeElement.dataset.index || 
+            !isEmpty(lowerTimestamp.valueAccessor._elementRef.nativeElement.dataset.index)}">
+            <p class="input-text-value">Lower Timestamp:</p>
+            <input type="text" class="input-styled" (keydown)="textFieldsChanged()"
+            (blur)="blurInput($event, lowerTimestamp.valueAccessor._elementRef.nativeElement.dataset.index)" 
+            (focus)="focusInput($event, lowerTimestamp.valueAccessor._elementRef.nativeElement.dataset.index)"
+                [(ngModel)]="alarmSearchDTO.lowerTimestamp" name="lowerTimestamp"
+                #lowerTimestamp="ngModel" data-index="6">
+        </div>
+
+        <div class="input-holder d-flex align-items-center col-4" 
+            [ngClass]="{blurred : activeInput != upperTimestamp.valueAccessor._elementRef.nativeElement.dataset.index, 
+            focused : activeInput == upperTimestamp.valueAccessor._elementRef.nativeElement.dataset.index || 
+            !isEmpty(upperTimestamp.valueAccessor._elementRef.nativeElement.dataset.index)}">
+            <p class="input-text-value">Upper Timestamp:</p>
+            <input type="text" class="input-styled" (keydown)="textFieldsChanged()"
+            (blur)="blurInput($event, upperTimestamp.valueAccessor._elementRef.nativeElement.dataset.index)" 
+            (focus)="focusInput($event, upperTimestamp.valueAccessor._elementRef.nativeElement.dataset.index)"
+                [(ngModel)]="alarmSearchDTO.upperTimestamp" name="upperTimestamp"
+                #upperTimestamp="ngModel" data-index="7">
+        </div>
+
+        <div class="input-holder d-flex align-items-center col-4" 
+            [ngClass]="{blurred : activeInput != alarmType.valueAccessor._elementRef.nativeElement.dataset.index, 
+            focused : activeInput == alarmType.valueAccessor._elementRef.nativeElement.dataset.index || 
+            !isEmpty(alarmType.valueAccessor._elementRef.nativeElement.dataset.index)}">
+            <p class="input-text-value">Alarm Type:</p>
+            <input type="text" class="input-styled" (keydown)="textFieldsChanged()"
+            (blur)="blurInput($event, alarmType.valueAccessor._elementRef.nativeElement.dataset.index)" 
+            (focus)="focusInput($event, alarmType.valueAccessor._elementRef.nativeElement.dataset.index)"
+                [(ngModel)]="alarmSearchDTO.alarmType" name="alarmType"
+                #alarmType="ngModel" data-index="8">
+        </div>
+
     </div>
 
 
@@ -22,3 +119,24 @@
         <fa-icon *ngIf="!showSearchFields" [icon]="faArrowDown"></fa-icon>
     </div>
 </form>
+
+<div class="row col-12 alarm-holder">
+    <table class="alarm-table">
+        <tr>
+            <th>Name</th>
+            <th>Timestamp</th>
+            <th>Alarm Type</th>
+            <th>Machine OS</th>
+            <th>Machine IP</th>
+        </tr>
+        <tr *ngFor="let item of data.items; let i = index" (click)="selectAlarm(item)">
+            <td>{{item.name}}</td>
+            <td>{{item.timestamp}}</td>
+            <td>{{item.alarmType}}</td>
+            <td>{{item.machineOS}}</td>
+            <td>{{item.machineIP}}</td>
+        </tr>
+    </table>
+</div>
+
+
