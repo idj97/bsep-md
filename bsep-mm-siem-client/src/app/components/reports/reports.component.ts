@@ -19,19 +19,137 @@ export class ReportsComponent implements OnInit {
   public totalLogsOperatingSystems = 0;
   public totalLogsMachines = 0;
 
+  public totalAlarms: number = 0;
+  public alarmsLastMonth: any[] = [];
+  public totalErrorAlarms: number = 0;
+  public totalInformationalAlarms: number = 0;
+  public totalWarningAlarms: number = 0;
+  public totalNAAlarms: number = 0;
+  public monthlyAlarmsReport = {};
+  public totalAlarmsOperatingSystems = 0;
+  public totalAlarmsMachines = 0;
+
   constructor(private reportsService: ReportsService) { }
 
   ngOnInit() {
     this.getTotalLogs();
     this.getLogsLastMonth();
     this.getMonthlyReport();
+
+    this.getTotalAlarms();
+    this.getAlarmsLastMonth();
+    this.getMonthlyAlarmsReport();
+
     Chart.defaults.global.defaultFontColor = '#fff';
+  }
+
+  getTotalAlarms(): void {
+    this.reportsService.getTotalAlarms().subscribe(
+      data => {
+        this.totalAlarms = data;
+      },
+      error => {
+        console.log(error);
+      }
+    )
   }
 
   getTotalLogs(): void {
     this.reportsService.getTotalLogs().subscribe(
       data => {
         this.totalLogs = data;
+      },
+      error => {
+        console.log(error);
+      }
+    )
+  }
+
+  getAlarmsLastMonth(): void {
+    this.reportsService.getAlarmsLastMonth().subscribe(
+      data => {
+        console.log(data);
+        this.alarmsLastMonth = data;
+        let alarmTypes = [];
+        for (let i = 0; i < data.length; i++) {
+          if (!alarmTypes.includes(data[i].alarmType)) {
+            if (data[i].alarmType === null && !alarmTypes.includes('N/A')) {
+              alarmTypes.push("N/A");
+            }
+            else {
+              if (data[i].alarmType === null) {
+                continue;
+              }
+              alarmTypes.push(data[i].alarmType);
+            }
+          }
+        }
+
+        for (let i = 0; i < alarmTypes.length; i++) {
+          this.alarmspieChartColors[0].backgroundColor[i] = `rgba(${Math.floor(Math.random()* 256)},${Math.floor(Math.random()* 256)},${Math.floor(Math.random()* 256)},1)`;
+        }
+
+        console.log(alarmTypes);
+        let alarmsPieChartData = [];
+
+        for (let i = 0; i < alarmTypes.length; i++) {
+          let counter = 0;
+          for (let j = 0; j < data.length; j++) {
+            let type = data[j].alarmType === null ? 'N/A' : data[j].alarmType;
+            if (type == alarmTypes[i]) {
+              counter++;
+            }
+          }
+          alarmsPieChartData.push(counter);
+        }
+
+        this.alarmspieChartData = alarmsPieChartData;
+        this.alarmspieChartLabels = alarmTypes;
+
+
+        let machineOSLabels = [];
+        this.alarmsLastMonth.forEach(item => {
+          if (!machineOSLabels.includes(item.machineOS)) {
+            machineOSLabels.push(item.machineOS);
+          }
+        });
+        this.alarmsmOSbarChartLabels = machineOSLabels;
+        let barChartData = []
+        for (let i = 0; i < machineOSLabels.length; i++) {
+          let total = 0;
+          for (let j = 0; j < this.alarmsLastMonth.length; j++) {
+            if (machineOSLabels[i] == this.alarmsLastMonth[j].machineOS) {
+              total++;
+            }
+          }
+          barChartData.push(total);
+        }
+        this.alarmsmOSbarChartData[0].data = barChartData;
+        
+
+        let machinesLabels = [];
+        this.alarmsLastMonth.forEach(item => {
+          if (!machinesLabels.includes(item.machineIp)) {
+            machinesLabels.push(item.machineIp);
+          }
+        });
+        this.alarmsclientbarChartLabels = machinesLabels;
+        let machinesbarChartData = []
+        for (let i = 0; i < machinesLabels.length; i++) {
+          let total = 0;
+          for (let j = 0; j < this.alarmsLastMonth.length; j++) {
+            if (machinesLabels[i] == this.alarmsLastMonth[j].machineIp) {
+              total++;
+            }
+          }
+          machinesbarChartData.push(total);
+        }
+        this.alarmsclientbarChartData[0].data = machinesbarChartData;
+
+        this.totalAlarmsMachines = machinesLabels.length;
+        this.totalAlarmsOperatingSystems = machineOSLabels.length;
+
+
       },
       error => {
         console.log(error);
@@ -90,6 +208,26 @@ export class ReportsComponent implements OnInit {
         this.totalLogsMachines = machinesLabels.length;
 
 
+      },
+      error => {
+        console.log(error);
+      }
+    )
+  }
+
+  getMonthlyAlarmsReport() {
+    this.reportsService.getMonthlyAlarmsReport().subscribe(
+      data => {
+        console.log(data);
+        let monthlyData = [
+          {
+            data: (<any[]>data).map(item => item.numOfAlarms),
+            label: 'Total Alarms per Day',
+            lineTension: 0
+          },
+        ];
+        this.alarmslineChartData = monthlyData;
+        this.alarmslineChartLabels = (<any[]>data).map(item => item.day);
       },
       error => {
         console.log(error);
@@ -203,6 +341,90 @@ export class ReportsComponent implements OnInit {
       borderColor: 'rgba(90, 199, 163, 1)',
     }
   ];
+
+  //ALARMS --------------------------------------------------------------------------------------------
+
+  public alarmslineChartData = [
+    { data: [0], label: '' }
+  ];
+  public alarmslineChartLabels = [''];
+  public alarmslineChartLegend = true;
+  public alarmslineChartType = 'line';
+  public alarmslineChartOptions = {
+
+  }
+  public alarmslineChartColors = [
+    { // grey
+      backgroundColor: 'rgba(90, 199, 163, 0.1)',
+      borderColor: 'rgba(90, 199, 163, 1)',
+    }
+  ];
+
+  //PIE CHART
+  public alarmspieChartOptions = {
+    responsive: true,
+    legend: {
+      position: 'top',
+      fontColor: '#FFF',
+    },
+    plugins: {
+      datalabels: {
+        formatter: (value, ctx) => {
+          const label = ctx.chart.data.labels[ctx.dataIndex];
+          return label;
+        },
+      },
+    }
+  };
+  public alarmspieChartLabels = [];
+  public alarmspieChartData: number[] = [];
+  public alarmspieChartType = 'pie';
+  public alarmspieChartLegend = true;
+  public alarmspieChartColors = [
+    {
+      backgroundColor: ['#46cfa1'],
+      pointHoverBackgroundColor: '#FFFFFF',
+    },
+  ];
+
+  //BAR CHART PER MACHINE OS
+  public alarmsmOSbarChartOptions = {
+    scaleShowVerticalLines: false,
+    responsive: true
+  };
+
+  public alarmsmOSbarChartLabels = [''];
+  public alarmsmOSbarChartType = 'bar';
+  public alarmsmOSbarChartLegend = true;
+  public alarmsmOSbarChartData = [
+    {data: [0], label: 'Total Alarms last month per Operating System'},
+  ];
+  public alarmsmOSchartColors: any[] = [
+    { 
+      backgroundColor:"#46cfa1",
+      pointHoverBackgroundColor: '#FFFFFF',
+    }
+  ];
+
+  //BAR CHART PER CLIENT
+  public alarmsclientbarChartOptions = {
+    scaleShowVerticalLines: false,
+    responsive: true
+  };
+
+  public alarmsclientbarChartLabels = [''];
+  public alarmsclientbarChartType = 'bar';
+  public alarmsclientbarChartLegend = true;
+  public alarmsclientbarChartData = [
+    {data: [0], label: 'Total Alarms last month per Machine'},
+  ];
+  public alarmsclientchartColors: any[] = [
+    { 
+      backgroundColor:"#46cfa1",
+      pointHoverBackgroundColor: '#FFFFFF',
+    }
+  ];
+
 
   
 

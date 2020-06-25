@@ -31,8 +31,10 @@ public class AlarmDTO {
         name = alarm.getName();
         description = alarm.getDescription();
         machineIp = alarm.getMachineIp();
-        machineName = alarm.getMachineOS();
+        machineName = alarm.getMachineName();
+        alarmType = alarm.getAlarmType();
         agentInfo = alarm.getAgentInfo();
+        machineOS = alarm.getMachineOS();
         timestamp = new DateService().getString(alarm.getTimestamp(), timezone);
         logs = alarm.getLogs().stream().map(log -> new LogDTO(log, timezone)).collect(Collectors.toList());
     }
