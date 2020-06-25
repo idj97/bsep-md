@@ -54,7 +54,12 @@ public class RuleService {
         int ruleNameStart = ruleContent.indexOf("\"", ruleStart);
         int ruleNameEnd = ruleContent.indexOf("\"", ruleNameStart+1);
 
-        return ruleContent.substring(ruleNameStart+1, ruleNameEnd);
+        try {
+            return ruleContent.substring(ruleNameStart+1, ruleNameEnd).trim();
+        } catch (IndexOutOfBoundsException ex) {
+            throw new ApiBadRequestException("Failed to extract rule name");
+        }
+
     }
 
     public void remove(String ruleName) {

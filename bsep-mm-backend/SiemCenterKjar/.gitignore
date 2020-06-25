@@ -35,3 +35,4 @@ build/
 /src/main/resources/truststore.jks
 
 /src/main/resources/rules
+.idea/workspace.xml
