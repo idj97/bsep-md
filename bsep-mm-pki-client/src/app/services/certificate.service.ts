@@ -51,7 +51,15 @@ export class CertificateService {
   }
 
   downloadCertificateCer(serialNumber: string): Observable<any> {
-    return this.http.get<any>(`api/certificates/cer/${serialNumber}`, {responseType: 'blob' as 'json'});
+    return this.http.get<any>(`api/certificates/download/${serialNumber}`, {responseType: 'blob' as 'json'});
+  }
+
+  downloadCertificateHEAD(serialNumber: string): Observable<any> {
+    return this.http.get<any>(`api/certificates/download/${serialNumber}`, {responseType: 'blob' as 'json'});
+  }
+
+  downloadCertificateCHAIN(serialNumber: string): Observable<any> {
+    return this.http.get<any>(`api/certificates/download/${serialNumber}`, {responseType: 'blob' as 'json'});
   }
 
 }

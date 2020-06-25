@@ -149,4 +149,26 @@ export class ViewAllCertificatesComponent implements OnInit {
     );
   }
 
+  downloadCertificateHEAD(item: any): void {
+    this.certificateService.downloadCertificateHEAD(item.serialNumber).subscribe(
+      data => {
+        saveAs(data, `${item.commonName}.cer`);
+      },
+      error => {
+        console.log(error);
+      }
+    );
+  }
+
+  downloadCertificateCHAIN(item: any): void {
+    this.certificateService.downloadCertificateCHAIN(item.serialNumber).subscribe(
+      data => {
+        saveAs(data, `${item.commonName}.cer`);
+      },
+      error => {
+        console.log(error);
+      }
+    );
+  }
+
 }

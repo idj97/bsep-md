@@ -23,8 +23,7 @@ import { RuleModule } from './components/rule/rule.module';
     LogEventsComponent,
     AlarmEventsComponent,
     ReportsComponent,
-    LogDialogComponent
-    ReportsComponent
+    LogDialogComponent,
   ],
   imports: [
     BrowserModule,
