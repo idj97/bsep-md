@@ -344,6 +344,27 @@ public class CertificateService {
         }
     }
 
+    public InputStreamResource getPemChainFileBySerialNumber(String serialNumber) {
+        Optional<Certificate> optionalCertificate = certificateRepository.findBySerialNumber(serialNumber);
+        if (optionalCertificate.isPresent()) {
+            Certificate certificate = optionalCertificate.get();
+            X509Certificate[] x509CertificateChain = keyStoreService.getCertificateChain(
+                    certificate.getSerialNumber());
+
+            StringWriter sw = new StringWriter();
+            try (JcaPEMWriter pw = new JcaPEMWriter(sw)) {
+                for (X509Certificate cert : x509CertificateChain) {
+                    pw.writeObject(cert);
+                }
+            } catch (IOException e) {
+                throw new ApiInternalServerErrorException("pem generation failed.");
+            }
+            return new InputStreamResource(new ByteArrayInputStream(sw.toString().getBytes()));
+        } else {
+            throw new ApiNotFoundException("Cert not found.");
+        }
+    }
+
 
     public CertificateDto revoke(RevocationDto revocationDto) {
         Optional<Certificate> optCert = certificateRepository.findBySerialNumber(revocationDto.getSerialNumber());
