@@ -2,18 +2,19 @@
 .rule-holder {
     white-space:pre-wrap;
     margin-bottom: 2ex;
+    color: white;
 }
 
 .no-rule-display {
     text-align: center;
+    color: white;
 }
 
 .separator {
     position: relative;
     width: 100%;
     height: 2ex;
-    background-color: #21252b;
-    border-radius: 5px;
+    background-color: lightgray;
 }
 
 .rule {

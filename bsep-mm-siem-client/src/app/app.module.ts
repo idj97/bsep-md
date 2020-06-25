@@ -1,6 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, APP_INITIALIZER } from '@angular/core';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
@@ -23,7 +22,7 @@ import { RuleModule } from './components/rule/rule.module';
     LogEventsComponent,
     AlarmEventsComponent,
     ReportsComponent,
-    LogDialogComponent
+    LogDialogComponent,
     ReportsComponent
   ],
   imports: [
