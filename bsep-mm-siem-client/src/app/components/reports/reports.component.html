@@ -61,7 +61,58 @@
     
     <div class="col-12 report-header">Alarm Events Report</div>
 
-    <div class="col-12 col-md-6">
+    <div class="col-12 col-md-6 dark-blue-bg" style="padding: 0 !important; margin: 0 !important;">
+        <div class="row total-logs-holder">
+            <div class="col-8 log-item first d-flex align-items-center"><div>Total Logs:</div></div>
+            <div class="col-4 log-item first result">{{totalLogs}}</div>
+            <div class="col-8 log-item second d-flex align-items-center"><div>Total Logs last month:</div></div>
+            <div class="col-4 log-item second result">{{logsLastMonth.length}}</div>
+            <div class="col-8 log-item second d-flex align-items-center"><div>Total Operating Systems last month:</div></div>
+            <div class="col-4 log-item second result">{{totalLogsOperatingSystems}}</div>
+            <div class="col-8 log-item second d-flex align-items-center"><div>Total Machines last month:</div></div>
+            <div class="col-4 log-item second result">{{totalLogsMachines}}</div>
+        </div>
+        
+    </div>
+    <div class="col-12 col-md-6 p-5 dark-blue-bg">
+        <canvas baseChart
+            [options]="pieChartOptions"
+            [data]="pieChartData"
+            [labels]="pieChartLabels"
+            [chartType]="pieChartType"
+            [colors]="pieChartColors"
+            [legend]="pieChartLegend">
+        </canvas>
+    </div>
+    <div class="col-12 col-md-6 p-5">
+        <canvas baseChart
+            [datasets]="mOSbarChartData"
+            [labels]="mOSbarChartLabels"
+            [options]="mOSbarChartOptions"
+            [legend]="mOSbarChartLegend"
+            [chartType]="mOSbarChartType"
+            [colors]="mOSchartColors">
+        </canvas>
+    </div>
+    <div class="col-12 col-md-6 p-5">
+        <canvas baseChart
+            [datasets]="clientbarChartData"
+            [labels]="clientbarChartLabels"
+            [options]="clientbarChartOptions"
+            [legend]="clientbarChartLegend"
+            [chartType]="clientbarChartType"
+            [colors]="clientchartColors">
+        </canvas>
+    </div>
+    <div class="col-12 col-md-12 p-5 darker-blue-bg">
+        <canvas baseChart  width="400" height="100"
+            [datasets]="lineChartData"
+            [labels]="lineChartLabels"
+            [legend]="lineChartLegend"
+            [chartType]="lineChartType"
+            [options]="lineChartOptions"
+            [colors]="lineChartColors">
+        </canvas>
         
     </div>
     

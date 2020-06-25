@@ -15,6 +15,7 @@ import { FormsModule } from '@angular/forms';
 import { LogDialogComponent } from './components/log-dialog/log-dialog.component';
 import { ChartsModule } from 'ng2-charts';
 import { RuleModule } from './components/rule/rule.module';
+import { AlarmDialogComponent } from './components/alarm-dialog/alarm-dialog.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { RuleModule } from './components/rule/rule.module';
     AlarmEventsComponent,
     ReportsComponent,
     LogDialogComponent,
+    AlarmDialogComponent,
   ],
   imports: [
     BrowserModule,
