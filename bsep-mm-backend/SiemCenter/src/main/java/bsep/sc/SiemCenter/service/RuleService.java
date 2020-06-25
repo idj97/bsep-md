@@ -38,11 +38,9 @@ public class RuleService {
 
         Optional<Rule> optionalRule = ruleRepository.findByRuleName(ruleDTO.getRuleName());
         if (!optionalRule.isPresent()) {
-
-            System.out.println("=====" + ruleDTO.getRuleContent() + "=====");
             String rulePath = kjarRulesPath + ruleDTO.getRuleName().trim().replaceAll("\\s+","-") + ".drl";
-
             Rule rule = new Rule(ruleDTO.getRuleContent(), ruleDTO.getRuleName());
+
             kieSessionService.addRule(ruleDTO.getRuleContent(), rulePath);
             ruleRepository.save(rule);
           } else {
