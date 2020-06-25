@@ -55,7 +55,7 @@
             [ngClass]="{blurred : activeInput != machineName.valueAccessor._elementRef.nativeElement.dataset.index, 
             focused : activeInput == machineName.valueAccessor._elementRef.nativeElement.dataset.index || 
             !isEmpty(machineName.valueAccessor._elementRef.nativeElement.dataset.index)}">
-            <p class="input-text-value">Machine OS:</p>
+            <p class="input-text-value">Machine Name:</p>
             <input type="text" class="input-styled" (keydown)="textFieldsChanged()"
             (blur)="blurInput($event, machineName.valueAccessor._elementRef.nativeElement.dataset.index)" 
             (focus)="focusInput($event, machineName.valueAccessor._elementRef.nativeElement.dataset.index)"
@@ -134,7 +134,7 @@
             <td>{{item.timestamp}}</td>
             <td>{{item.alarmType}}</td>
             <td>{{item.machineOS}}</td>
-            <td>{{item.machineIP}}</td>
+            <td>{{item.machineIp}}</td>
         </tr>
     </table>
 </div>

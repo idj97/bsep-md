@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, HostListener } from '@angular/core';
 import { faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
 import { SearchAlarms } from 'src/app/dtos/search-alarms.dto';
 import { UtilityService } from 'src/app/services/utility.service';
@@ -21,23 +21,7 @@ export class AlarmEventsComponent implements OnInit {
   private activeInput = -1;
   private pageIncrementing: boolean = false;
   private data: any = {
-    items: [
-      {
-        name: 'dsadasd',
-        timestamp: 'dsadasd',
-        alarmType: 'dsadasd',
-        machineOS: 'dsadasd',
-        machineIP: 'dsadasd',
-        logs: [
-          {
-            eventType: 'dsad',
-            eventName:'dsad',
-            eventId:'dsad',
-            machineOS:'dsad',
-          }
-        ]
-      }
-    ]
+    items: []
   };
 
   private timeout = null;
@@ -107,9 +91,35 @@ export class AlarmEventsComponent implements OnInit {
     clearTimeout(this.timeout);
     console.log(this.alarmSearchDTO);
     this.timeout = setTimeout(() => {
-      //this.logSearchDTO.pageNum = 0;
-      //this.updateLogs();
+      this.alarmSearchDTO.pageNum = 0;
+      this.updateAlarms();
     }, 700);
+  }
+
+  @HostListener('window:mousewheel', ['$events'])
+  onScroll(event) {
+    if (this.pageIncrementing) return;
+    let element = document.getElementById('app-main-content');
+    let perc = (element.scrollTop + element.offsetHeight) / element.scrollHeight;
+    console.log(perc);
+    if (perc > 0.90 && this.alarmSearchDTO.pageNum < this.data.totalPages) {
+      this.pageIncrementing = true;
+      this.alarmSearchDTO.pageNum++
+      this.alarmEventsService.postSearchAlarms(this.alarmSearchDTO).subscribe(
+        data => {
+          data.items.forEach(element => {
+            this.data.items.push(element);
+          });
+          
+        },
+        error => {
+          console.log(error);
+        }
+      ).add(() => {
+        this.pageIncrementing = false;
+      });;
+    }
+    
   }
 
 }
