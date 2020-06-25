@@ -3,6 +3,7 @@ import { faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
 import { SearchAlarms } from 'src/app/dtos/search-alarms.dto';
 import { UtilityService } from 'src/app/services/utility.service';
 import { AlarmDialogService } from 'src/app/services/alarm-dialog.service';
+import { AlarmEventsService } from 'src/app/services/alarm-events.service';
 
 @Component({
   selector: 'app-alarm-events',
@@ -45,9 +46,23 @@ export class AlarmEventsComponent implements OnInit {
   @ViewChild("ncf", {static: false}) alarmSearchForm: any;
 
   constructor(private utilityService: UtilityService,
-              private alarmDialogService: AlarmDialogService) { }
+              private alarmDialogService: AlarmDialogService,
+              private alarmEventsService: AlarmEventsService) { }
 
   ngOnInit() {
+    this.updateAlarms();
+  }
+
+  updateAlarms() : void {
+    this.alarmEventsService.postSearchAlarms(this.alarmSearchDTO).subscribe(
+      data => {
+        console.log(data);
+        this.data = data;
+      },
+      error => {
+        console.log(error);
+      }
+    );
   }
 
   selectAlarm(item: any): void {

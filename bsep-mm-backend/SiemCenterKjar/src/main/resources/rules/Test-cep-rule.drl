@@ -1,0 +1,32 @@
+package rules;
+
+import bsep.sc.SiemCenter.model.Log;
+import bsep.sc.SiemCenter.model.Alarm;
+import java.util.Date;
+import java.util.List;
+
+global bsep.sc.SiemCenter.repository.AlarmRepository alarmRepository
+
+rule "Test cep rule"
+    no-loop true
+    enabled true
+    timer(cron:0/5 * * * * ?)
+    when
+        $log: Log($src: machineIp) and
+        $logs: List(size >= 3) from collect(Log(machineIp == $src) over window:time(5s)) //and
+        //$num: Number(intValue >= 3) from accumulate(
+        //    $log2: Log(machineIp == $src) over window:time(5s),
+        //    count($log2))
+    then
+        alarmRepository.save(new Alarm(
+                "alarm name",
+                "alarm description",
+                "alarmType",
+                $log.getMachineIp(),
+                $log.getMachineOS(),
+                $log.getMachineName(),
+                $log.getAgentInfo(),
+                new Date(),
+                $logs
+        ));
+end

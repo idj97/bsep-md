@@ -21,4 +21,16 @@ export class ReportsService {
     return this.http.get('api/reports/logs/last-month-by-day');
   }
 
+  getTotalAlarms(): Observable<any> {
+    return this.http.get('/api/reports/alarms/total');
+  }
+
+  getAlarmsLastMonth(): Observable<any> {
+    return this.http.get('/api/reports/alarms/last-month');
+  }
+
+  getMonthlyAlarmsReport(): Observable<any> {
+    return this.http.get('api/reports/alarms/last-month-by-day');
+  }
+
 }

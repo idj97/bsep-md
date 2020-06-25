@@ -1,6 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, APP_INITIALIZER } from '@angular/core';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
@@ -26,6 +25,7 @@ import { AlarmDialogComponent } from './components/alarm-dialog/alarm-dialog.com
     ReportsComponent,
     LogDialogComponent,
     AlarmDialogComponent,
+    ReportsComponent
   ],
   imports: [
     BrowserModule,

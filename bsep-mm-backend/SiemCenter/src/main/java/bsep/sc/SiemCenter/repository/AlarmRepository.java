@@ -1,7 +1,6 @@
 package bsep.sc.SiemCenter.repository;
 
 import bsep.sc.SiemCenter.model.Alarm;
-import bsep.sc.SiemCenter.model.Log;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -14,6 +13,8 @@ import java.util.UUID;
 
 @Repository
 public interface AlarmRepository extends MongoRepository<Alarm, UUID> {
+
+    List<Alarm> findByTimestampBetween(Date startDate, Date endDate);
 
     @Query("{$and:[" +
             "{timestamp:{$gte: ?0, $lte: ?1}}," +

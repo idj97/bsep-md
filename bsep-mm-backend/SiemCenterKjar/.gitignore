@@ -34,5 +34,6 @@ build/
 /src/main/resources/keystore.jks
 /src/main/resources/truststore.jks
 
-/rules
+
+/src/main/resources/rules
 /rules
