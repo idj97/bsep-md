@@ -7,20 +7,21 @@ import bsep.sc.SiemCenter.service.LogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/unsecuredd")
+@RequestMapping("/api/logs")
 public class LogController {
 
     @Autowired
     private LogService logService;
 
     @PostMapping("/search")
-    public ResponseEntity<PageDTO<LogDTO>> searchLogs(@RequestBody LogSearchDTO logSearchDTO) {
+    public ResponseEntity<PageDTO<LogDTO>> searchLogs(@RequestBody @Valid LogSearchDTO logSearchDTO) {
         return new ResponseEntity<>(logService.searchLogs(logSearchDTO), HttpStatus.OK);
     }
+
+
 }

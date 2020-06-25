@@ -12,6 +12,8 @@ import { LogEventsComponent } from './components/log-events/log-events.component
 import { AlarmEventsComponent } from './components/alarm-events/alarm-events.component';
 import { ReportsComponent } from './components/reports/reports.component';
 import { FormsModule } from '@angular/forms';
+import { LogDialogComponent } from './components/log-dialog/log-dialog.component';
+import { ChartsModule } from 'ng2-charts';
 import { RuleModule } from './components/rule/rule.module';
 
 @NgModule({
@@ -20,6 +22,8 @@ import { RuleModule } from './components/rule/rule.module';
     HomeComponent,
     LogEventsComponent,
     AlarmEventsComponent,
+    ReportsComponent,
+    LogDialogComponent
     ReportsComponent
   ],
   imports: [
@@ -29,6 +33,7 @@ import { RuleModule } from './components/rule/rule.module';
     FontAwesomeModule,
     KeycloakAngularModule,
     FormsModule,
+    ChartsModule,
     RuleModule
   ],
   providers: [

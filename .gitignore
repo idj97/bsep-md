@@ -5,3 +5,4 @@ bsep-mm-frontend/.vscode/launch.json
 logs/*
 bsep-mm-backend/PublicKeyInfrastructure/logs/*
 bsep-mm-siem-client/certs/*
+bsep-mm-backend/Simulator/.idea/*

@@ -1,0 +1,46 @@
+.total-logs-holder {
+    color: white;
+    letter-spacing: 0px;
+    font-size: 16px;
+    margin: 0 !important;
+    font-weight: 600;
+}
+
+.total-logs-holder .log-item {
+    padding: 10px;
+}
+
+.total-logs-holder .log-item.first {
+    background: #23272e;
+}
+
+.total-logs-holder .log-item.second {
+    background: #202938;
+}
+
+.total-logs-holder .log-item.first.result {
+    color: #5ac7a3;
+    font-size: 36px;
+    font-weight: 700;
+}
+
+.total-logs-holder .log-item.second.result {
+    color: #c7bc5a;
+    font-size: 36px;
+    font-weight: 700;
+}
+
+.report-header {
+    font-size: 32px;
+    color: white;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 30px;
+    border-bottom: 2px solid gray;
+    margin: 0 !important;
+    background: #292e34;
+}
+
+
+
+

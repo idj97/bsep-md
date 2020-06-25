@@ -1,8 +1,10 @@
 package bsep.sa.SiemAgent.config;
 
 import bsep.sa.SiemAgent.util.KeyStoreUtil;
+import org.springframework.core.io.ResourceLoader;
 
 import javax.net.ssl.X509TrustManager;
+import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.*;
@@ -16,9 +18,18 @@ public class SSLTrustManager implements X509TrustManager {
     private String rootCertAlias;
     private Object lock;
 
+
     public SSLTrustManager() {
         super();
-        classpath = System.getProperty("java.class.path").split(":")[0];
+        String os = System.getProperty("os.name");
+        if (os.toLowerCase().contains("linux")) {
+            classpath = System.getProperty("java.class.path").split(":")[0];
+
+        }
+        else if (os.toLowerCase().contains("win")) {
+            classpath = System.getProperty("java.class.path").split(";")[0];
+        }
+
         trustStorePath = classpath + "/truststore.jks";
         trustStorePassword = "";
         ocspCertAlias = "ocsp";

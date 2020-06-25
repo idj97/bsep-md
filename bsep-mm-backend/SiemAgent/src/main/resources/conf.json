@@ -7,7 +7,7 @@
         "readFrequency": 5000,
         "patterns": [
           {
-            "pattern": "%{SYSLOGTIMESTAMP:timestamp} %{HOSTNAME:machineName} %{NUMBER:eventId} %{WORD:eventType} %{WORD:source} %{GREEDYDATA}"
+            "pattern": "%{SYSLOGTIMESTAMP:timestamp} %{HOSTNAME:machineName} %{NUMBER:eventId} %{DATA:eventType} ; %{DATA:source} ; %{GREEDYDATA}"
           }
         ]
       },
@@ -17,7 +17,7 @@
         "readFrequency": 5000,
         "patterns": [
           {
-            "pattern": "%{SYSLOGTIMESTAMP:timestamp} %{HOSTNAME:machineName} %{NUMBER:eventId} %{WORD:eventType} %{WORD:source} %{GREEDYDATA}"
+            "pattern": "%{SYSLOGTIMESTAMP:timestamp} %{HOSTNAME:machineName} %{NUMBER:eventId} %{DATA:eventType} ; %{DATA:source} ; %{GREEDYDATA}"
           }
         ]
       },
@@ -27,7 +27,7 @@
         "readFrequency": 6000,
         "patterns": [
           {
-            "pattern": "%{SYSLOGTIMESTAMP:timestamp} %{HOSTNAME:machineName} %{NUMBER:eventId} %{WORD:eventType} %{WORD:source} %{GREEDYDATA}"
+            "pattern": "%{SYSLOGTIMESTAMP:timestamp} %{HOSTNAME:machineName} %{NUMBER:eventId} %{DATA:eventType} ; %{DATA:source} ; %{GREEDYDATA}"
           }
         ]
       }

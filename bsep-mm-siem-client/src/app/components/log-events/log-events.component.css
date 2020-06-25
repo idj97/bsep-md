@@ -36,3 +36,54 @@
     background: #1d242c;
 }
 
+.logs-holder {
+    margin: 0 !important;
+    padding: 0 !important;
+    
+}
+
+.logs-table {
+    width: 100%;
+    font-size: 14px;
+    table-layout: fixed;
+    text-align: center;
+    letter-spacing: 1px;
+}
+
+.logs-table tr:first-child {
+    background: #131c27;
+    color: white;
+}
+
+.logs-table tr:not(:first-child) {
+    background: #242c36;
+    color: white;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.logs-table tr:not(:first-child):hover {
+    background: #303842;
+}
+
+.logs-table td {
+    padding: 20px;
+}
+
+.logs-table th {
+    font-weight: 700;
+    padding: 20px;
+}
+
+.log-events-header {
+    font-size: 32px;
+    color: white;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 30px;
+    border-bottom: 2px solid gray;
+    margin: 0 !important;
+    background: #292e34;
+}
+
+
