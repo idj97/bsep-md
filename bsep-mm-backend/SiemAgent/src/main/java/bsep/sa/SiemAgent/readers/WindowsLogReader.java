@@ -69,7 +69,7 @@ public class WindowsLogReader implements Runnable {
         Date date = new Date(eRecord.getRecord().TimeGenerated.longValue() * 1000);
         SimpleDateFormat format = new SimpleDateFormat("MMMM dd HH:mm:ss");
         String logString = String.format(
-                "%s %s %s %s %s %s %s",
+                "%s %s %s %s ; %s ; %s %s",
                 format.format(date),
                 extractMachineName(eRecord.getRecord()),
                 eRecord.getEventId(),

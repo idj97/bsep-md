@@ -1,0 +1,49 @@
+.alarm-events-header {
+    font-size: 32px;
+    color: white;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 30px;
+    border-bottom: 2px solid gray;
+    margin: 0 !important;
+    background: #292e34;
+}
+
+.search-fields-info {
+    background: #131a22;
+    color: white;
+    padding: 20px;
+    margin: 0 !important;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.show-search-fields-button {
+    text-align: center;
+    padding: 15px;
+    margin: 0 !important;
+    background: #131a22;
+    color: white;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.show-search-fields-button:hover {
+    background: #1d242c;
+}
+
+.search-fields-holder {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #131a22;
+    color: white;
+    overflow: hidden;
+    transition: .5s;
+    max-height: 0px;
+}
+
+.search-fields-holder.show {
+    max-height: 250px;
+}
+

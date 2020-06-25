@@ -1,0 +1,24 @@
+<div class="alarm-events-header">View All Alarm Events</div>
+<form name="alarmSearchForm" #ncf="ngForm">
+    <div class="row col-12 search-fields-info">Search fields accept regular expressions</div>
+
+    <div class="row search-fields-holder" [ngClass]="{show : showSearchFields}">
+        <div class="input-holder d-flex align-items-center col-4" 
+            [ngClass]="{blurred : activeInput != test.valueAccessor._elementRef.nativeElement.dataset.index, 
+            focused : activeInput == test.valueAccessor._elementRef.nativeElement.dataset.index || 
+            !isEmpty(test.valueAccessor._elementRef.nativeElement.dataset.index)}">
+            <p class="input-text-value">Test</p>
+            <input type="text" class="input-styled" (keydown)="textFieldsChanged()"
+            (blur)="blurInput($event, test.valueAccessor._elementRef.nativeElement.dataset.index)" 
+            (focus)="focusInput($event, test.valueAccessor._elementRef.nativeElement.dataset.index)"
+                [(ngModel)]="alarmSearchDTO.test" name="test"
+                #test="ngModel" data-index="0">
+        </div>
+    </div>
+
+
+    <div class="row col-12 show-search-fields-button d-flex justify-content-center" (click)="toggleSearchFields()"> 
+        <fa-icon *ngIf="showSearchFields" [icon]="faArrowUp"></fa-icon>
+        <fa-icon *ngIf="!showSearchFields" [icon]="faArrowDown"></fa-icon>
+    </div>
+</form>
