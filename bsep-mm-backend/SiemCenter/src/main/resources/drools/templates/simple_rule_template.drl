@@ -1,15 +1,15 @@
 package drools.rules;
 
-import bsep.sc.SiemCenter.events.LogEvent;
-import bsep.sc.SiemCenter.events.Alarm;
-import bsep.sc.SiemCenter.events.AlarmType;
+import bsep.sc.SiemCenter.model.Log;
+import bsep.sc.SiemCenter.model.Alarm;
 import java.util.Date;
 
 rule "Test simple rule"
     no-loop true
     enabled true
+    timer(cron:0/5 * * * * ?)
     when
-        $log1: LogEvent($src: machineSource)
+        $log1: Log($src: machineIp)
         not ( Alarm(machineSource == $src) )
     then
         System.out.println("Rule name");
