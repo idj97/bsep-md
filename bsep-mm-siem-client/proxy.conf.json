@@ -5,13 +5,5 @@
 		"changeOrigin": true,
 		"logLevel": "debug",
 		"pathRewrite": { "^/api" : "https://localhost:8441/api" }
-	},
-
-	"/unsecured/*": {
-		"target": "https://localhost:8441",
-		"secure": false,
-		"changeOrigin": true,
-		"logLevel": "debug",
-		"pathRewrite": { "^/unsecured" : "https://localhost:8441/unsecured" }
 	}
 }
