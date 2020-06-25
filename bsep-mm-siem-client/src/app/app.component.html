@@ -57,5 +57,7 @@
 </div>
 
 
-<div (click)="closeDialogs()" class="teaser" [ngClass]="{'activated': activated}"></div>
+<div (click)="closeLogDialogs()" class="teaser" [ngClass]="{'activated': activated}"></div>
+<div (click)="closeAlarmDialogs()" class="alarm-teaser" [ngClass]="{'activated': alarmDialogActivated}"></div>
 <div class="log-dialog-component" app-log-dialog></div>
+<div class="alarm-dialog-component" app-alarm-dialog></div>

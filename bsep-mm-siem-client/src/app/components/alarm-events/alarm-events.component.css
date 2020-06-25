@@ -44,6 +44,46 @@
 }
 
 .search-fields-holder.show {
-    max-height: 250px;
+    max-height: 300px;
+}
+
+
+.alarm-holder {
+    margin: 0 !important;
+    padding: 0 !important;
+    
+}
+
+.alarm-table {
+    width: 100%;
+    font-size: 14px;
+    table-layout: fixed;
+    text-align: center;
+    letter-spacing: 1px;
+}
+
+.alarm-table tr:first-child {
+    background: #131c27;
+    color: white;
+}
+
+.alarm-table tr:not(:first-child) {
+    background: #242c36;
+    color: white;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.alarm-table tr:not(:first-child):hover {
+    background: #303842;
+}
+
+.alarm-table td {
+    padding: 20px;
+}
+
+.alarm-table th {
+    font-weight: 700;
+    padding: 20px;
 }
 

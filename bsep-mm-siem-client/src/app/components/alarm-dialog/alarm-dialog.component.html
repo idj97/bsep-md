@@ -1,0 +1,60 @@
+<div class="alarm-dialog-component" [ngClass]="{'activated' : activated}">
+    <div class="alarm-dialog-header">Alarm Details</div>
+    <div class="separator pl-4">
+        <div></div>
+    </div>
+    <div class="mt-4"></div>
+    <div class="row" style="margin: 0 !important;" *ngIf="item">
+
+        <div class="col-12 alarm-dialog-item">
+            Name: {{item.name}}
+        </div>
+
+        <div class="col-12 alarm-dialog-item">
+            Description: {{item.description}}
+        </div>
+
+        <div class="col-12 alarm-dialog-item">
+            Machine IP: {{item.machineIp}}
+        </div>
+
+        <div class="col-12 alarm-dialog-item">
+            Machine OS: {{item.machineOS}}
+        </div>
+
+        <div class="col-12 alarm-dialog-item">
+            Machine Name: {{item.machineName}}
+        </div>
+
+        <div class="col-12 alarm-dialog-item">
+            Agent Info: {{item.agentInfo}}
+        </div>
+
+        <div class="col-12 alarm-dialog-item">
+            Timestamp: {{item.timestamp}}
+        </div>
+
+        <div class="col-12 alarm-dialog-item">
+            Alarm Type: {{item.alarmType}}
+        </div>
+
+        <div class="col-12 alarm-dialog-item logs-holder">
+            <table class="logs-table">
+                <tr>
+                    <th>Event Type</th>
+                    <th>Event Name</th>
+                    <th>Event ID</th>
+                    <th>Machine OS</th>
+                </tr>
+                <tr *ngFor="let log of item.logs; let i = index" (click)="selectLog(log)">
+                    <td>{{log.eventType}}</td>
+                    <td>{{log.eventName}}</td>
+                    <td>{{log.eventId}}</td>
+                    <td>{{log.machineOS}}</td>
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+    
+</div>
