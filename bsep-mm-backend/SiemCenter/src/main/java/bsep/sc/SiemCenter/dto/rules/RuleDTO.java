@@ -16,7 +16,6 @@ public class RuleDTO {
 
     private UUID id;
 
-    @NotBlank(message = "Rule identifier is required")
     private String ruleName;
 
     @NotBlank(message = "Rule can not be empty")

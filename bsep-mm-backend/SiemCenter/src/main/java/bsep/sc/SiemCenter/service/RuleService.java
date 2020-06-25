@@ -30,17 +30,23 @@ public class RuleService {
     private String kjarRulesPath;
 
     public void create(RuleDTO ruleDTO) {
+        ruleDTO.setRuleName(extractRuleName(ruleDTO.getRuleContent()));
+
+        if(ruleDTO.getRuleName().equals("")) {
+            throw new ApiBadRequestException("Rule name must not be empty");
+        }
+
         Optional<Rule> optionalRule = ruleRepository.findByRuleName(ruleDTO.getRuleName());
         if (!optionalRule.isPresent()) {
 
-            System.out.println("=====" + extractRuleName(ruleDTO.getRuleContent()) + "=====");
+            System.out.println("=====" + ruleDTO.getRuleContent() + "=====");
             String rulePath = kjarRulesPath + ruleDTO.getRuleName().trim().replaceAll("\\s+","-") + ".drl";
 
             Rule rule = new Rule(ruleDTO.getRuleContent(), ruleDTO.getRuleName());
             kieSessionService.addRule(ruleDTO.getRuleContent(), rulePath);
             ruleRepository.save(rule);
           } else {
-            throw new ApiBadRequestException("Rule identifier is already in use.");
+            throw new ApiBadRequestException("Rule name is already in use.");
         }
     }
 
@@ -50,7 +56,7 @@ public class RuleService {
         int ruleNameStart = ruleContent.indexOf("\"", ruleStart);
         int ruleNameEnd = ruleContent.indexOf("\"", ruleNameStart+1);
 
-        return ruleContent.substring(ruleNameStart, ruleNameEnd);
+        return ruleContent.substring(ruleNameStart+1, ruleNameEnd);
     }
 
     public void remove(String ruleName) {

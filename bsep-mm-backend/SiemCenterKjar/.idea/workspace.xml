@@ -2,19 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7dfb6132-4643-4bdf-83f0-83bbbefbaa75" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../SiemCenter/src/main/java/bsep/sc/SiemCenter/controller/RuleController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../SiemCenter/src/main/java/bsep/sc/SiemCenter/controller/RuleController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../SiemCenter/src/main/java/bsep/sc/SiemCenter/dto/rules/RuleDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/../SiemCenter/src/main/java/bsep/sc/SiemCenter/dto/rules/RuleDTO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../SiemCenter/src/main/java/bsep/sc/SiemCenter/service/RuleService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../SiemCenter/src/main/java/bsep/sc/SiemCenter/service/RuleService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../SiemCenter/src/main/java/bsep/sc/SiemCenter/service/drools/KieSessionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../SiemCenter/src/main/java/bsep/sc/SiemCenter/service/drools/KieSessionService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../SiemCenter/src/main/java/bsep/sc/SiemCenter/util/KieSessionTemplate.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/SiemCenterKjar-0.0.1-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/SiemCenterKjar-0.0.1-SNAPSHOT.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/maven-archiver/pom.properties" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-archiver/pom.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../bsep-mm-siem-client/src/app/components/rule/new-rule/new-rule.component.css" beforeDir="false" afterPath="$PROJECT_DIR$/../../bsep-mm-siem-client/src/app/components/rule/new-rule/new-rule.component.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../bsep-mm-siem-client/src/app/components/rule/new-rule/new-rule.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../bsep-mm-siem-client/src/app/components/rule/new-rule/new-rule.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../bsep-mm-siem-client/src/app/components/rule/new-rule/new-rule.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../bsep-mm-siem-client/src/app/components/rule/new-rule/new-rule.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../bsep-mm-siem-client/src/app/components/rule/rule.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../bsep-mm-siem-client/src/app/components/rule/rule.module.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
