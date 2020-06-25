@@ -6,6 +6,7 @@ import bsep.sc.SiemCenter.dto.PageDTO;
 import bsep.sc.SiemCenter.dto.logs.MonthlyLogReportDTO;
 import bsep.sc.SiemCenter.model.Log;
 import bsep.sc.SiemCenter.repository.LogRepository;
+import bsep.sc.SiemCenter.service.drools.KieSessionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,6 +29,10 @@ public class LogService {
 
     @Autowired
     private DateService dateService;
+  
+    @Autowired
+    private KieSessionService kieSessionService;
+
 
     public List<LogDTO> getLogsFromLastMonth() {
         Date currentDate = new Date();
@@ -86,7 +91,11 @@ public class LogService {
 
     public void addLogs(List<Log> logs) {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
-        logs.forEach(log -> log.setGenericTimestampDate(new Date(Long.parseLong(log.getGenericTimestamp()))));
+
+        logs.forEach(log -> {
+            log.setGenericTimestampDate(new Date(Long.parseLong(log.getGenericTimestamp())));
+            kieSessionService.insertEvent(log);
+        });
         logRepository.saveAll(logs);
     }
 

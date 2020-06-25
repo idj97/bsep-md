@@ -1,0 +1,49 @@
+
+#rule-editor {
+    min-height: 45ex;
+    font-size: 16px;
+    border-radius: 10px;
+}
+
+.log-menu {
+    font-size: 15px;
+    background-color: #333;
+    border-radius: 10px;
+    color: white;
+    margin: 0;
+    margin-bottom: 5px;
+    padding: 8px;
+}
+
+.log-content {
+    padding: 1ex;
+}
+
+.rule-editor-menu {
+    position: relative;
+    text-align: center;
+    left: 2ex;
+    width: 100%;
+    background-color: #333;
+    color: white;
+    border-radius: 10px;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.menu-item {
+    padding: 1ex;
+}
+
+.menu-label {
+    padding: 1ex;
+    text-align: left;
+    font-size: 15px;
+}
+
+.menu-item:hover {
+    background-color: lightgray;
+    color: black;
+    border-radius: 10px;
+    cursor: pointer;
+}

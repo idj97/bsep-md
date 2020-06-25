@@ -12,7 +12,6 @@ import java.util.Date;
 @Getter
 @Setter
 public class LogEvent {
-
     private String facility; // must be string to compare in rules
     private String severity; // must be string to compare in rules
 

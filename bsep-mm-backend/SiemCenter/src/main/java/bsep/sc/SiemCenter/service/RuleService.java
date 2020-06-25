@@ -1,80 +1,92 @@
 package bsep.sc.SiemCenter.service;
 
-import bsep.sc.SiemCenter.dto.RuleTemplate;
-import bsep.sc.SiemCenter.events.LogEvent;
+import bsep.sc.SiemCenter.dto.rules.RuleDTO;
 import bsep.sc.SiemCenter.exception.ApiBadRequestException;
-import bsep.sc.SiemCenter.exception.ApiNotFoundException;
 import bsep.sc.SiemCenter.model.Rule;
 import bsep.sc.SiemCenter.repository.RuleRepository;
-import bsep.sc.SiemCenter.util.KieSessionTemplate;
-import org.drools.template.ObjectDataCompiler;
+import bsep.sc.SiemCenter.service.drools.KieSessionService;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.InputStream;
-import java.util.ArrayList;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class RuleService {
 
     @Autowired
-    private KieSessionTemplate kieSessionTemplate;
+    private KieSessionService kieSessionService;
 
     @Autowired
     private RuleRepository ruleRepository;
 
-    @Value("${drools.templates.path}")
-    private String templatePath;
+    @Value("${kjar.rule.path}")
+    private String kjarRulesPath;
 
+    public void create(RuleDTO ruleDTO) {
+        ruleDTO.setRuleName(extractRuleName(ruleDTO.getRuleContent()));
 
-    public String createRule(RuleTemplate ruleTemplate, String templateName) {
-        InputStream template = RuleService.class.getResourceAsStream(templatePath + templateName + ".drt");
-
-        if(template == null) {
-            throw new ApiBadRequestException("Invalid template name");
+        if(ruleDTO.getRuleName().equals("")) {
+            throw new ApiBadRequestException("Rule name must not be empty");
         }
 
-        if(ruleRepository.findByRuleName(ruleTemplate.getRuleName()).isPresent()) {
-            throw new ApiBadRequestException("Rule name already exists");
+        Optional<Rule> optionalRule = ruleRepository.findByRuleName(ruleDTO.getRuleName());
+        if (!optionalRule.isPresent()) {
+            String rulePath = kjarRulesPath + ruleDTO.getRuleName().trim().replaceAll("\\s+","-") + ".drl";
+            Rule rule = new Rule(ruleDTO.getRuleContent(), ruleDTO.getRuleName());
+
+            kieSessionService.addRule(ruleDTO.getRuleContent(), rulePath);
+            ruleRepository.save(rule);
+          } else {
+            throw new ApiBadRequestException("Rule name is already in use.");
         }
+    }
 
-        // add rule templates to create rules
-        List<RuleTemplate> ruleData = new ArrayList<>();
-        ruleData.add(ruleTemplate);
+    private String extractRuleName(String ruleContent) {
 
-        ObjectDataCompiler converter = new ObjectDataCompiler();
-        String drl = converter.compile(ruleData, template);
+        int ruleStart = ruleContent.indexOf("rule");
+        int ruleNameStart = ruleContent.indexOf("\"", ruleStart);
+        int ruleNameEnd = ruleContent.indexOf("\"", ruleNameStart+1);
 
-        String combinedDrl = combinePreviousRules(drl); // add previous rules to drl
-
-        System.out.print(combinedDrl); // print out combined rules
-        kieSessionTemplate.createSessionFromDRL(combinedDrl);
-
-        ruleRepository.save(new Rule(drl, ruleTemplate.getRuleName())); // save new rule if it is valid
-        return drl;
+        try {
+            return ruleContent.substring(ruleNameStart+1, ruleNameEnd).trim();
+        } catch (IndexOutOfBoundsException ex) {
+            throw new ApiBadRequestException("Failed to extract rule name");
+        }
 
     }
 
-
-    public String combinePreviousRules(String newDrl) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(newDrl); // append first rule with imports
-        for(Rule rule: ruleRepository.findAll()) {
-            // skip imports and append only rule content
-            sb.append(rule.getRuleContent().substring(rule.getRuleContent().indexOf("rule")));
+    public void remove(String ruleName) {
+        Optional<Rule> optionalRule = ruleRepository.findByRuleName(ruleName);
+        if (optionalRule.isPresent()) {
+            String rulePath = kjarRulesPath + ruleName + ".drl";
+            kieSessionService.removeRule(rulePath);
+            ruleRepository.delete(optionalRule.get());
+        } else {
+            throw new ApiBadRequestException("Rule not found.");
         }
-
-        return sb.toString();
     }
 
-    public int insertLogEvent(LogEvent logEvent) {
-        if(kieSessionTemplate.getTemplateSession() == null) {
-            throw new ApiNotFoundException("No rules have been found");
-        }
+    public List<RuleDTO> getAllRules() {
+        return ruleRepository
+                .findAll()
+                .stream()
+                .map(rule -> new RuleDTO(rule.getId(), rule.getRuleName(), rule.getRuleContent()))
+                .collect(Collectors.toList());
+    }
 
-        kieSessionTemplate.getTemplateSession().insert(logEvent);
-        return kieSessionTemplate.getTemplateSession().fireAllRules(); // return number of alarms activated
+    public String getTemplate(String templatePath) {
+        File file = new File(templatePath);
+        try {
+            return FileUtils.readFileToString(file, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new ApiBadRequestException("Failed to load template");
+        }
     }
 }
