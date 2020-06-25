@@ -30,7 +30,7 @@ public class AlarmService {
 
         Page<Alarm> alarmsPage = alarmRepository.search(
                 alarmSearchDTO.getLowerTimestampDate(),
-                alarmSearchDTO.getLowerTimestampDate(),
+                alarmSearchDTO.getUpperTimestampDate(),
                 alarmSearchDTO.getName(),
                 alarmSearchDTO.getDescription(),
                 alarmSearchDTO.getMachineIp(),
