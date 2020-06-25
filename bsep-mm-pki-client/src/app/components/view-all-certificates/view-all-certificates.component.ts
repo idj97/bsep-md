@@ -163,7 +163,7 @@ export class ViewAllCertificatesComponent implements OnInit {
   downloadCertificateCHAIN(item: any): void {
     this.certificateService.downloadCertificateCHAIN(item.serialNumber).subscribe(
       data => {
-        saveAs(data, `${item.commonName}.cer`);
+        saveAs(data, `${item.commonName}(chain).cer`);
       },
       error => {
         console.log(error);
