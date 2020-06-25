@@ -59,7 +59,7 @@ export class CertificateService {
   }
 
   downloadCertificateCHAIN(serialNumber: string): Observable<any> {
-    return this.http.get<any>(`api/certificates/download/${serialNumber}`, {responseType: 'blob' as 'json'});
+    return this.http.get<any>(`api/certificates/pemChain/${serialNumber}`, {responseType: 'blob' as 'json'});
   }
 
 }
