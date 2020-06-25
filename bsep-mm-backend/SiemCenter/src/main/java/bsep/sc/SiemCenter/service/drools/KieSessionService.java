@@ -3,6 +3,7 @@ package bsep.sc.SiemCenter.service.drools;
 import bsep.sc.SiemCenter.exception.ApiBadRequestException;
 import bsep.sc.SiemCenter.exception.ApiRuleInvalidException;
 import bsep.sc.SiemCenter.repository.AlarmRepository;
+import bsep.sc.SiemCenter.service.AlarmService;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.shared.invoker.*;
 import org.kie.api.KieBase;
@@ -43,6 +44,9 @@ public class KieSessionService {
     @Value("${kjar.rule.path}")
     private String kjarRulesPath;
 
+    @Autowired
+    private AlarmService alarmService;
+
     public KieSession getKieSession() {
         return kieSession;
     }
@@ -52,6 +56,9 @@ public class KieSessionService {
         moveKjarRules(kjarSavePath, kjarRulesPath);
         updateKjar();
         kieSession = kieBase.newKieSession();
+        Thread.sleep(5000);
+        kieSession.setGlobal("alarmService", alarmService);
+        kieSession.setGlobal("alarmRepository", alarmRepository);
         startEngine();
         trackFacts();
     }

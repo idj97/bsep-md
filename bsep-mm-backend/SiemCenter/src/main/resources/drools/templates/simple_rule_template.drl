@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List
 import java.util.ArrayList;
 
+global bsep.sc.SiemCenter.service.AlarmService alarmService
 global bsep.sc.SiemCenter.repository.AlarmRepository alarmRepository
 
 rule "Test simple rule"
@@ -15,7 +16,7 @@ rule "Test simple rule"
     when
         $log: Log($src: machineIp)
     then
-        alarmRepository.save(new Alarm(
+        alarmService.add(new Alarm(
                 "alarm name",
                 "alarm description",
                 "alarmType",

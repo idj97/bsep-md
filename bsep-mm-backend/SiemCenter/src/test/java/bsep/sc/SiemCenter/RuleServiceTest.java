@@ -4,6 +4,8 @@ import bsep.sc.SiemCenter.dto.rules.RuleDTO;
 import bsep.sc.SiemCenter.model.Alarm;
 import bsep.sc.SiemCenter.model.Log;
 import bsep.sc.SiemCenter.repository.AlarmRepository;
+import bsep.sc.SiemCenter.repository.LogRepository;
+import bsep.sc.SiemCenter.service.AlarmService;
 import bsep.sc.SiemCenter.service.DateService;
 import bsep.sc.SiemCenter.service.RuleService;
 import bsep.sc.SiemCenter.service.drools.KieSessionService;
@@ -14,7 +16,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.Arrays;
+import java.util.List;
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+import static org.springframework.data.mongodb.core.query.Query.query;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -32,6 +41,9 @@ public class RuleServiceTest {
     @Autowired
     private DateService dateService;
 
+    @Autowired
+    private AlarmService alarmService;
+
     @Test
     public void test() throws InterruptedException {
         String rule = "package rules;\n" +
@@ -41,6 +53,7 @@ public class RuleServiceTest {
                 "import java.util.Date;\n" +
                 "import java.util.List;\n" +
                 "\n" +
+                "global bsep.sc.SiemCenter.service.AlarmService alarmService\n" +
                 "global bsep.sc.SiemCenter.repository.AlarmRepository alarmRepository\n" +
                 "\n" +
                 "rule \"Test cep rule\"\n" +
@@ -49,12 +62,12 @@ public class RuleServiceTest {
                 "    timer(cron:0/5 * * * * ?)\n" +
                 "    when\n" +
                 "        $log: Log($src: machineIp) and\n" +
-                "        $logs: List(size >= 3) from collect(Log(machineIp == $src) over window:time(5s)) //and\n" +
-                "        //$num: Number(intValue >= 3) from accumulate(\n" +
-                "        //    $log2: Log(machineIp == $src) over window:time(5s),\n" +
-                "        //    count($log2))\n" +
+                "        $logs: List() from collect(Log(machineIp == $src) over window:time(5s)) and\n" +
+                "        $num: Number(intValue >= 3) from accumulate(\n" +
+                "            $log2: Log(machineIp == $src) over window:time(5s),\n" +
+                "            count($log2))\n" +
                 "    then\n" +
-                "        alarmRepository.save(new Alarm(\n" +
+                "        alarmService.add(new Alarm(\n" +
                 "                \"alarm name\",\n" +
                 "                \"alarm description\",\n" +
                 "                \"alarmType\",\n" +
@@ -105,9 +118,12 @@ public class RuleServiceTest {
         log6.setMachineName("Mike");
         log6.setAgentInfo("Agent 2");
 
+        logRepository.saveAll(Arrays.asList(log1, log2, log3, log4, log5, log6));
+
         ruleService.create(new RuleDTO(ruleName, rule));
         Thread.sleep(1000);
         kieSessionService.getKieSession().setGlobal("alarmRepository", alarmRepository);
+        kieSessionService.getKieSession().setGlobal("alarmService", alarmService);
 
         kieSessionService.insertEvent(log1);
         kieSessionService.insertEvent(log2);
@@ -138,5 +154,29 @@ public class RuleServiceTest {
 
         System.out.println(alarmPage.getContent().size());
         Assert.assertEquals(6, alarmPage.getTotalElements());
+    }
+
+    @Autowired
+    private LogRepository logRepository;
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
+
+    @Test
+    public void testLogSearch() {
+        List<Log> logs = logRepository.findByMachineIp("1");
+        Assert.assertEquals(3, logs.size());
+
+        List<Alarm> alarms = mongoTemplate.find(
+                query(where("logs").all(logs)
+                        .and("name").is("alarm name")
+                        .and("description").is("alarm description")
+                        .and("machineIp").is("1")
+                        .and("machineName").is("John")
+                        .and("machineOS").is("Linux")
+                        .and("alarmType").is("alarmType")
+                        .and("agentInfo").is("Agent 1")
+                ), Alarm.class);
+        System.out.println(alarms.size());
     }
 }
