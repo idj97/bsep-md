@@ -1,24 +1,32 @@
-package drools.rules;
+package rules;
 
 import bsep.sc.SiemCenter.model.Log;
 import bsep.sc.SiemCenter.model.Alarm;
 import java.util.Date;
+import java.util.List;
+
+global bsep.sc.SiemCenter.repository.AlarmRepository alarmRepository
 
 rule "Test cep rule"
     no-loop true
     enabled true
     timer(cron:0/5 * * * * ?)
     when
-        $log1: Log($src: machineIp)
-        not ( Alarm(machineSource == $src) )
-        Number(intValue >= 5) from accumulate(
-            $log2: Log(
-                this != $log1,
-                machineIp == $src
-            ) over window:time(1m),
-            count($log2)
-        )
+        $log: Log($src: machineIp) and
+        $logs: List() from collect(Log(machineIp == $src) over window:time(5s)) and
+        $num: Number(intValue >= 3) from accumulate(
+            $log2: Log(machineIp == $src) over window:time(5s),
+            count($log2))
     then
-        System.out.println("Rule name");
-        insert(new Alarm());
+        alarmRepository.save(new Alarm(
+                "alarm name",
+                "alarm description",
+                "alarmType",
+                $log.getMachineIp(),
+                $log.getMachineOS(),
+                $log.getMachineName(),
+                $log.getAgentInfo(),
+                new Date(),
+                $logs
+        ));
 end

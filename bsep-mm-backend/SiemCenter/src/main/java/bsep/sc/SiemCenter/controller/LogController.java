@@ -22,6 +22,4 @@ public class LogController {
     public ResponseEntity<PageDTO<LogDTO>> searchLogs(@RequestBody @Valid LogSearchDTO logSearchDTO) {
         return new ResponseEntity<>(logService.searchLogs(logSearchDTO), HttpStatus.OK);
     }
-
-
 }

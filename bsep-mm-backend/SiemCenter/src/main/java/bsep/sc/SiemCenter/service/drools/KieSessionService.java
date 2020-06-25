@@ -2,6 +2,7 @@ package bsep.sc.SiemCenter.service.drools;
 
 import bsep.sc.SiemCenter.exception.ApiBadRequestException;
 import bsep.sc.SiemCenter.exception.ApiRuleInvalidException;
+import bsep.sc.SiemCenter.repository.AlarmRepository;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.shared.invoker.*;
 import org.kie.api.KieBase;
@@ -30,6 +31,9 @@ public class KieSessionService {
     private KieBase kieBase;
     private KieSession kieSession;
 
+    @Autowired
+    private AlarmRepository alarmRepository;
+
     @Value("${kjar.pom.path}")
     private String kjarPomPath;
 
@@ -38,6 +42,10 @@ public class KieSessionService {
 
     @Value("${kjar.rule.path}")
     private String kjarRulesPath;
+
+    public KieSession getKieSession() {
+        return kieSession;
+    }
 
     @PostConstruct
     public void startup() throws Exception {
