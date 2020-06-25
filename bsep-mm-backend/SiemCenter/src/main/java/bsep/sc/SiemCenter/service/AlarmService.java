@@ -10,10 +10,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+import static org.springframework.data.mongodb.core.query.Query.query;
 
 @Service
 public class AlarmService {
@@ -23,6 +27,9 @@ public class AlarmService {
 
     @Autowired
     private AlarmRepository alarmRepository;
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     public PageDTO<AlarmDTO> search(AlarmSearchDTO alarmSearchDTO) {
         Pageable pageable = PageRequest.of(alarmSearchDTO.getPageNum(), alarmSearchDTO.getPageSize(), Sort.by("timestamp").descending());
@@ -72,5 +79,22 @@ public class AlarmService {
         }
 
         return alarmSearchDTO;
+    }
+
+    public void add(Alarm alarm) {
+        List<Alarm> alarms = mongoTemplate.find(
+                query(where("name").is(alarm.getName())
+                        .and("description").is(alarm.getDescription())
+                        .and("machineIp").is(alarm.getMachineIp())
+                        .and("machineName").is(alarm.getMachineName())
+                        .and("machineOS").is(alarm.getMachineOS())
+                        .and("alarmType").is(alarm.getAlarmType())
+                        .and("agentInfo").is(alarm.getAgentInfo())
+                        .and("logs").all(alarm.getLogs())
+                ), Alarm.class);
+
+        if (alarms.isEmpty()) {
+            alarmRepository.save(alarm);
+        }
     }
 }

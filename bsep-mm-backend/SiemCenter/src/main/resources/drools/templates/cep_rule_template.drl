@@ -5,6 +5,7 @@ import bsep.sc.SiemCenter.model.Alarm;
 import java.util.Date;
 import java.util.List;
 
+global bsep.sc.SiemCenter.service.AlarmService alarmService
 global bsep.sc.SiemCenter.repository.AlarmRepository alarmRepository
 
 rule "Test cep rule"
@@ -18,7 +19,7 @@ rule "Test cep rule"
             $log2: Log(machineIp == $src) over window:time(5s),
             count($log2))
     then
-        alarmRepository.save(new Alarm(
+        alarmService.add(new Alarm(
                 "alarm name",
                 "alarm description",
                 "alarmType",
