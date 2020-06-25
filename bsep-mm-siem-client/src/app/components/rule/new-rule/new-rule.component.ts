@@ -44,7 +44,7 @@ export class NewRuleComponent implements OnInit {
         this.$rules = {
             'start': [
                 {
-                  regex: /\b(package|import|rule|when|then|end|no-loop|enabled|insert|modify|not|from|accumulate|over|window:time|window:length)\b/,
+                  regex: /\b(package|import|rule|when|then|end|no-loop|enabled|insert|modify|not|from|accumulate|over|window:time|window:length|global|timer|update|delete|agenda-group|exists|collect|contains|forAll|forall|this|new|lock-on-active|salience|declare|@Watch|null|matches|memberOf)\b/,
                   token: 'keyword',
                 },
                 {

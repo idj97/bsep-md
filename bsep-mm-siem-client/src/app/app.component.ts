@@ -61,4 +61,8 @@ export class AppComponent {
   logout() {
     this.keyCloakSvc.logout();
   }
+
+  get getUserRoles(): Array<string> {
+    return this.keyCloakSvc.getUserRoles();
+  }
 }

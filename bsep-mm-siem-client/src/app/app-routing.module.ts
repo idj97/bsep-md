@@ -7,6 +7,7 @@ import { ReportsComponent } from './components/reports/reports.component';
 import { RuleComponent } from './components/rule/rule.component';
 import { ViewRulesComponent } from './components/rule/view-rules/view-rules.component';
 import { NewRuleComponent } from './components/rule/new-rule/new-rule.component';
+import { AuthenticationGuard } from './keycloak/authentication.guard';
 
 
 const routes: Routes = [
@@ -17,19 +18,27 @@ const routes: Routes = [
   },
   {
     path: 'home',
-    component: HomeComponent
+    component: HomeComponent,
+    canActivate: [AuthenticationGuard],
+    data: {roles: ['admin', 'operator']}
   },
   {
     path: 'log-events',
-    component: LogEventsComponent
+    component: LogEventsComponent,
+    canActivate: [AuthenticationGuard],
+    data: {roles: ['admin', 'operator']}
   },
   {
     path: 'alarm-events',
-    component: AlarmEventsComponent
+    component: AlarmEventsComponent,
+    canActivate: [AuthenticationGuard],
+    data: {roles: ['admin', 'operator']}
   },
   {
     path: 'rules',
     component: RuleComponent,
+    canActivate: [AuthenticationGuard],
+    data: {roles: ['admin']},
     children: [
       {
         path: '',
@@ -48,7 +57,9 @@ const routes: Routes = [
   },
   {
     path: 'reports',
-    component: ReportsComponent
+    component: ReportsComponent,
+    canActivate: [AuthenticationGuard],
+    data: {roles: ['admin', 'operator']}
   },
 ];
 
