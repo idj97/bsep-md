@@ -3,7 +3,6 @@ import { Routes, RouterModule } from '@angular/router';
 import { HomeComponent } from './components/home/home.component';
 import { NewCertificateComponent } from './components/new-certificate/new-certificate.component';
 import { IssuedCertificatesComponent } from './components/issued-certificates/issued-certificates.component';
-import { CertificateRequestsComponent } from './components/certificate-requests/certificate-requests.component';
 import { UserCertificatesComponent } from './components/issued-certificates/user-certificates/user-certificates.component';
 import { CACertificatesComponent } from './components/issued-certificates/ca-certificates/ca-certificates.component';
 import { UserAllComponent } from './components/issued-certificates/user-certificates/user-all/user-all.component';
@@ -66,13 +65,7 @@ const routes: Routes = [
         ]
       },
     ]
-  },
-  {
-    path: 'certificate-requests',
-    component: CertificateRequestsComponent,
-    canActivate: [AuthenticationGuard],
-    data: {roles: ['admin']}
-  },
+  }
 
 ];
 
