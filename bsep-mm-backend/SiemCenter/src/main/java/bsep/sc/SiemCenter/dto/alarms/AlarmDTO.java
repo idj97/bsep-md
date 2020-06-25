@@ -32,6 +32,7 @@ public class AlarmDTO {
         description = alarm.getDescription();
         machineIp = alarm.getMachineIp();
         machineName = alarm.getMachineName();
+        machineOS = alarm.getMachineOS();
         alarmType = alarm.getAlarmType();
         agentInfo = alarm.getAgentInfo();
         machineOS = alarm.getMachineOS();

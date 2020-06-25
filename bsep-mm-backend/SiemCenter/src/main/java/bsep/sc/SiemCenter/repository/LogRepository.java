@@ -65,4 +65,6 @@ public interface LogRepository extends MongoRepository<Log, UUID> {
             String sourceUser,
             String targetUser,
             Pageable pageable);
+
+    List<Log> findByMachineIp(String machineIp);
 }
