@@ -1,6 +1,10 @@
 # BSEP-MM / BSEP-MD
 
 
+## Demo:
+- https://www.youtube.com/watch?v=v7c1azRPKJc
+
+
 ## Overview:
 
 University project, a military monitoring system consisted of the following subsystems:
@@ -36,8 +40,7 @@ The pages listed below contain information that helped us develop the applicatio
 - https://www.sslshopper.com/what-is-a-csr-certificate-signing-request.
 - https://www.npmjs.com/package/keycloak-angular
 
-## Demo:
-- https://www.youtube.com/watch?v=v7c1azRPKJc
+
 
 
 
