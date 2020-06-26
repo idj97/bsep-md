@@ -1,31 +1,40 @@
-# bsep-md
+# BSEP-MM / BSEP-MD
+
+
+## Overview:
+
+University project, a military monitoring system consisted of the following subsystems:
+
+- Backend
+  - PublicKeyInfrastructure - spring boot app for creating, manipulating and distributing certificates.
+  - SiemAgent - spring boot app, simulates a program used for reading OS logs and sending them to the Siem Center.
+  - SiemCenter - spring boot app, used to gather, filter and process logs, and trigger alarms occasionally.
+  - SiemCenterKjar - dependency for storing drools rules for alarm triggering.
+  - Simulator - python project, stores logs in a special folder in order to simulate healthy app state, and malicious state.
+  
+- Frontend
+  - PKI-client - angular app that communicates with the PublicKeyInfrastructure. An administrator creates, views and distributes certificates.
+  - Siem-center-client - angular app that communicates with the SiemCenter. The operator views reports, logs and alarms, while the admin also creates rules to trigger alarms.
+  
+- External services:
+  - Keycloak - user authentication and authorization.
+  
+  
+## Getting started:
+- Download and start keycloak server.
+- Navigate to localhost:8080, configure PKI and SiemCenter realms defined in application.properties.
+- Start PublicKeyInfrastructure front end and back end servers.
+- Download server certificates, and distribute them to the SiemCenter and SiemAgent truststore and keystore to establish https.
+- SiemCenterKjar - perform maven clean, install and package.
+- SiemCenter - perfrom maven clean and install and run front end and back end server.
+- SiemAgent - start the server.
+ 
 
 ## Guides:
 The pages listed below contain information that helped us develop the application:
 - https://sites.google.com/site/ddmwsst/digital-certificates
 - https://www.sslshopper.com/what-is-a-csr-certificate-signing-request.
-
-## Commands:
-`openssl crl -inform DER -noout -text -in public/pki_revocations.crl`
-
-`keytool -list -v -keystore pki_keystore.jks -storepass password`
-
-## Java SSL resources:
-- Sranja koja se koriste da bi se napravila konfiguracija za **https** i **ssl autenfikaciju** koja se pri pokretanju ubacuje u springov embedded tomcat. Autentifikacija je implementirana u SSLTrustManager klasi cija se putanja ubacuje konfiguraciju koju ce tomcat ucitati. https://tomcat.apache.org/tomcat-9.0-doc/config/http.html
-- Sranja koja koristimo da bi smo proverili Certificate Path (sa OCSP) u SSLTrustManager klasi. https://docs.oracle.com/javase/8/docs/technotes/guides/security/certpath/CertPathProgGuide.html
-
-## Java run options:
-`-Djava.security.debug=certpath` - enable full certpath debugging
-
-## TODO CP2:
-- content security policy (zastita za xss)
-- forma u sklopu PKI-a za kreiranje sertifikata za bilo kog korisnika ???
-- verifikacija putem email-a ???
-- access control list da zastitimo neke bitne fajlove u sistemu (konfiguracione)
-  - windows -> desni klik + security (samo admin moze otvoriti aplikaciju)
-  - stelovanje kroz kod 
-  - (samo admin i aplikacija smeju da pristupe konfig. fajlovima)
-- keycloak login -> ogranici broj login-a (ne moze brute force)
+- https://www.npmjs.com/package/keycloak-angular
 
 
 
